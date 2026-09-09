@@ -1,0 +1,3038 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Life Dashboard</title>
+<meta name="description" content="A calm, personal life tracker. Your data stays on your device.">
+
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkxpZmUgRGFzaGJvYXJkIiwgInNob3J0X25hbWUiOiAiTGlmZSBEYXNoYm9hcmQiLCAiZGVzY3JpcHRpb24iOiAiQSBjYWxtLCBwZXJzb25hbCBsaWZlIHRyYWNrZXIuIFlvdXIgZGF0YSBzdGF5cyBvbiB5b3VyIGRldmljZS4iLCAic3RhcnRfdXJsIjogIi4vIiwgInNjb3BlIjogIi4vIiwgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNGMUVGRTkiLCAidGhlbWVfY29sb3IiOiAiIzRGN0E1QyIsICJpY29ucyI6IFt7InNyYyI6ICJkYXRhOmltYWdlL3BuZztiYXNlNjQsaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQU1BQUFBREFDQVlBQUFCUzNHd0hBQUFGcmtsRVFWUjRuTzNkUzI3Y1NCQ0U0V2pCOS9NRmpMbkV3QnNmUUp1QkwySG9BanFoWjJHM1RYWHpVUyt5S2l2K2J5ZERhcktCQ0dheUtjZzNEZWJ6dHk4L2U1OER6dlgrK25icmZRNTNYVStFc0VQcVc0akxEMHpvc2VmcU1seDJNSUtQWEZlVTRmUURFSHpVT3JNSXA3MHd3VWRyWnhTaCtRc1NmSnl0WlJGZVdyMlFSUGh4alpZNWE5SWtnbzllYXFkQjlRUWcvT2lwTm45VkJTRDhHRUZORG9zTFFQZ3hrdEk4RmhXQThHTkVKYm5NTGdEaHg4aHk4NWxWQU1LUENISnltbHdBd285SVV2T2FWQURDajRoU2NudFlBTUtQeUk3eTIvUlhJWUJvZGd2QTFSOHoyTXZ4WmdFSVAyYXlsV2RXSUZoYkxRQlhmOHhvTGRkTUFGaDdLZ0JYZjh6c01kOU1BRmo3VUFDdS9uQ3d6RGtUQU5iK0ZJQ3JQNXpjODg0RWdEVUtBR3MzaWZVSHZwZ0FzRVlCWUkwQ3dCb0ZnTFVYYm9EaGpBa0FheFFBMWlnQXJGRUFXS01Bc0VZQllPMVQ3eE5BYkQrK2Z2L3c5VC8vL2R2cFRNcmNlQTZBRW8vQmZ4U2xDS3hBeUhZVS90VHZHUUVGUUphY1lFY29BUVdBTlFxQVpDVlg5TkduQUFXQU5Rb0FheFFBMWlnQXJGRUFKQ3Q1dURYNkF6RUtnR1NqZjZKVGdnTGdOS05mL1NVS2dKTkVDTC9FYjRNaVVlcjZFeVg0ZDB3QU5CTXQvQklGUUNNUnd5OVJBQ1NZOGRPZk93b0FheFFBMWFLdVB4SUZ3SUdaMXgrSkFzQWNCVUNWeU91UFJBR3dZL2IxUjZJQU1FY0JVQ3o2K2lOUkFKaWpBRmpsc1A5TEZBQ0ZabGgvSkFvQWN4UUFUMXpXSDRrQ3dCd0ZRTFpaOW4rSkF1Q0IwL29qVVFDWW93RElNdFA2STFFQUxMaXRQeElGZ0RrS2dHU3pyVDhTQmNCdmp1dVBSQUZnamdJZ3lZenJqMFFCSU4vMVI2SUFNRWNCY0dqVzlVZWlBUGFjMXgrSkFzQWNCY0N1bWRjZmlRSlljMTkvSkFvQWN4UUFtMlpmZnlRS1lJdjE1eGNLQUdzVUFLc2MxaCtKQWxoaS9mbUxBc0FhQmNBVGwvVkhvZ0IyV0g4K29nQ3c5cW4zQ1VUMmVEV2RZWFdZNFQza29BQUZ0dGFJKzcrUEdpTFduMmVzUUpsU1FrVFE0cUFBR1hLQy9lUHI5M0JGR0hWeW5Za0NKQ29OOHlnbEdPVThSa01CRXRTR0orSTBjRUVCRHJRTTdzZ2xjRngvSkFxdzY0ekFNZzNHUWdFMm5CM1NLMHRBNGJieEhHQkZUbUNXcTBOdTBFWjVidEQ3K0QweEFSNlVobi90NjV4amNwWHVnd0lzMUlSLytlODFSV2lOWXUyakFMKzFDSC91OTJ5ZEI2RzlEZ1ZRKy9BdnYzZWthYkRHZWYrWEtNQnA0Vy94YzdYVGdFbHl6TG9BVjRSLytmT2pUd05IdDgvZnZ2enNmUkk5WEJuKzJ1TXY1WnpMMFRIYzF4L0pkQUwwRG4vTjY2YXVSVXlOTkhZRkdDSDh5OWRuTGVyTHFnQWpoYi9Gc1dwdWtsbC9mckVwd0tqaFh4NnoxVFJnT3FTektNRG80Vzl4ZkI2Z2xabitVNkJJNFg5MFZxQkhlNTg5VFQwQklvZGZxbHVMa0diYUFrUVAvOUxvNXhmWmxDdlFUT0YvVkxzV1JYdS9aNXR1QXN3Y2Zpbm1PWTlzcWdMTUh2NDc3ZzNhbWFZQUx1RmZ5bjBmczd6dmxxWW9nR1A0NzVnR2RjSVh3RG44UzBmdmJlYjNYaVAwcDBDRWY5Mk1mN2I5TEdFTFFQalJRc2dWaVBDamxYQUZJUHhvS1ZRQkNEOWFDMVdBMUZBVGZxUUtWUUNKai92UVZyZ0NTUHQvbGhESUViSUFVcnMvVEF0dllRc2cvUTA5NFVlcHNBL0NnQlpDVHdDZ0ZnV0FOUW9BYXhRQTFpZ0FyRkVBV0tNQXNFWUJZSTBDd0JvRmdEVUtBR3NVQU5Zb0FLeTl2TCsrM1hxZkJOQUxFd0RXS0FDc1VRQlllNUVrN2dQZzZQMzE3Y1lFZ0RVS0FHdC9Dc0FhQkNmM3ZETUJZSTBDd05xSEFyQUd3Y0V5NTB3QVdIc3FBRk1BTTN2TU54TUExbFlMd0JUQWpOWnl6UVNBdGMwQ01BVXdrNjA4NzA0QVNvQVo3T1dZRlFoVE83cUlIeGFBS1lDWkpVMEFTb0NJVW5LYnZBSlJBa1NTbXRlc2V3QktnQWh5Y3BwOUUwd0pNTExjZkJaOUNrUUpNS0tTWEJaL0RFb0pNSkxTUEZZOUI2QUVHRUZORHBzRW1QOXNHejIwdUFBM3ZZSlRCRnlsMWZiUjlGY2hXSWx3aFpZNU95MndUQU8wZHNZRjl2UXJOa1ZBclRNM2k4dFdGb3FBWEZlczFKZnY3QlFCZTY2K2oreDYwMG9aSVBYOThPUi9tS0FEVmpUZDh3UUFBQUFBU1VWT1JLNUNZSUk9IiwgInNpemVzIjogIjE5MngxOTIiLCAidHlwZSI6ICJpbWFnZS9wbmciLCAicHVycG9zZSI6ICJhbnkifSwgeyJzcmMiOiAiZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFnQUFBQUlBQ0FZQUFBRDBlTlQ2QUFBUnlVbEVRVlI0bk8zZFFiSWp4WllFMEN5TS9iRUJqRTFnVEZnQUU0eE5ZR3lBRmRZZjhFVUp2U2NwbGNxSXVCRit6clRibWxRb085M2xVbFY5MlNqcGgxOS8vRHI2R2dETzhQZHZmMzBaZlExODVFMFpTTWdES0Fpak9QUU9CRDNBYTVTQzloeHdBd0lmNEZ3S3dma2M2RW1FUGtBL0NzSDdIT0JCQWgrZ0JtWGdHSWYyQXFFUFVKc3lzSitEMmtId0E4eEhHWGpNNGR3aDlBSFdvUXg4NUVCdUNINkFkU2tDM3ppSS94UDhBRGtVZ2ZBQ0lQUUJzaVVYZ2NnWEx2Z0J1SlpZQk9KZXNQQUg0SjZrSWhEelFnVS9BSHNsRklIbFg2RGdCK0NvbFl2QXNpOU04QU53aGxWTHdKSXZTdmdEY0xiVmlzQlNMMGJ3QTlEYUtrWGd1OUVYY0JiaEQwQVBxK1ROOUMxbWxUY0NnUG5NdkFaTXZRQUlmd0JHbWptSHBpMEFNeDg2QU91WU5ZK21teTVtUFdnQTFqZlRWd0pUTFFEQ0g0REtac3FwYVFyQVRJY0tRSzVaOHFyOFZESExRUUxBdGVwZkI1UytPT0VQd095cUZvR3lYd0VJZndCV1VEWFBTaGFBcW9jRkFFZFV6TFZ5QmFEaUlRSEF1NnJsVzZrQ1VPMXdBT0JNbFhLdVRBR29kQ2dBMEVxVnZDdFJBS29jQmdEMFVDSDNoaGVBQ29jQUFMMk56citoQldEMGl3ZUFrVWJtNExBQ0lQd0JZRndlRGlrQXdoOEF2aG1SaTkwTGdQQUhnSTk2NTJQWEFpRDhBZUMrbmpuWnJRQUlmd0NvWS9nZkF3UUF2dW4xZ2JsTEFmRHBId0QyNjVHYnpRdUE4QWVBMTdYT3o2WUZRUGdEd0hFdGM5UnZBQUFnVUxNQzROTS9BTHl2Vlo0MktRRENId0RPMHlKWFR5OEF3aDhBem5kMnZ2b05BQUFFT3JVQStQUVBBTzJjbWJPbkZRRGhEd0R0blpXM3ZnSUFnRUNuRkFDZi9nR2duek55OSswQ0lQd0JvTDkzODlkWEFBQVE2SzBDNE5NL0FJenpUZzViQUFBZzBPRUM0Tk0vQUl4M05JOHRBQUFRNkZBQjhPa2ZBT280a3NzdkZ3RGhEd0R6OHhVQUFDemcxUS9vTHhVQW4vNEJZQTBXQUFCWXhDc2YxQlVBQUFpMHV3Q1kvd0dndnIxNWJRRUFnRUM3Q29CUC93QXdqejI1YlFFQWdFQlBDNEJQL3dBd24yZjViUUVBZ0VBS0FBQUVlbGdBelA4QU1LOUhPVzRCQUlCQWR3dUFULzhBTUw5N2VXNEJBSUJBQ2dBQUJQcTBBSmovQVdBZG4rVzZCUUFBQWlrQUFCQklBUUNBUUI4S2dPLy9BV0E5dC9sdUFRQ0FRQW9BQUFUNlR3RXcvd1BBdXE1ejNnSUFBSUVVQUFBSXBBQUFRS0IvQzREdi93RmdmWmU4dHdBQVFDQUZBQUFDS1FBQUVFZ0JBSUJBQ2dBQUJQcXliZjRFQUFDa3NRQUFRQ0FGQUFBQ0tRQUFFRWdCQUlCQUNnQUFCRklBQUNEUWQvNElJQURrc1FBQVFDQUZBQUFDS1FBQUVFZ0JBSUJBQ2dBQUJGSUFBQ0NRQWdBQWdSUUFBQWlrQUFCQUlBVUFBQUlwQUFBUVNBRUFnRUFLQUFBRVVnQUFJTkQzb3k4QWdISCsvT1dQcC84N1AvMytjNGNyb2JjdlAvejY0OWZSRndGQVAzdEMveDVsWUIwS0FFQ0lkNEwvbGlJd1A3OEJBQWh3WnZpMytMOUhmd29Bd09KYWhiVVNNRGNGQUdCaHJVTmFDWmlYQWdDd3FGN2hyQVRNU1FFQVdGRHZVRllDNXFNQUFDeG1WQmdyQVhOUkFBQVdNanFFUi8vMzJVOEJBSUJBQ2dEQUlxcDgrcTV5SFR5bUFBQkFJQVVBQUFJcEFBQUxxRGE3VjdzZVBsSUFBQ0NRQWdBQWdSUUFBQWlrQUFCQUlBVUFBQUlwQUFBUVNBRUFnRUFLQUFBRVVnQUFGdkRUN3orUHZvVC9xSFk5ZktRQUFFQWdCUUFBQWlrQUFJdW9NcnRYdVE0ZVV3QUFJSkFDQUxDUTBaKytSLy8zMlU4QkFPQVV3bjh1Q2dBQWJ4UCs4MUVBQUJieTV5OS9kUDl2Q3Y4NUtRQUFIQ2I4NTZVQUFIQ0k4SitiQWdDd2lKN3p2L0NmMy9lakx3Q0FlUWorZFNnQUFEd2wrTmZqS3dDQUJZejQ5VDl6VXdBQUlKQUNBTUJENXY4MUtRQUFrelAvYzRRQ0FBQ0JGQUFBN2pML3Iwc0JBSmlZK1orakZBQUFDS1FBQVBBcDgvL2FGQUNBU1puL2VZY0NBQUNCRkFBQVBqRC9yMDhCQUppUStaOTNLUUFBRUVnQkFKaE02MC8vNXY4TUNnQUFCRklBQUNDUUFnQXdFZk0vWjFFQUFDQ1FBZ0FBZ1JRQWdFbVkvem1UQWdBQWdSUUFBSHo2RDZRQUFFekFYLzNMMlJRQUFBaWtBQUNFTS85blVnQUFpalAvMDRJQ0FBQ0JGQUNBWU9iL1hBb0FRR0htZjFwUkFBQWdrQUlBRU1yOG4wMEJBQ2pLL0U5TENnQUFCRklBQUFLWi8xRUFBQW95LzlPYUFnQUFnUlFBZ0REbWY3Wk5BUUFveC94UER3b0FBQVJTQUFDQ21QKzVVQUFBQ2pILzA0c0NBQUNCRkFDQUVPWi9yaWtBQUVXWS8rbEpBUUNBUUFvQVFBRHpQN2NVQUlBQ3pQLzBwZ0FBUUNBRkFHQng1bjgrb3dBQURHYitad1FGQUFBQ0tRQUFDelAvYzQ4Q0FEQ1ErWjlSRkFBQUNLUUFBQ3pLL004akNnREFJT1ovUmxJQUFDQ1FBZ0N3SVBNL3p5Z0FBQU9ZL3hsTkFRQ0FRQW9Bd0dMTS8reWhBQUIwWnY2bkFnVUFBQUlwQUFBTE1mK3psd0lBMEpINW55b1VBQUFJcEFBQUxNTDh6eXNVQUlCT3pQOVVvZ0FBUUNBRkFHQUI1bjllcFFBQWRHRCtweG9GQUFBQ0tRQUFrelAvYzRRQ0FOQ1krWitLRkFBQUNLUUFBRXpNL005UkNnQkFRK1ovcWxJQUFDQ1FBZ0F3S2ZNLzcxQUFBQm94LzFPWkFnQUFnUlFBZ0FtWi8zbVhBZ0RRZ1BtZjZoUUFBQWlrQUFDY3JQV25mL00vWjFBQUFDQ1FBZ0FBZ1JRQWdCT1ovNW1GQWdBQWdSUUFBQWlrQUFDY3hQelBUQlFBQUFpa0FBQk13S2QvenFZQUFKekFYLzNMYkJRQUFBaWtBQUFVWi82bkJRVUE0RTNtZjJha0FBQkFJQVVBb0REelA2MG9BQUJ2TVA4ekt3VUFBQUlwQUFCRm1mOXBTUUVBT01qOHo4d1VBQUFJcEFBQUZHVCtwelVGQU9BQTh6K3pVd0FBSUpBQ0FGQ00rWjhlRkFDQUY1bi9XWUVDQUFDQkZBQ0FRc3ovOUtJQUFMekEvTThxRkFBQUNLUUFBQlJoL3FjbkJRQmdKL00vSzFFQUFDRFE5Nk12QUZaeTd4T2lhWmRuM0NQMFpnR0FFL3o1eXg4UDUrSHIvN2taZVU3ZU4xWmpBWUNEamdUQ2JRbndxUThZeFFJQUI1ejFhZENuU3JaTkVXUU1CUUJlZEhab1AvdjZnUEc4UDZ4SUFZQVh0QXdDSVFQMHBBREFUajBDMmhxUXgvelBLQW9BN05BN2xKV0FPcndYckVvQmdDZEdCWUExQUdoSkFZQUhLZ1J3aFd1Z0RmTS9JeWtBY0VlbDRMVUdqT0hNV1prQ0FKK28rdUN2ZWwzQWZCUUF1RkU5WkswQmF6RC9NNW9DQUZkbUN0YVpyblZHenBmVitiY0FZSnYzWWUvZkZBQ09zZ0FRYjlid3Y3YkNhMGlpc0ZHQkFrQzBsWUxUYndQTzR4eEpvQUFRYTlXSC9LcXZDemlYQWtDazFVUFNHbENYK1o4cUZBRGlKQVZqMG1zOWl6TWpoUUpBbE1TSHV6VUErSXdDUUl6MEVFeC8vUldZLzZsRUFTQ0M4UHVITmVBeFowTVNCWURsZWFoLzVFd0FCWUNsQ2JyN3JBRjltZitwUmdGZ1dWWENyZnFEWHhINGh6TWdqUUxBa3FvOHpDL2gvOVB2UDA5UkJJQWNDZ0RMcVJKa253WCtEQ1dneXZtdHBQcjdUaVlGZ0tWVUNhOUhEM3hyUUQxcHJ4ZTJUUUZnSVZVZTRudkRmWVlTVU9WTWdmTjkrZUhYSDcrT3ZnaDRWNFdnZWlmUUsxei9JOVhMeXJ0YW52L3FaOGU4TEFCTXIwSjR2dnVRcng0U0s2OEJxNzR1ZUVZQllHb1ZIdDVuaGJmZkJnQTlLUUJNcTBJWXRRanNHVXBBaGJPZlFmWDNrbXdLQUZPcUVFQXRIKzdXZ0Q1V2VBMXdsQUxBZENvOHRIdUY4d3dsb01MN0Fiek9ud0pnR2xXQ1psUW9WM245OTFRdks1L3g2MytTV1FDWVFwWHdHL2xRcng0b3M2MEJNMTBydEtBQVVGNlZCM1dGQVBiYkFPQXN2Z0tndENwaFVqRjBxNXpOSXhYUGJkdmFuMTNWMXczWExBQ1VWU1hncWo3TXJRSEFPeFFBU3FvU0hOVURkdHZxWCtOc3Z3MkFGTDRDb0p3cVlWRTlXRDlUNWV6dXFYQ201bi80aHdXQVVxb0UyS3dQOGVwZkMxZ0RvQTRGZ0RLcUJFUGxBTjJyK211bzhsNURNbDhCVUVLVlFLZ2VuRWRVT2R0N2VwNjUrUisrc1FBd1hKV0FXdlhoWGYxMStWb0F4bEFBR0tyS2c3OTZTTDZyK204RHRxM092WEJVOWZPRld3b0F3MVI1NENjOXVLdS8xcFpyUUpYN0RhcFFBQmlpeXNPNGVpQzJZQTBBdGswQllJQXFEL2ZxSWRoYTlkYy8wMjhEcXA4bGZFWUJvS3NxRDNRUDdIK2tyQUZWN2p1b1JBR2dtd29QNFJrQ2I0VHFaekxUR2dDelVBRG9vc0xEdTNySWpUWkRPYXB3SDkycWZtWndqd0pBY3hVZTJoN1MrMVUvcTFmWGdBcjNIMVNrQU5CVWhZZHY5VUNyeUJvQTYxTUFhS2JDQTdwNmlGVlgvZnhHL3phZyt2bkFJd29BVFFqL2RjeThCbFM0RDZFcUJZQlRqZjVFZGxFOXNHWlUvVXlyM0hzd0N3V0EwMVI1K0ZZUHFwbk52QWFjcmZvNXdEUCtPV0JPSWZ6elZIblBSM0d2TVRzTEFHK3JFZ1FleUgzTnNBWUE5eWtBdkVYNGszajJpYStaOVNnQUhDYjh1YkFHd0h3VUFBNFIvbnhHRVlCNUtBQzhUUGp6ek1ydnpjcXZqU3dLQUM4Ui91eGxEWURhRkFCMkUvNGM0ZjJDbXZ3OUFPd2kvRGxEbGZ2b0tQY2ZLN0VBOEZTVmg3YUg3L3k4aDFDSEFzQkR3cCt6K1cwQTFLQUFjSmZ3cDZYWjN0ZlpyaGVlVVFENGxQQ25CMnNBaktNQThJSHdwemZ2TmZUblR3SHdIeFhDWHhoa3EzQVAzbkpQc2lJTEFQK3E4T0Qxb01VOUFIMG9BR3piSnZ5cHhXOERvRDBGQU9GUFdSWHVpd3JYQUMwb0FPR0VQOVZaQTZBTkJTQ1k4R2NtN2hVNGx6OEZFS2hDOEcrYkJ6ckg5YnFIM2FPc3pBSVFSdml6QXZjUHZNOENFRVQ0czZJVzk3VjdsQVFXZ0JEQ24xVzVwK0FZQzBBQTRVK0tNKzUxOXlrcExBQ0xFLzRrZWZjK2M1K1N4QUt3TU9GUHNsZnVmL2NvaVJTQVJRbC8rT2JlL3orNFAwbW1BQ3hJK0FQd2pOOEFMRWI0QTdDSEFyQVE0US9BWGdyQUlvUS9BSzlRQUJaUklYZ3JYQU1BK3lnQUN4a1p3TUlmWUM0S3dHSkdCTEh3QjVpUEFyQ2dub0VzL0FIbTVPOEJXRmpMSHdZS2ZvQzVXUUFXMWlxa2hUL0EvQlNBeFowZDFzSWZZQTBLUUlDelFsdjRBNnhEQVFqaG4wa0Y0Sm9DRU9Sb2lBdC9nUFVvQUdGZURYUGhEN0FtQlNEUTNsQVgvZ0RyVWdCQ1BRdDM0USt3TmdVZzJMMlFGLzRBNjFNQXd0Mkd2ZkFIeUtBQThHL29DMytBSFA0dEFBQUlaQUVBZ0VBS0FBQUVVZ0FBSUpBQ0FBQ0JGQUFBQ0tRQUFFQWdCUUFBQWlrQUFCQklBUUNBUUFvQUFBUlNBQUFna0FJQUFJRVVBQUFJcEFBQVFDQUZBQUFDS1FBQUVFZ0JBSUJBQ2dBQUJGSUFBQ0NRQWdBQWdSUUFBQWlrQUFCQUlBVUFBQUlwQUFBUVNBRUFnRUFLQUFBRVVnQUFJSkFDQUFDQkZBQUFDS1FBQUVDZzcvNys3YTh2b3k4Q0FPakxBZ0FBZ1JRQUFBaWtBQUJBSUFVQUFBSXBBQUFRU0FFQWdFQUtBQUFFK203YnRzM2ZCUUFBT2Y3KzdhOHZGZ0FBQ0tRQUFFQWdCUUFBQWlrQUFCRG8zd0xnaDRBQXNMNUwzbHNBQUNDUUFnQUFnUlFBQUFqMG53TGdkd0FBc0s3cm5MY0FBRUFnQlFBQUFpa0FBQkRvUXdId093QUFXTTl0dmxzQUFDQ1FBZ0FBZ1Q0dEFMNEdBSUIxZkpickZnQUFDS1FBQUVDZ3V3WEExd0FBTUw5N2VXNEJBSUJBQ2dBQUJIcFlBSHdOQUFEemVwVGpGZ0FBQ0tRQUFNQ0NucTM0VHd1QXJ3RUFZRDBXQUFBSXRLc0FXQUVBWUI1N2N0c0NBQUNCZGhjQUt3QUExTGMzcnkwQUFCRG9wUUpnQlFDQXVsN0phUXNBQUFSNnVRQllBUUNnbmxmejJRSUFBSUVPRlFBckFBRFVjU1NYTFFBQUVPaHdBYkFDQU1CNFIvUFlBZ0FBZ2Q0cUFGWUFBQmpublJ4K2V3RlFBZ0NndjNmejExY0FBQkRvbEFKZ0JRQ0FmczdJWFFzQUFFemtyQS9kcHhVQUt3QUF6T1BVQlVBSkFJQjJ6c3haWHdFQXdBVE8vcEI5ZWdHd0FnQkFmVTBXQUNVQUFNN1RJbGViZlFXZ0JBREErMXJscWQ4QUFFQlJMVDlNTnkwQVZnQUFxS241QXFBRUFNRHJXdWRubDY4QWxBQUEySzlIYm5iN0RZQVNBQURQOWNwTFB3SUVnQ0o2ZmxqdVdnQ3NBQUJRUS9jRlFBa0FnSTk2NStPUXJ3Q1VBQUQ0WmtRdUR2c05nQklBQU9QeWNPaVBBSlVBQUpLTnpNSGhmd3BBQ1FBZzBlajhHMTRBdG0zOElRQkFUeFZ5cjBRQjJMWWFod0VBclZYSnV6SUZZTnZxSEFvQXRGQXA1MG9WZ0cycmRUZ0FjSlpxK1ZhdUFHeGJ2VU1DZ0hkVXpMVnlGM1R0aDE5Ly9EcjZHZ0RncUlyQmYxSDJ3cTRwQWdETXBuTDRiMXZScndCdVZUOUVBTGcyUTI1TlVRQzJiWTdEQklCWjhtcUtpN3ptNndBQUtwb2wrQyttdXRocmlnQUFWY3dXL3RzMjBWY0F0Mlk4YkFEV00yc2VUWG5SMXl3QkFJd3dhL0JmVEgzeDF4UUJBSHFaUGZ5M2JhRUNzRzFLQUFCdHJSRDhGOHU4a0d1S0FBQm5XeW44dDIzUkFyQnRTZ0FBNTFndCtDK1dmRkhYRkFFQWpsbzEvTGN0b0FCY0tBSUE3TFZ5OEY4cy93SnZLUUlBM0pNUS9CY3hML1NXSWdEQVJWTHdYOFM5NEZ1S0FFQ3V4T0MvaUgzaHR4UUJnQnpKd1g4UmZ3QzNGQUdBZFFuK2J4ekVIWW9Bd0JxRS91Y2N5ZzdLQU1COEJQOWpEdWNGaWdCQWJVSi9Qd2Qxa0RJQVVJUFFQOGFoblVRaEFPaEg2TC9QQVRhZ0RBQ2NTK0NmejRGMm9CQUF2RWJndCtlQUIxSU1BSVQ5S1A4RFp3Vm1jcDYzTXE0QUFBQUFTVVZPUks1Q1lJST0iLCAic2l6ZXMiOiAiNTEyeDUxMiIsICJ0eXBlIjogImltYWdlL3BuZyIsICJwdXJwb3NlIjogImFueSJ9LCB7InNyYyI6ICJkYXRhOmltYWdlL3BuZztiYXNlNjQsaVZCT1J3MEtHZ29BQUFBTlNVaEVVZ0FBQU1BQUFBREFDQVlBQUFCUzNHd0hBQUFFbzBsRVFWUjRuTzNkWFc0VFNSU0c0Wk1SKzJNRGFEWXg0b1l0SURiQlJ1RUNQRFJXRXZkUHRidXF2dWU1UytUWWJlbTgzY2QybEx4OC9QTHBSMEdvZjY0K0FMaVNBSWdtQUtJSmdHZ0NJSm9BaUNZQW9nbUFhQUlnbWdDSUpnQ2lDWUJvQWlDYUFJZ21BS0lKZ0dnQ0lKb0FpQ1lBb2dtQWFBSWdtZ0NJSmdDaUNZQm9BaUNhQUlnbUFLSUpnR2dDSUpvQWlDWUFvZ21BYUFJZ21nQ0lKZ0NpQ1lCb0FpQ2FBSWoyNGVvRFlDN2ZQMy83Nit0L3YvNTMwWkdzOCtML0JOUEMvZURmNnpVRUt4Q0hQUnIrdGJlNWdnQTRaTXRnOXhpQkFJZ21BSGJiYzBidjdTb2dBS0lKZ0dnQ0lKb0FpQ1lBZHR2ejRWWnZINGdKZ04xNmUwZG5Ed0h3TkwyZC9hc0V3SlAwT1B4VmZodVVuZGF1UDcwTy9vMEFPRVh2ZzM5akJXS3pHVjc4M2dpQWFBS2d1VkhXbnlvQnNORk02MCtWQUFnbkFKb2FhZjJwRWdBYnpMYitWQW1BY0FLZ21kSFdueW9Cc05LTTYwK1ZBQWduQUpvWWNmMnBFZ0FyekxyK1ZBbUFCa1k5KzFjSmdBZG1QdnRYQ1lCd0F1Q1FrZGVmS2dId2p0blhueW9CRUU0QTdEYjYrbE1sQU42UXNQNVVDWUJ3QW1DWEdkYWZLZ0h3aXBUMXAwb0FoQk1BbTgyeS9sUUpnRHRKNjArVkFOaG9wck4vbFFCWVNEdjdWd21BY0FKZ3RkbldueW9COEZ2aStsTWxBTUlKZ0ZWbVhIK3FCRURscmo5VkFpQ2NBSGhvMXZXblNnRHhrdGVmS2dFUVRnQzhhK2IxcDBvQTBkTFhueW9COEk3WnovNVZBb2psN1ArTEFJZ21BRjZWc1A1VUNTQ1M5ZWNQQVJEdHc5VUhNTEw3TStrc2E4TXN6Mk1OQWV6dzFncHgrMzdQQTJUOStac1ZhS00xQTJUSXhpR0FEYllNOXZmUDM0WU1vZWVyMXhrRXNOTGVZZTRwZ3A2T3BSY0NXT0hvNEl4Nk5VZ2dnQWRhRG03dkVhU3RQMVVDZU5jWkEzdlYxYUQzK0s0aWdEZWNQVEM5RFdUaTJiL0s1d0N2MmpLY3k4SFpPdFRQK3R5Z3Q5aDY0Z3B3Wisvd3YvYjFsc2MwcE5jUXdNS1I0VjkrLzBnSVYwaGRmNm9FOEw4V3c3LzFObThkUjlJN1QxY1RRTFVmL3VWdFI3c2FwSWtQNEt6aGIvRnp6M2h0a0x6K1ZJVUg4SXpoWC83OHM2OEdyaUtQeFFid3pPRy92Njg5OStlZG9uTkVCbkRWOExlNDM1WWhwSzgvVllFQjlERDh5L3MvYXkxeXRWZ25Lb0NlaHIvRlkxbUxqb3NKb05maFh6N21NMThrVzM5K2lRaWc5K0Z2OGZqTHE0R3J3bm92SDc5OCtuSDFRWnhwcE9HL2Q5WWc5L1k4cnpUMUZXRGs0YTg2dGhheHpyUUJqRDc4UzcwZjM4aW1YSUZtR3Y1N1I5ZWkwWjd2MmFhN0FzdzgvRlZqSG5QUHBncGc5dUcvOGRxZ25Xa0NTQm4rcGEzUFk1Ym4zZElVQVNRTy80MnJ3VEhEQjVBOC9FdVBudHZNei8ySW9kOEZNdnl2bS9YUHRwOWgyQUFNUHkwTXVRSVpmbG9aTGdERFQwdERCV0Q0YVcyWUFBdy9aeGdpQU1QUFdib1B3UEJ6cHE0RE1QeWNyZXNBMWc2MTRXZXZyZ09vOGhFLzUrbytnS3IzL3hRNUhERkVBRlh0L2hrRkxBMFRRTldmb1RmOHRETHNMOE5CQzBOZEFhQTFBUkJOQUVRVEFORUVRRFFCRUUwQVJCTUEwUVJBTkFFUVRRQkVFd0RSQkVBMEFSQk5BRVFUQU5FRVFEUUJFRTBBUkJNQTBRUkFOQUVRVFFCRUV3RFJCRUEwQVJCTkFFUVRBTkVFUURRQkVFMEFSQk1BMFFSQU5BRVFUUUJFRXdEUkJFQTBBUkJOQUVRVEFORUVRRFFCRUUwQVJCTUEwWDRDNitWWk5VaWU2V2NBQUFBQVNVVk9SSzVDWUlJPSIsICJzaXplcyI6ICIxOTJ4MTkyIiwgInR5cGUiOiAiaW1hZ2UvcG5nIiwgInB1cnBvc2UiOiAibWFza2FibGUifSwgeyJzcmMiOiAiZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFnQUFBQUlBQ0FZQUFBRDBlTlQ2QUFBT1hVbEVRVlI0bk8zY1RaSVQxeGFGVWZHaTVzY0VDQ1pCMEdFS0JKTmdvcnlHWGFZS1NxVy96THo3M3IxV3h4M2JwS1IwbmkrUDB2cnc4ZHVuWHljQW9Nci9SaDhBQUhBOEFRQUFoUVFBQUJRU0FBQlFTQUFBUUNFQkFBQ0ZCQUFBRkJJQUFGQklBQUJBSVFFQUFJVUVBQUFVRWdBQVVFZ0FBRUFoQVFBQWhRUUFBQlFTQUFCUVNBQUFRQ0VCQUFDRkJBQUFGQklBQUZCSUFBQkFJUUVBQUlVRUFBQVVFZ0FBVUVnQUFFQWhBUUFBaFFRQUFCUVNBQUJRU0FBQVFDRUJBQUNGQkFBQUZCSUFBRkJJQUFCQUlRRUFBSVVFQUFBVUVnQUFVRWdBQUVBaEFRQUFoUVFBQUJRU0FBQlFTQUFBUUNFQkFBQ0ZCQUFBRkJJQUFGQklBQUJBSVFFQUFJVUVBQUFVRWdBQVVFZ0FBRUFoQVFBQWhRUUFBQlFTQUFCUVNBQUFRQ0VCQUFDRkJBQUFGQklBQUZCSUFBQkFJUUVBQUlVRUFBQVVFZ0FBVUVnQUFFQWhBUUFBaFFRQUFCUVNBQUJRU0FBQVFDRUJBQUNGQkFBQUZCSUFBRkJJQUFCQUlRRUFBSVVFQUFBVUVnQUFVRWdBQUVBaEFRQUFoUVFBQUJRU0FBQlFTQUFBUUNFQkFBQ0ZCQUFBRkJJQUFGQklBQUJBSVFFQUFJVUVBQUFVRWdBQVVFZ0FBRUFoQVFBQWhRUUFBQlFTQUFCUVNBQUFRQ0VCQUFDRkJBQUFGQklBQUZCSUFBQkFJUUVBQUlVRUFBQVVFZ0FBVUVnQUFFQWhBUUFBaFFRQUFCUVNBQUJRU0FBQVFDRUJBQUNGQkFBQUZCSUFBRkRvYWZRQkFKRHY1OWNmRi8rZXo5Ky9ISEFrYk9YRHgyK2ZmbzArQ0FEeVhEUDB6eEVEK1FRQUFLODhNdmovSkFSeWVRWUFnUDlzT2Z6MytQZXhIUUVBd09sMDJtOVlpNEJNQWdDQTNZZTBDTWdqQUFES0hUV2NSVUFXQVFCUTdPaWhMQUp5Q0FDQVVxT0dzUWpJSUFBQUNvMGV3cVAvZkFRQUFGUVNBQUJsVXU2K1U0NmpsUUFBZ0VJQ0FBQUtDUUNBSW1scjk3VGphU0lBQUtDUUFBQ0FRZ0lBQUFvSkFBQW9KQUFBb0pBQUFJQkNBZ0FBQ2drQUFDZ2tBQUNLZlA3K1pmUWh2SkoyUEUwRUFBQVVFZ0FBVUVnQUFKUkpXYnVuSEVjckFRQUFoUVFBUUtIUmQ5K2ovM3dFQUFBSE0vd3pDQUNBUWorLy9oank1eHIrT1FRQUFJY3cvTE1JQUlBeUkrNytEZjg4QWdDQVhSbittUVFBQUxzeC9ITTlqVDRBQUk1ejFQcmY0TThuQUFEWWpNRS9EMThCQUVBaEFRQlFZdS8xdjd2L3VRZ0FBQ2drQUFCNG1Mdi8rUWdBZ0FLamZ2cVhYQUlBQUFvSkFJREZlZmlQdHdnQUFDZ2tBQUNna0FBQVdKajFQK2NJQUFBb0pBQUFvSkFBQUZpVTlUL3ZFUUFBVUVnQUFIQXpkLy96RXdBQUMvTFR2MXdpQUFDZ2tBQUFXSXlILzdpR0FBQ0FRZ0lBQUFvSkFJQ0ZXUDl6TFFFQUFJVUVBQUFVRWdBQWk3RCs1eFlDQUFBS0NRQUFMbkwzdng0QkFMQUFQLzNMclFRQUFCUVNBQUNUOC9BZjl4QUFBRkJJQUFCQUlRRUFNREhyZis0bEFBQ2drQUFBZ0VJQ0FHQlMxdjg4UWdBQVFDRUJBREFoZC84OFNnQUFRQ0VCQUFDRkJBREFaS3ovMllJQUFJQkNBZ0FBQ2drQWdJbFkvN01WQVFBQWhRUUFBS2ZUeWQxL0d3RUFNSW05MS85MEVRQUFVRWdBQUV6QXczOXNUUUFBUUNFQkFBQ0ZCQUJBT090LzlpQUFBS0NRQUFDQVFnSUFJSmoxUDNzUkFBQlFTQUFBbEhMMzMwMEFBSVR5MDcvc1NRQUFRQ0VCQUJESXczL3NUUUFBUUNFQkFBQ0ZCQUJBR090L2ppQUFBS0NRQUFDQVFnSUFJSWoxUDBjUkFBQlFTQUFBbEhEM3owc0NBQ0NFbi83bFNBSUFBQW9KQUlBQUh2N2phQUlBQUFvSkFBQW9KQUFBQnJQK1p3UUJBQUNGQkFBQUZCSUFBQU5aL3pPS0FBQ0FRZ0lBWUZIdS9ubVBBQUFZeEUvL01wSUFBSUJDQWdCZ0FBLy9NWm9BQUlCQ0FnQUFDZ2tBZ0lOWi81TkFBQUJBSVFFQUFJVUVBTUNCclA5SklRQUFvSkFBQUZpRXUzOXVJUUFBRHVLbmYwa2lBQUNna0FBQU9JQ0gvMGdqQUFDZ2tBQUFnRUlDQUdCbjF2OGtFZ0FBVUVnQUFFQWhBUUN3SSt0L1Vna0FBQ2drQUFBbTVlNmZSd2dBZ0ozNDZWK1NDUUFBS0NRQUFIYmc0VC9TQ1FBQUtDUUFBS0NRQUFEWW1QVS9NeEFBQUZCSUFBQkFJUUVBc0NIcmYyWWhBQUNna0FBQW1JUzdmN1lrQUFBMjRxZC9tWWtBQUlCQ0FnQmdBeDcrWXpZQ0FBQUtDUUFBS0NRQUFCNWsvYytNQkFBQUZCSUFBRkJJQUFBOHdQcWZXUWtBQUNna0FBQkN1ZnRuVHdJQTRFNSsrcGVaQ1FBQUtDUUFBTzdnNFQ5bUp3QUFvSkFBQUlCQ0FnRGdSdGIvckVBQUFFQ2hwOUVIQUNzNWQyZm9qZzVJOCtIanQwKy9SaDhFek83YWxmRG43MTlPUDcvK0VBUVRzLzVuRlRZQWNLZDdCc0h6UC9QOFZ4ZDdZQlRQQU1BZHRyb0w5RXR5dkNRSU9aSUFnQnR0UGJSL2Z2MGhCQ2JoYzJJbEFnQnVzT2NBTUZ5QUkza0lFSzUwNUlDMkNzN2o0VDlXWXdNQVZ6ajY3dHcyQU5pYkFJQUxSZzFqendZQWV4SUE4STZFQVp4d0RPMnMvMW1SQUlBemtnYXZiUUN3TlFFQWIwZ2R0cW5IQmN6SC93VUFmNWhseUZvYkg4UDZuMVhaQU1BTHN3ei8wMm11WXdYeUNBRDQxNHdEMWJNQmMzUDN6MGdDQUU1ekR2K1haai8rVk41WFZpWUFxTGZLUmQ0MkFMaUZBS0RhaWdOenhkYzBnb2YvV0owQW9OYktnOUkyQUxoRUFGQ3BaVGkydkU3Z2RuNEhnRHF0UTlISytYclcvelN3QWFCSzYvQS9uYnBmTy9BM0FVQU5BOUN6QWNCdkFvQUtodDVyM28venJQOXBJUUJZbm1IM050c0E2Q1lBV0ZyQ2dFdS80eE1DdjduN3A0a0FZRmtKUSszNWd2LzUrNWY0aTMvQyt3VWNSd0N3cElSaDl0YkFueUVDRXQ0N1lIOStCNENscEF5dmF3Wjl5ckdla3g0clc3UCtwNDBOQU10SUdhalhYdWpUQjRKdEFLeE5BTENFbEVGMTYxRDNiQUF3aXE4QW1GN0tnSHAwa0tlOGp2ZWt4OHE5clA5cFpBUEExRktHNWhZWGVOc0E0RWdDZ0dtbERLT3RoL1lNRVpEeTNzOGcvZk9rbHdCZ1Npa0RhSytMdTIzQWNWWjVIWEFyQWNCMFVpN1lSd3pvR1NJZzVmTUFidU1oUUthU01teEdET2FVMTM1T2VxeTh4Y04vTkxNQllCb3BBM0RVUlQxOW1OZ0d3RndFQUZOSUdTeWpoN0JuQTRDdCtBcUFlQ2tESlczd3Byd3Y3MGw3ejE2eS9xZWREUURSVW9aYzRzWGNOZ0I0aEFBZ1ZzcndTQit5NmNmbjJRREk1Q3NBSXFVTWpQVGgrcWVVOSsyY2xQZlQraDlzQUFpVU1zUm12SWluZnkxZ0d3QTVCQUJSRW9aRCtoQzlSdnJ4SjN6T2UwbC83K0dacndDSWtUQVVWcng0Sjd5djd6bjZQYmYraDMvWUFCQWhZVWl0ZXVGT2YxMitGb0F4YkFBWUx1SGluejRrdDVMd1hyOW43OC9CM1QvOFpnUEFVQWtEcWVtaW5mNWFiUVBnT0FLQVlSSXU5T2tEY1E4elBPU1ljRzdBNm53RndCQUpGL2owSVhpRWhNL2hrcTArSit0L2VNMEdnTU1sREIwWDYzL1lCa0F2QWNDaEVpN202UU52aFBUM3hMTUJzRDFmQVhDWWhBdDQrcUJMa1BBNXZlZWV6OUQ2SC81bUE4QWhFb2FLaS9SMTB0OG4yd0RZaGdCZ2R3a1g2L1NobHNhekFkZExmNS9nSEFIQXJoSXUwaTdROTB0Lzc2N1pCaVNjZzVCSUFMQ2JoQXR2K2dDYmdXMEFyTWxEZ093aTRZS2NQclJtbFBDNVh2THljL2Z3SDV4bkE4RG1Fb2FFQy9NK2JBTmdIVFlBYkNyaDRwcytvRmFSOEZtUDVseGpaZ0tBelNRTUJCZms0eVY4N2lNNDE1aWRyd0RZUk1JUWNFRWV3L3NPY3hJQVBNendaNFpuQTREWGZBWEFRd3gvM3BKd1h1ekpPY2NLYkFDNFc4SkYzb1U0azg4Rjh0a0FjQmZEbjJzbG5DdGJjdDZ4Q2hzQWJwWndRWGNSbm9mUENqSUpBRzVpK0hNUER3bENIZ0hBMVF4L0hqWDc1emY3OGNOTEFvQ3JHUDVzeFRZQU1nZ0FMakw4MllQUEZNYnlmd0h3THNPZkl5U2NaNWM0RDFtTkRRQm5KVnlVWFhRNytKemhlQUtBTnhuK0hNMnpBWEFzQWNCZkRIOUdTdnpzRTQ4SkhpVUFlTVh3SjRGdEFPeFBBUEFmdzU4MENlZER3akhBSHA1R0h3RGpKUXorMDhtRmxyYzlueGNwNXltc3dnYWdYTXBGMWZEbkV1Y0liTXZ2QUJRei9KblZVZWV1YzVPVjJRQ1VNdnlabWZNR0htY0RVTWp3WnlWN25NL09UUnJZQUpReC9GbU5jd251WXdOUXhQQm5kVnVjNDg1UFd0Z0FsREQ4YWZEbytlWDhwSWtOUUFIRG4wYTNuUGZPVFJvSmdNVVovbkQrdndQbkpjMEV3TUlNZndETzhRekFvZ3gvQU40akFCWmsrQU53aVFCWWpPRVB3RFVFd0VJTWZ3Q3VKUUFXWWZnRGNJdW4wUWZBNHhLR3Y4RVBNQmNiZ01rWi9nRGNRd0JNelBBSDRGNENZRktHUHdDUEVBQVRNdndCZUpRQW1JemhEOEFXQk1CRURIOEF0aUlBSm1INEE3QWxBVEFCd3grQXJRbUFjSVkvQUhzUUFPRkdEOS9SZno0QSt4QUFFeGcxaEExL2dIVUpnRWtjUFl3TmY0QzFDWUNKSERXVURYK0E5UW1BeWV3OW5BMS9nQTRDWUVKN0RXbkRINkNIQUpqVTFzUGE4QWZvSWdBbXR0WFFOdndCK2dpQXlUMDZ2QTEvZ0U0Q1lBSDNEbkhESDZDWEFGakVyY1BjOEFmb0pnQVdjdTFRTi93QkVBQ0x1VFRjRFg4QVRpY0JzS1J6UTk3d0IrQ1pBRmpVbjhQZThBZmdKUUd3c09laGIvZ0Q4S2NQSDc5OStqWDZJQUNBWTlrQUFFQWhBUUFBaFFRQUFCUVNBQUJRU0FBQVFDRUJBQUNGQkFBQUZCSUFBRkJJQUFCQUlRRUFBSVVFQUFBVUVnQUFVRWdBQUVBaEFRQUFoUVFBQUJRU0FBQlFTQUFBUUNFQkFBQ0ZCQUFBRkJJQUFGQklBQUJBSVFFQUFJVUVBQUFVRWdBQVVFZ0FBRUFoQVFBQWhRUUFBQlFTQUFCUVNBQUFRQ0VCQUFDRkJBQUFGQklBQUZCSUFBQkFJUUVBQUlVRUFBQVVFZ0FBVUVnQUFFQWhBUUFBaFFRQUFCUVNBQUJRU0FBQVFDRUJBQUNGQkFBQUZCSUFBRkJJQUFCQUlRRUFBSVVFQUFBVUVnQUFVRWdBQUVBaEFRQUFoUVFBQUJRU0FBQlFTQUFBUUNFQkFBQ0ZCQUFBRkJJQUFGQklBQUJBSVFFQUFJVUVBQUFVRWdBQVVFZ0FBRUFoQVFBQWhRUUFBQlFTQUFCUVNBQUFRQ0VCQUFDRkJBQUFGQklBQUZCSUFBQkFJUUVBQUlVRUFBQVVFZ0FBVUVnQUFFQWhBUUFBaFFRQUFCUVNBQUJRU0FBQVFDRUJBQUNGQkFBQUZCSUFBRkJJQUFCQUlRRUFBSVVFQUFBVUVnQUFVRWdBQUVBaEFRQUFoUVFBQUJRU0FBQlFTQUFBUUNFQkFBQ0ZCQUFBRkJJQUFGQklBQUJBSVFFQUFJVUVBQUFVRWdBQVVFZ0FBRUFoQVFBQWhRUUFBQlFTQUFCUVNBQUFRQ0VCQUFDRkJBQUFGQklBQUZCSUFBQkFJUUVBQUlVRUFBQVVFZ0FBVUVnQUFFQWhBUUFBaFFRQUFCUVNBQUJRU0FBQVFDRUJBQUNGQkFBQUZCSUFBRkJJQUFCQUlRRUFBSVVFQUFBVUVnQUFVT2ovVGxDZ1IyckZGUWdBQUFBQVNVVk9SSzVDWUlJPSIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2UvcG5nIiwgInB1cnBvc2UiOiAibWFza2FibGUifV19">
+<meta name="theme-color" content="#4F7A5C" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1E19" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Life Dashboard">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAFrklEQVR4nO3dS27cSBCE4WjB9/MFjLnEwBsfQJuBL2HoAjqhZ2G3TXXzUS+yKiv+bydDarKBCGayKcg3Debzty8/e58DzvX++nbrfQ53XU+EsEPqW4jLD0zosefqMlx2MIKPXFeU4fQDEHzUOrMIp70wwUdrZxSh+QsSfJytZRFeWr2QRPhxjZY5a9Ikgo9eaqdB9QQg/OipNn9VBSD8GEFNDosLQPgxktI8FhWA8GNEJbnMLgDhx8hy85lVAMKPCHJymlwAwo9IUvOaVADCj4hScntYAMKPyI7y2/RXIYBodgvA1R8z2MvxZgEIP2aylWdWIFhbLQBXf8xoLddMAFh7KgBXf8zsMd9MAFj7UACu/nCwzDkTANb+FICrP5zc884EgDUKAGs3ifUHvpgAsEYBYI0CwBoFgLUXboDhjAkAaxQA1igArFEAWKMAsEYBYO1T7xNAbD++fv/w9T///dvpTMrceA6AEo/BfxSlCKxAyHYU/tTvGQEFQJacYEcoAQWANQqAZCVX9NGnAAWANQoAaxQA1igArFEAJCt5uDX6AzEKgGSjf6JTggLgNKNf/SUKgJNECL/Eb4MiUer6EyX4d0wANBMt/BIFQCMRwy9RACSY8dOfOwoAaxQA1aKuPxIFwIGZ1x+JAsAcBUCVyOuPRAGwY/b1R6IAMEcBUCz6+iNRAJijAFjlsP9LFACFZlh/JAoAcxQAT1zWH4kCwBwFQLZZ9n+JAuCB0/ojUQCYowDIMtP6I1EALLitPxIFgDkKgGSzrT8SBcBvjuuPRAFgjgIgyYzrj0QBIN/1R6IAMEcBcGjW9UeiAPac1x+JAsAcBcCumdcfiQJYc19/JAoAcxQAm2ZffyQKYIv15xcKAGsUAKsc1h+JAlhi/fmLAsAaBcATl/VHogB2WH8+ogCw9qn3CUT2eDWdYXWY4T3koAAFttaI+7+PGiLWn2esQJlSQkTQ4qAAGXKC/ePr93BFGHVynYkCJCoN8yglGOU8RkMBEtSGJ+I0cEEBDrQM7sglcFx/JAqw64zAMg3GQgE2nB3SK0tA4bbxHGBFTmCWq0Nu0EZ5btD7+D0xAR6Uhn/t65xjcpXugwIs1IR/+e81RWiNYu2jAL+1CH/u92ydB6G9DgVQ+/Avv3ekabDGef+XKMBp4W/xc7XTgElyzLoAV4R/+fOjTwNHt8/fvvzsfRI9XBn+2uMv5ZzL0THc1x/JdAL0Dn/N66auRUyNNHYFGCH8y9dnLerLqgAjhb/FsWpukll/frEpwKjhXx6z1TRgOqSzKMDo4W9xfB6glZn+U6BI4X90VqBHe589TT0BIodfqluLkGbaAkQP/9Lo5xfZlCvQTOF/VLsWRXu/Z5tuAswcfinmOY9sqgLMHv477g3amaYALuFfyn0fs7zvlqYogGP475gGdcIXwDn8S0fvbeb3XiP0p0CEf92Mf7b9LGELQPjRQsgViPCjlXAFIPxoKVQBCD9aC1WA1FATfqQKVQCJj/vQVrgCSPt/lhDIEbIAUrs/TAtvYQsg/Q094UepsA/CgBZCTwCgFgWANQoAaxQA1igArFEAWKMAsEYBYI0CwBoFgDUKAGsUANYoAKy9vL++3XqfBNALEwDWKACsUQBYe5Ek7gPg6P317cYEgDUKAGt/CsAaBCf3vDMBYI0CwNqHArAGwcEy50wAWHsqAFMAM3vMNxMA1lYLwBTAjNZyzQSAtc0CMAUwk608704ASoAZ7OWYFQhTO7qIHxaAKYCZJU0ASoCIUnKbvAJRAkSSmtesewBKgAhycpp9E0wJMLLcfBZ9CkQJMKKSXBZ/DEoJMJLSPFY9B6AEGEFNDpsEmP9sGz20uAA3vYJTBFyl1fbR9FchWIlwhZY5Oy2wTAO0dsYF9vQrNkVArTM3i8tWFoqAXFes1Jfv7BQBe66+j+x600oZIPX98OR/mKADVjTd8wQAAAAASUVORK5CYII=">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAFrklEQVR4nO3dS27cSBCE4WjB9/MFjLnEwBsfQJuBL2HoAjqhZ2G3TXXzUS+yKiv+bydDarKBCGayKcg3Debzty8/e58DzvX++nbrfQ53XU+EsEPqW4jLD0zosefqMlx2MIKPXFeU4fQDEHzUOrMIp70wwUdrZxSh+QsSfJytZRFeWr2QRPhxjZY5a9Ikgo9eaqdB9QQg/OipNn9VBSD8GEFNDosLQPgxktI8FhWA8GNEJbnMLgDhx8hy85lVAMKPCHJymlwAwo9IUvOaVADCj4hScntYAMKPyI7y2/RXIYBodgvA1R8z2MvxZgEIP2aylWdWIFhbLQBXf8xoLddMAFh7KgBXf8zsMd9MAFj7UACu/nCwzDkTANb+FICrP5zc884EgDUKAGs3ifUHvpgAsEYBYI0CwBoFgLUXboDhjAkAaxQA1igArFEAWKMAsEYBYO1T7xNAbD++fv/w9T///dvpTMrceA6AEo/BfxSlCKxAyHYU/tTvGQEFQJacYEcoAQWANQqAZCVX9NGnAAWANQoAaxQA1igArFEAJCt5uDX6AzEKgGSjf6JTggLgNKNf/SUKgJNECL/Eb4MiUer6EyX4d0wANBMt/BIFQCMRwy9RACSY8dOfOwoAaxQA1aKuPxIFwIGZ1x+JAsAcBUCVyOuPRAGwY/b1R6IAMEcBUCz6+iNRAJijAFjlsP9LFACFZlh/JAoAcxQAT1zWH4kCwBwFQLZZ9n+JAuCB0/ojUQCYowDIMtP6I1EALLitPxIFgDkKgGSzrT8SBcBvjuuPRAFgjgIgyYzrj0QBIN/1R6IAMEcBcGjW9UeiAPac1x+JAsAcBcCumdcfiQJYc19/JAoAcxQAm2ZffyQKYIv15xcKAGsUAKsc1h+JAlhi/fmLAsAaBcATl/VHogB2WH8+ogCw9qn3CUT2eDWdYXWY4T3koAAFttaI+7+PGiLWn2esQJlSQkTQ4qAAGXKC/ePr93BFGHVynYkCJCoN8yglGOU8RkMBEtSGJ+I0cEEBDrQM7sglcFx/JAqw64zAMg3GQgE2nB3SK0tA4bbxHGBFTmCWq0Nu0EZ5btD7+D0xAR6Uhn/t65xjcpXugwIs1IR/+e81RWiNYu2jAL+1CH/u92ydB6G9DgVQ+/Avv3ekabDGef+XKMBp4W/xc7XTgElyzLoAV4R/+fOjTwNHt8/fvvzsfRI9XBn+2uMv5ZzL0THc1x/JdAL0Dn/N66auRUyNNHYFGCH8y9dnLerLqgAjhb/FsWpukll/frEpwKjhXx6z1TRgOqSzKMDo4W9xfB6glZn+U6BI4X90VqBHe589TT0BIodfqluLkGbaAkQP/9Lo5xfZlCvQTOF/VLsWRXu/Z5tuAswcfinmOY9sqgLMHv477g3amaYALuFfyn0fs7zvlqYogGP475gGdcIXwDn8S0fvbeb3XiP0p0CEf92Mf7b9LGELQPjRQsgViPCjlXAFIPxoKVQBCD9aC1WA1FATfqQKVQCJj/vQVrgCSPt/lhDIEbIAUrs/TAtvYQsg/Q094UepsA/CgBZCTwCgFgWANQoAaxQA1igArFEAWKMAsEYBYI0CwBoFgDUKAGsUANYoAKy9vL++3XqfBNALEwDWKACsUQBYe5Ek7gPg6P317cYEgDUKAGt/CsAaBCf3vDMBYI0CwNqHArAGwcEy50wAWHsqAFMAM3vMNxMA1lYLwBTAjNZyzQSAtc0CMAUwk608704ASoAZ7OWYFQhTO7qIHxaAKYCZJU0ASoCIUnKbvAJRAkSSmtesewBKgAhycpp9E0wJMLLcfBZ9CkQJMKKSXBZ/DEoJMJLSPFY9B6AEGEFNDpsEmP9sGz20uAA3vYJTBFyl1fbR9FchWIlwhZY5Oy2wTAO0dsYF9vQrNkVArTM3i8tWFoqAXFes1Jfv7BQBe66+j+x600oZIPX98OR/mKADVjTd8wQAAAAASUVORK5CYII=">
+
+<style>
+/* ============================================================================
+   Life Dashboard — styles
+   Design language: a calm, personal journal rather than a SaaS dashboard.
+   Serif for headings/reflective content, system sans for data and UI chrome.
+   One accent (sage) reserved for goals reached / primary actions.
+   ============================================================================ */
+
+:root {
+  /* Color — warm stone paper, ink text, sage accent, muted clay for alerts */
+  --bg: #F1EFE9;
+  --surface: #FBFAF7;
+  --surface-raised: #FFFFFF;
+  --ink: #262622;
+  --ink-soft: #4B4A44;
+  --text-muted: #83807A;
+  --border: #E1DDD3;
+  --accent: #4F7A5C;
+  --accent-strong: #3C5F47;
+  --accent-soft: #A9C4AE;
+  --accent-wash: #E7EFE7;
+  --clay: #B0714A;
+  --clay-wash: #F3E8DE;
+  --danger: #B1493F;
+  --danger-wash: #F5E4E1;
+
+  --radius-s: 8px;
+  --radius-m: 14px;
+  --radius-l: 22px;
+  --shadow-card: 0 1px 2px rgba(38, 38, 34, 0.05);
+  --font-serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --nav-h: 62px;
+}
+
+[data-theme="dark"] {
+  --bg: #1C1E19;
+  --surface: #242621;
+  --surface-raised: #2B2D27;
+  --ink: #EDEAE2;
+  --ink-soft: #C9C5BB;
+  --text-muted: #8D8A81;
+  --border: #383A33;
+  --accent: #7EA98A;
+  --accent-strong: #9BC4A6;
+  --accent-soft: #4F6B57;
+  --accent-wash: #263229;
+  --clay: #D3936B;
+  --clay-wash: #33291F;
+  --danger: #DE8478;
+  --danger-wash: #3A2622;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1C1E19;
+    --surface: #242621;
+    --surface-raised: #2B2D27;
+    --ink: #EDEAE2;
+    --ink-soft: #C9C5BB;
+    --text-muted: #8D8A81;
+    --border: #383A33;
+    --accent: #7EA98A;
+    --accent-strong: #9BC4A6;
+    --accent-soft: #4F6B57;
+    --accent-wash: #263229;
+    --clay: #D3936B;
+    --clay-wash: #33291F;
+    --danger: #DE8478;
+    --danger-wash: #3A2622;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 600; margin: 0; color: var(--ink); }
+p { margin: 0; }
+button { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+#app { max-width: 560px; margin: 0 auto; min-height: 100%; position: relative; padding-bottom: calc(var(--nav-h) + 18px); }
+
+.screen { display: none; padding: 18px 18px 8px; animation: fadein .18s ease; }
+.screen.active { display: block; }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---- Top header ---- */
+.top-header { padding: 6px 2px 14px; }
+.top-header .dow { font-size: 13px; color: var(--text-muted); text-transform: none; letter-spacing: .2px; }
+.top-header .date { font-family: var(--font-serif); font-size: 26px; margin-top: 2px; }
+.top-header .greeting { color: var(--ink-soft); margin-top: 4px; font-size: 14.5px; }
+
+.section-title { font-family: var(--font-serif); font-size: 19px; margin: 22px 0 10px; }
+.section-title:first-child { margin-top: 0; }
+
+/* ---- Progress line ---- */
+.progress-line { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--accent-wash); border-radius: var(--radius-m); margin-bottom: 16px; }
+.progress-line .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+.progress-line span { font-size: 13.5px; color: var(--accent-strong); }
+
+/* ---- Tracker cards (Today) ---- */
+.tracker-list { display: flex; flex-direction: column; gap: 10px; }
+.tracker-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: var(--radius-m);
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tracker-card.reached { border-left-color: var(--accent); }
+.tracker-card .icon { font-size: 21px; flex: none; width: 30px; text-align: center; }
+.tracker-card .main { flex: 1; min-width: 0; }
+.tracker-card .name-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.tracker-card .name { font-weight: 600; font-size: 14.5px; }
+.tracker-card .goal-check { font-size: 12px; color: var(--accent-strong); white-space: nowrap; }
+.tracker-card .goal-text { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+.tracker-card .input-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+
+.stepper-btn {
+  width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface); color: var(--ink); font-size: 16px; line-height: 1; cursor: pointer;
+}
+.stepper-btn:active { background: var(--accent-wash); }
+
+.value-input {
+  border: 1px solid var(--border); border-radius: var(--radius-s); background: var(--surface);
+  color: var(--ink); padding: 7px 9px; font-size: 14.5px; width: 100%; max-width: 130px;
+}
+.value-input:focus { border-color: var(--accent); }
+.value-input.wide { max-width: none; }
+
+.pill-group { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill {
+  border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft);
+  border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer;
+}
+.pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.yesno-toggle { display: flex; gap: 6px; }
+.yesno-toggle button { flex: 1; padding: 7px 0; border-radius: var(--radius-s); border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft); cursor: pointer; }
+.yesno-toggle button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.empty-state { text-align: center; padding: 46px 18px; color: var(--text-muted); }
+.empty-state h3 { color: var(--ink); margin-bottom: 6px; font-size: 17px; }
+.empty-state p { font-size: 13.5px; margin-bottom: 16px; }
+
+/* ---- Buttons ---- */
+.btn { border-radius: var(--radius-s); padding: 10px 16px; font-size: 14.5px; font-weight: 600; border: 1px solid transparent; cursor: pointer; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:active { background: var(--accent-strong); }
+.btn-ghost { background: transparent; color: var(--ink-soft); border-color: var(--border); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-block { width: 100%; display: block; text-align: center; }
+.btn-link { background: none; border: none; color: var(--accent-strong); font-weight: 600; cursor: pointer; padding: 8px 0; font-size: 14px; }
+
+/* ---- Bottom nav ---- */
+.bottom-nav {
+  position: fixed; left: 0; right: 0; bottom: 0; height: var(--nav-h);
+  max-width: 560px; margin: 0 auto;
+  background: var(--surface-raised); border-top: 1px solid var(--border);
+  display: flex; align-items: stretch; z-index: 40;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-btn { flex: 1; border: none; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--text-muted); font-size: 11px; cursor: pointer; }
+.nav-btn .nav-icon { font-size: 19px; }
+.nav-btn.active { color: var(--accent-strong); }
+.nav-add {
+  flex: none; width: 54px; height: 54px; margin-top: -20px; border-radius: 50%;
+  background: var(--accent); color: #fff; font-size: 26px; border: 4px solid var(--bg);
+  display: flex; align-items: center; justify-content: center; align-self: center; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+
+/* ---- Overlays / dialogs / sheets ---- */
+.overlay { position: fixed; inset: 0; background: rgba(20,20,16,0.42); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
+.dialog { background: var(--surface-raised); border-radius: var(--radius-l); padding: 22px; margin: auto; max-width: 380px; width: calc(100% - 40px); }
+.dialog h3 { font-size: 18px; margin-bottom: 8px; }
+.dialog p { color: var(--ink-soft); font-size: 14px; }
+.dialog-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+
+.sheet {
+  background: var(--surface-raised); width: 100%; max-width: 560px; max-height: 86vh;
+  border-radius: var(--radius-l) var(--radius-l) 0 0; display: flex; flex-direction: column;
+  transform: translateY(16px); opacity: 0; transition: transform .18s ease, opacity .18s ease;
+}
+.sheet.open { transform: translateY(0); opacity: 1; }
+.sheet-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--border); flex: none; }
+.sheet-title { font-family: var(--font-serif); font-size: 18px; }
+.sheet-close { background: none; border: none; font-size: 16px; color: var(--text-muted); cursor: pointer; padding: 4px 8px; }
+.sheet-body { padding: 16px 18px 28px; overflow-y: auto; }
+
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; color: var(--ink-soft); margin-bottom: 6px; font-weight: 600; }
+.field input[type=text], .field input[type=number], .field input[type=time], .field select, .field textarea {
+  width: 100%; border: 1px solid var(--border); border-radius: var(--radius-s); padding: 10px 11px;
+  background: var(--surface); color: var(--ink); font-size: 14.5px;
+}
+.field textarea { resize: vertical; min-height: 64px; font-family: var(--font-sans); }
+.field-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+.field-row { display: flex; gap: 10px; }
+.field-row > .field { flex: 1; }
+
+.chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px; font-size: 13.5px; background: var(--surface); cursor: pointer; color: var(--ink-soft); }
+.chip.active { background: var(--accent-wash); border-color: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+
+.icon-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.icon-opt { font-size: 20px; padding: 8px 0; text-align: center; border-radius: var(--radius-s); border: 1px solid transparent; cursor: pointer; }
+.icon-opt.active { background: var(--accent-wash); border-color: var(--accent-soft); }
+
+/* ---- Suggestion list (onboarding) ---- */
+.suggest-card { border: 1px solid var(--border); border-radius: var(--radius-m); padding: 12px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: var(--surface-raised); }
+.suggest-card .icon { font-size: 20px; }
+.suggest-card .main { flex: 1; }
+.suggest-card .name { font-weight: 600; font-size: 14px; }
+.suggest-card .meta { font-size: 12px; color: var(--text-muted); }
+.suggest-card input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); }
+
+/* ---- Trends ---- */
+.range-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 14px; }
+.range-tabs button { flex: none; border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft); padding: 7px 13px; border-radius: 999px; font-size: 13px; cursor: pointer; }
+.range-tabs button.active { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+[data-theme="dark"] .range-tabs button.active, :root:not([data-theme="light"]) .range-tabs button.active { }
+
+.trend-card { background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; margin-bottom: 14px; }
+.trend-card .head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.trend-card .head .icon { font-size: 18px; }
+.trend-card .head .name { font-weight: 600; font-size: 15px; flex: 1; }
+.trend-card canvas { width: 100%; height: 140px; display: block; }
+.trend-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.trend-stat { text-align: center; }
+.trend-stat .num { font-size: 15px; font-weight: 700; }
+.trend-stat .lbl { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+
+/* ---- Reports ---- */
+.report-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.report-tabs button { flex: 1; border: 1px solid var(--border); background: var(--surface); padding: 9px 0; border-radius: var(--radius-s); font-size: 13.5px; font-weight: 600; color: var(--ink-soft); cursor: pointer; }
+.report-tabs button.active { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+
+.report-hero { text-align: center; padding: 18px 10px 22px; }
+.report-hero .range { color: var(--text-muted); font-size: 13px; }
+.report-hero .title { font-family: var(--font-serif); font-size: 24px; margin-top: 4px; }
+.report-hero .headline { margin-top: 10px; color: var(--ink-soft); font-size: 14.5px; max-width: 420px; margin-left: auto; margin-right: auto; }
+
+.metric-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.metric-row:last-child { border-bottom: none; }
+.metric-row .left { display: flex; align-items: center; gap: 10px; }
+.metric-row .icon { font-size: 18px; }
+.metric-row .name { font-weight: 600; font-size: 14px; }
+.metric-row .sub { font-size: 12px; color: var(--text-muted); }
+.metric-row .right { text-align: right; }
+.metric-row .change { font-size: 13.5px; font-weight: 700; }
+.metric-row .change.up { color: var(--accent-strong); }
+.metric-row .change.down { color: var(--clay); }
+
+.callout { border-radius: var(--radius-m); padding: 14px 16px; margin-bottom: 12px; font-size: 14px; line-height: 1.55; }
+.callout.good { background: var(--accent-wash); color: var(--accent-strong); }
+.callout.attention { background: var(--clay-wash); color: var(--clay); }
+.callout.neutral { background: var(--surface-raised); border: 1px solid var(--border); color: var(--ink-soft); }
+.callout h4 { font-size: 12.5px; text-transform: none; margin-bottom: 6px; font-weight: 700; color: inherit; }
+
+.year-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.year-stat { background: var(--surface-raised); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 14px; }
+.year-stat .icon { font-size: 20px; }
+.year-stat .label { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+.year-stat .value { font-family: var(--font-serif); font-size: 19px; margin-top: 2px; }
+
+/* ---- Me / list screens ---- */
+.list-row { display: flex; align-items: center; gap: 12px; padding: 13px 2px; border-bottom: 1px solid var(--border); }
+.list-row .icon { font-size: 19px; width: 26px; text-align: center; }
+.list-row .main { flex: 1; min-width: 0; }
+.list-row .name { font-weight: 600; font-size: 14.5px; }
+.list-row .meta { font-size: 12px; color: var(--text-muted); }
+.list-row .action { font-size: 13px; color: var(--text-muted); background: none; border: none; cursor: pointer; padding: 6px 8px; }
+.list-row.archived { opacity: 0.55; }
+
+.settings-group { margin-bottom: 22px; }
+.settings-group h4 { font-size: 12.5px; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
+.settings-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 2px; border-bottom: 1px solid var(--border); }
+.settings-item:last-child { border-bottom: none; }
+.settings-item .name { font-size: 14.5px; font-weight: 500; }
+.settings-item .desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+.theme-row { display: flex; gap: 8px; }
+.theme-row button { flex: 1; padding: 10px 0; border-radius: var(--radius-s); border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft); font-size: 13px; cursor: pointer; }
+.theme-row button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ---- Calendar (history) ---- */
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-dow { text-align: center; font-size: 10.5px; color: var(--text-muted); padding-bottom: 4px; }
+.cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-s); font-size: 12.5px; cursor: pointer; border: 1px solid transparent; position: relative; color: var(--ink-soft); }
+.cal-day.today { border-color: var(--accent); font-weight: 700; color: var(--ink); }
+.cal-day.has-data::after { content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+.cal-day.minimum::after { background: var(--clay); }
+.cal-day.empty { visibility: hidden; }
+.cal-month-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cal-month-nav button { background: none; border: none; font-size: 18px; color: var(--ink-soft); cursor: pointer; padding: 4px 10px; }
+.cal-month-nav .label { font-family: var(--font-serif); font-size: 16px; }
+
+/* ---- Onboarding ---- */
+.onboard-wrap { min-height: 100dvh; display: flex; flex-direction: column; padding: 26px 22px 24px; max-width: 560px; margin: 0 auto; }
+.onboard-wrap h1 { font-size: 25px; margin-bottom: 8px; }
+.onboard-wrap .lede { color: var(--ink-soft); font-size: 14.5px; margin-bottom: 22px; }
+.onboard-actions { margin-top: auto; padding-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+
+.badge-min { display: inline-flex; align-items: center; gap: 6px; background: var(--clay-wash); color: var(--clay); padding: 5px 11px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+
+.toast, #toast-host {
+  position: fixed; left: 50%; bottom: calc(var(--nav-h) + 14px); transform: translate(-50%, 8px);
+  background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-size: 13.5px;
+  opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 200; max-width: 86%; text-align: center;
+}
+#toast-host.show { opacity: 1; transform: translate(-50%, 0); }
+
+.link-plain { color: var(--accent-strong); text-decoration: none; font-weight: 600; }
+.muted { color: var(--text-muted); }
+.small { font-size: 12.5px; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.hidden { display: none !important; }
+
+::-webkit-scrollbar { width: 0; height: 0; }
+
+</style>
+</head>
+<body>
+<div id="app"><!-- rendered by app.js --></div>
+
+<script>
+/* ---- js/db.js ---- */
+// ============================================================================
+// db.js — IndexedDB wrapper. No external dependencies.
+// Everything the app stores lives in one database, one object store per
+// concept. All functions return Promises.
+// ============================================================================
+
+const DB_NAME = 'life-dashboard';
+const DB_VERSION = 1;
+
+let _dbPromise = null;
+
+function openDB() {
+  if (_dbPromise) return _dbPromise;
+  _dbPromise = new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+
+    req.onupgradeneeded = (event) => {
+      const db = event.target.result;
+
+      // Trackers: the generic definition of "a thing the user tracks"
+      if (!db.objectStoreNames.contains('trackers')) {
+        const s = db.createObjectStore('trackers', { keyPath: 'id' });
+        s.createIndex('category', 'category', { unique: false });
+        s.createIndex('archivedAt', 'archivedAt', { unique: false });
+      }
+
+      // Entries: one value of one tracker on one date
+      if (!db.objectStoreNames.contains('entries')) {
+        const s = db.createObjectStore('entries', { keyPath: 'id' });
+        s.createIndex('trackerId', 'trackerId', { unique: false });
+        s.createIndex('date', 'date', { unique: false });
+        s.createIndex('trackerId_date', ['trackerId', 'date'], { unique: true });
+      }
+
+      // Life events: periods that explain unusual data
+      if (!db.objectStoreNames.contains('lifeEvents')) {
+        const s = db.createObjectStore('lifeEvents', { keyPath: 'id' });
+        s.createIndex('startDate', 'startDate', { unique: false });
+      }
+
+      // Experiments: time-boxed self-tests
+      if (!db.objectStoreNames.contains('experiments')) {
+        db.createObjectStore('experiments', { keyPath: 'id' });
+      }
+
+      // Daily notes: one record per date (note, mood, energy, good thing,
+      // minimum-day status)
+      if (!db.objectStoreNames.contains('dailyNotes')) {
+        db.createObjectStore('dailyNotes', { keyPath: 'date' });
+      }
+
+      // Settings: small single-row key/value bag (onboarding state, theme,
+      // selected categories, etc.)
+      if (!db.objectStoreNames.contains('settings')) {
+        db.createObjectStore('settings', { keyPath: 'key' });
+      }
+    };
+
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+  return _dbPromise;
+}
+
+function tx(storeNames, mode = 'readonly') {
+  return openDB().then((db) => db.transaction(storeNames, mode));
+}
+
+// --- generic helpers ------------------------------------------------------
+
+async function dbGet(store, key) {
+  const t = await tx([store]);
+  return new Promise((resolve, reject) => {
+    const req = t.objectStore(store).get(key);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function dbGetAll(store) {
+  const t = await tx([store]);
+  return new Promise((resolve, reject) => {
+    const req = t.objectStore(store).getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function dbPut(store, value) {
+  const t = await tx([store], 'readwrite');
+  return new Promise((resolve, reject) => {
+    const req = t.objectStore(store).put(value);
+    req.onsuccess = () => resolve(value);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function dbDelete(store, key) {
+  const t = await tx([store], 'readwrite');
+  return new Promise((resolve, reject) => {
+    const req = t.objectStore(store).delete(key);
+    req.onsuccess = () => resolve(true);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function dbGetByIndex(store, indexName, value) {
+  const t = await tx([store]);
+  return new Promise((resolve, reject) => {
+    const req = t.objectStore(store).index(indexName).getAll(value);
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function dbClearAll() {
+  const storeNames = ['trackers', 'entries', 'lifeEvents', 'experiments', 'dailyNotes', 'settings'];
+  const t = await tx(storeNames, 'readwrite');
+  await Promise.all(storeNames.map((name) => new Promise((resolve, reject) => {
+    const req = t.objectStore(name).clear();
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  })));
+  return true;
+}
+
+async function dbExportAll() {
+  const [trackers, entries, lifeEvents, experiments, dailyNotes, settings] = await Promise.all([
+    dbGetAll('trackers'),
+    dbGetAll('entries'),
+    dbGetAll('lifeEvents'),
+    dbGetAll('experiments'),
+    dbGetAll('dailyNotes'),
+    dbGetAll('settings'),
+  ]);
+  return {
+    _meta: {
+      app: 'life-dashboard',
+      exportedAt: new Date().toISOString(),
+      version: DB_VERSION,
+    },
+    trackers, entries, lifeEvents, experiments, dailyNotes, settings,
+  };
+}
+
+async function dbImportAll(data) {
+  if (!data || typeof data !== 'object') throw new Error('Invalid backup file');
+  const requiredArrays = ['trackers', 'entries', 'lifeEvents', 'experiments', 'dailyNotes', 'settings'];
+  for (const key of requiredArrays) {
+    if (!Array.isArray(data[key])) throw new Error(`Backup file is missing "${key}"`);
+  }
+  await dbClearAll();
+  const t = await tx(requiredArrays, 'readwrite');
+  for (const storeName of requiredArrays) {
+    const store = t.objectStore(storeName);
+    for (const item of data[storeName]) store.put(item);
+  }
+  return new Promise((resolve, reject) => {
+    t.oncomplete = () => resolve(true);
+    t.onerror = () => reject(t.error);
+  });
+}
+
+function uid() {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
+}
+
+window.DB = {
+  get: dbGet,
+  getAll: dbGetAll,
+  put: dbPut,
+  delete: dbDelete,
+  getByIndex: dbGetByIndex,
+  clearAll: dbClearAll,
+  exportAll: dbExportAll,
+  importAll: dbImportAll,
+  uid,
+};
+
+
+/* ---- js/dates.js ---- */
+// ============================================================================
+// dates.js — date helpers shared across the app.
+// Dates are stored/keyed as 'YYYY-MM-DD' strings in local time, never as
+// timestamps, so history never shifts with timezone changes.
+// ============================================================================
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+function toDateKey(d) {
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+}
+
+function todayKey() { return toDateKey(new Date()); }
+
+function keyToDate(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function addDays(key, n) {
+  const d = keyToDate(key);
+  d.setDate(d.getDate() + n);
+  return toDateKey(d);
+}
+
+function daysBetween(startKey, endKey) {
+  const a = keyToDate(startKey);
+  const b = keyToDate(endKey);
+  return Math.round((b - a) / 86400000);
+}
+
+function dateRangeKeys(startKey, endKey) {
+  const out = [];
+  let cur = startKey;
+  while (cur <= endKey) {
+    out.push(cur);
+    cur = addDays(cur, 1);
+  }
+  return out;
+}
+
+function formatFriendly(key) {
+  const d = keyToDate(key);
+  return d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+}
+
+function formatShort(key) {
+  const d = keyToDate(key);
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
+function formatMonthYear(key) {
+  const d = keyToDate(key);
+  return d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+}
+
+function isWeekend(key) {
+  const day = keyToDate(key).getDay();
+  return day === 0 || day === 6;
+}
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 5) return 'Still up late.';
+  if (h < 12) return 'Good morning.';
+  if (h < 17) return 'Good afternoon.';
+  if (h < 21) return 'Good evening.';
+  return 'Winding down for the night.';
+}
+
+// Does a tracker "expect" an entry on this date, given its frequency config?
+// frequency: { type: 'daily'|'weekdays'|'weekends'|'days'|'weekly'|'monthly'|'custom'|'perweek', days?: [0-6], timesPerWeek?: n }
+function isScheduledOn(tracker, dateKey) {
+  const freq = tracker.frequency || { type: 'daily' };
+  const dow = keyToDate(dateKey).getDay();
+  switch (freq.type) {
+    case 'weekdays': return dow >= 1 && dow <= 5;
+    case 'weekends': return dow === 0 || dow === 6;
+    case 'days': return Array.isArray(freq.days) && freq.days.includes(dow);
+    case 'weekly': return dow === (freq.anchorDow ?? 1);
+    case 'monthly': return keyToDate(dateKey).getDate() === (freq.dayOfMonth ?? 1);
+    case 'perweek': return true; // evaluated in aggregate, treat every day as eligible
+    case 'daily':
+    default: return true;
+  }
+}
+
+window.DateUtil = {
+  pad2, toDateKey, todayKey, keyToDate, addDays, daysBetween, dateRangeKeys,
+  formatFriendly, formatShort, formatMonthYear, isWeekend, greeting, isScheduledOn,
+};
+
+
+/* ---- js/ui.js ---- */
+// ============================================================================
+// ui.js — small reusable UI primitives: toasts, confirm dialogs, bottom
+// sheets/modals, and a couple of DOM shorthand helpers.
+// ============================================================================
+
+function el(tag, attrs = {}, children = []) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') node.className = v;
+    else if (k === 'html') node.innerHTML = v;
+    else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2), v);
+    else if (v !== null && v !== undefined) node.setAttribute(k, v);
+  }
+  for (const c of [].concat(children)) {
+    if (c === null || c === undefined) continue;
+    node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  }
+  return node;
+}
+
+let toastTimer = null;
+function toast(message) {
+  let host = document.getElementById('toast-host');
+  if (!host) {
+    host = el('div', { id: 'toast-host' });
+    document.body.appendChild(host);
+  }
+  host.textContent = message;
+  host.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => host.classList.remove('show'), 2200);
+}
+
+// Returns a Promise<boolean>
+function confirmDialog({ title, message, confirmLabel = 'Confirm', danger = false }) {
+  return new Promise((resolve) => {
+    const overlay = el('div', { class: 'overlay' });
+    const box = el('div', { class: 'dialog' }, [
+      el('h3', {}, title),
+      el('p', {}, message),
+      el('div', { class: 'dialog-actions' }, [
+        el('button', { class: 'btn btn-ghost', onclick: () => { close(false); } }, 'Cancel'),
+        el('button', { class: danger ? 'btn btn-danger' : 'btn btn-primary', onclick: () => { close(true); } }, confirmLabel),
+      ]),
+    ]);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    function close(result) {
+      overlay.remove();
+      resolve(result);
+    }
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(false); });
+  });
+}
+
+// contentBuilder(closeFn) -> HTMLElement. Returns a close() function.
+function openSheet(contentBuilder, { title = '' } = {}) {
+  const overlay = el('div', { class: 'overlay sheet-overlay' });
+  const sheet = el('div', { class: 'sheet' });
+  const close = () => overlay.remove();
+  const header = el('div', { class: 'sheet-header' }, [
+    el('span', { class: 'sheet-title' }, title),
+    el('button', { class: 'sheet-close', 'aria-label': 'Close', onclick: close }, '✕'),
+  ]);
+  sheet.appendChild(header);
+  const body = el('div', { class: 'sheet-body' });
+  sheet.appendChild(body);
+  overlay.appendChild(sheet);
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  body.appendChild(contentBuilder(close));
+  requestAnimationFrame(() => sheet.classList.add('open'));
+  return close;
+}
+
+function formatValueForDisplay(tracker, value) {
+  if (value === undefined || value === null || value === '') return '—';
+  switch (tracker.type) {
+    case 'yesno': return value === true || value === 'true' ? 'Yes' : 'No';
+    case 'currency': return `${tracker.unit || ''}${value}`.trim();
+    case 'rating': return `${value}/5`;
+    case 'choice': return String(value);
+    default: return tracker.unit ? `${value} ${tracker.unit}` : String(value);
+  }
+}
+
+window.UI = { el, toast, confirmDialog, openSheet, formatValueForDisplay };
+
+
+/* ---- js/settings.js ---- */
+// ============================================================================
+// settings.js — small key/value app settings (onboarding state, theme,
+// selected life categories) stored in the 'settings' object store.
+// ============================================================================
+
+async function getSetting(key, fallback = null) {
+  const row = await DB.get('settings', key);
+  return row ? row.value : fallback;
+}
+
+async function setSetting(key, value) {
+  return DB.put('settings', { key, value });
+}
+
+async function applyTheme() {
+  const theme = await getSetting('theme', 'auto');
+  const root = document.documentElement;
+  if (theme === 'auto') {
+    root.removeAttribute('data-theme');
+  } else {
+    root.setAttribute('data-theme', theme);
+  }
+}
+
+window.Settings = { get: getSetting, set: setSetting, applyTheme };
+
+
+/* ---- js/charts.js ---- */
+// ============================================================================
+// charts.js — tiny canvas line/bar chart renderer. No dependency, because
+// the app must keep working offline and installed, without a CDN.
+// ============================================================================
+
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+// points: [{x: dateKey, y: number|null}], goal: number|null (horizontal line)
+function drawLineChart(canvas, points, { goal = null, color = null, formatY = (v) => v } = {}) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const w = rect.width, h = rect.height || 160;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+
+  const padL = 36, padR = 10, padT = 12, padB = 20;
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+
+  const valid = points.filter((p) => p.y !== null && p.y !== undefined && !Number.isNaN(p.y));
+  if (valid.length === 0) {
+    ctx.fillStyle = cssVar('--text-muted') || '#888';
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.fillText('Not enough data yet', padL, h / 2);
+    return;
+  }
+
+  let min = Math.min(...valid.map((p) => p.y));
+  let max = Math.max(...valid.map((p) => p.y));
+  if (goal !== null && !Number.isNaN(goal)) { min = Math.min(min, goal); max = Math.max(max, goal); }
+  if (min === max) { min -= 1; max += 1; }
+  const span = max - min;
+  min -= span * 0.08; max += span * 0.08;
+
+  const n = points.length;
+  const xAt = (i) => padL + (n <= 1 ? plotW / 2 : (plotW * i) / (n - 1));
+  const yAt = (v) => padT + plotH - ((v - min) / (max - min)) * plotH;
+
+  // gridlines + y labels
+  ctx.strokeStyle = cssVar('--border') || '#e5e5e0';
+  ctx.fillStyle = cssVar('--text-muted') || '#888';
+  ctx.font = '11px system-ui, sans-serif';
+  ctx.lineWidth = 1;
+  const gridN = 3;
+  for (let g = 0; g <= gridN; g++) {
+    const v = min + (span * g) / gridN;
+    const y = yAt(v);
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(w - padR, y);
+    ctx.stroke();
+    ctx.fillText(formatY(v), 2, y + 3);
+  }
+
+  // goal line
+  if (goal !== null && !Number.isNaN(goal)) {
+    const gy = yAt(goal);
+    ctx.save();
+    ctx.strokeStyle = cssVar('--accent-soft') || '#9ab89f';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(padL, gy);
+    ctx.lineTo(w - padR, gy);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // line
+  ctx.strokeStyle = color || cssVar('--accent') || '#4f7a5c';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  let started = false;
+  points.forEach((p, i) => {
+    if (p.y === null || p.y === undefined || Number.isNaN(p.y)) { started = false; return; }
+    const x = xAt(i), y = yAt(p.y);
+    if (!started) { ctx.moveTo(x, y); started = true; } else { ctx.lineTo(x, y); }
+  });
+  ctx.stroke();
+
+  // dots
+  ctx.fillStyle = color || cssVar('--accent') || '#4f7a5c';
+  points.forEach((p, i) => {
+    if (p.y === null || p.y === undefined || Number.isNaN(p.y)) return;
+    const x = xAt(i), y = yAt(p.y);
+    ctx.beginPath();
+    ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+// bars: [{label, value}]
+function drawBarChart(canvas, bars, { color = null, formatY = (v) => v } = {}) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const w = rect.width, h = rect.height || 140;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+
+  const padL = 30, padR = 8, padT = 10, padB = 18;
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+  const max = Math.max(1, ...bars.map((b) => b.value || 0));
+  const bw = plotW / bars.length;
+
+  ctx.fillStyle = color || cssVar('--accent') || '#4f7a5c';
+  bars.forEach((b, i) => {
+    const bh = ((b.value || 0) / max) * plotH;
+    const x = padL + i * bw + bw * 0.18;
+    const y = padT + plotH - bh;
+    ctx.globalAlpha = b.value > 0 ? 1 : 0.15;
+    ctx.fillRect(x, y, bw * 0.64, Math.max(bh, 1));
+    ctx.globalAlpha = 1;
+  });
+
+  ctx.fillStyle = cssVar('--text-muted') || '#888';
+  ctx.font = '10px system-ui, sans-serif';
+  bars.forEach((b, i) => {
+    if (bars.length > 10 && i % Math.ceil(bars.length / 8) !== 0) return;
+    ctx.fillText(b.label, padL + i * bw, h - 4);
+  });
+}
+
+window.Charts = { drawLineChart, drawBarChart };
+
+
+/* ---- js/trackers.js ---- */
+// ============================================================================
+// trackers.js — the generic Tracker model: CRUD, the suggested-tracker
+// catalogue used during onboarding, goal evaluation, and consistency maths.
+// Nothing in this file mentions "weight" or "walking" as special cases —
+// they are just entries in CATALOGUE.
+// ============================================================================
+
+const TRACKER_TYPES = {
+  number: { label: 'Number', example: 'e.g. 91.5 kg' },
+  yesno: { label: 'Yes / No', example: 'e.g. Exercised today?' },
+  time: { label: 'Time', example: 'e.g. Wake-up time' },
+  duration: { label: 'Duration', example: 'e.g. Reading, in minutes' },
+  count: { label: 'Count', example: 'e.g. Steps' },
+  currency: { label: 'Amount / Currency', example: 'e.g. Spending' },
+  rating: { label: 'Rating', example: 'e.g. Mood, 1–5' },
+  text: { label: 'Text', example: 'e.g. What made today good?' },
+  choice: { label: 'Multiple choice', example: 'e.g. Energy: Low / Normal / High' },
+};
+
+const GOAL_DIRECTIONS = {
+  atleast: 'At least',
+  atmost: 'At most',
+  exactly: 'Exactly',
+  before: 'Before',
+  after: 'After',
+  none: 'No target',
+};
+
+// Suggested trackers shown during onboarding, grouped by the life category
+// the user picked. Each is a template — activating one creates a real,
+// fully editable Tracker row.
+const CATALOGUE = {
+  health: [
+    { name: 'Weight', icon: '⚖️', type: 'number', unit: 'kg', goalDirection: 'atleast' },
+    { name: 'Water', icon: '💧', type: 'number', unit: 'L', goal: 2.5, goalDirection: 'atleast' },
+    { name: 'Eating cutoff', icon: '🍽', type: 'time', goalDirection: 'before' },
+    { name: 'Sleep', icon: '🛏', type: 'duration', unit: 'hours', goalDirection: 'atleast' },
+  ],
+  fitness: [
+    { name: 'Walking distance', icon: '🚶', type: 'number', unit: 'km', goal: 2.5, goalDirection: 'atleast' },
+    { name: 'Steps', icon: '👟', type: 'count', unit: 'steps', goalDirection: 'atleast' },
+    { name: 'Exercise', icon: '🏃', type: 'yesno', goalDirection: 'none' },
+    { name: 'Workout duration', icon: '💪', type: 'duration', unit: 'minutes', goalDirection: 'atleast' },
+  ],
+  sleep: [
+    { name: 'Bedtime', icon: '🌙', type: 'time', goalDirection: 'before' },
+    { name: 'Wake-up time', icon: '⏰', type: 'time', goalDirection: 'before' },
+    { name: 'Sleep duration', icon: '😴', type: 'duration', unit: 'hours', goalDirection: 'atleast' },
+    { name: 'Sleep quality', icon: '🌌', type: 'rating', goalDirection: 'atleast' },
+  ],
+  money: [
+    { name: 'Daily spending', icon: '💰', type: 'currency', goalDirection: 'atmost' },
+    { name: 'Food spending', icon: '🍔', type: 'currency', goalDirection: 'atmost' },
+    { name: 'Savings', icon: '🏦', type: 'currency', goalDirection: 'atleast' },
+  ],
+  wellbeing: [
+    { name: 'Mood', icon: '😊', type: 'rating', goalDirection: 'none' },
+    { name: 'Energy', icon: '⚡', type: 'rating', goalDirection: 'none' },
+    { name: 'Stress', icon: '🌪', type: 'rating', goalDirection: 'atmost' },
+  ],
+  career: [
+    { name: 'Focused work', icon: '💼', type: 'duration', unit: 'minutes', goalDirection: 'atleast' },
+    { name: 'Job applications', icon: '📤', type: 'count', goalDirection: 'atleast' },
+  ],
+  learning: [
+    { name: 'Reading', icon: '📖', type: 'duration', unit: 'minutes', goal: 20, goalDirection: 'atleast' },
+    { name: 'Study time', icon: '📚', type: 'duration', unit: 'minutes', goalDirection: 'atleast' },
+    { name: 'Books completed', icon: '📕', type: 'count', goalDirection: 'none' },
+  ],
+  reading: [
+    { name: 'Reading minutes', icon: '📖', type: 'duration', unit: 'minutes', goal: 20, goalDirection: 'atleast' },
+    { name: 'Pages read', icon: '📄', type: 'count', goalDirection: 'atleast' },
+  ],
+  family: [
+    { name: 'Quality family time', icon: '👨‍👩‍👧', type: 'duration', unit: 'minutes', goalDirection: 'atleast' },
+    { name: 'Phone-free family time', icon: '📵', type: 'yesno', goalDirection: 'none' },
+  ],
+  relationships: [
+    { name: 'Time with daughter', icon: '❤️', type: 'duration', unit: 'minutes', goalDirection: 'atleast' },
+    { name: 'Meaningful conversation', icon: '💬', type: 'yesno', goalDirection: 'none' },
+  ],
+  spiritual: [
+    { name: 'Prayer', icon: '🙏', type: 'yesno', goalDirection: 'none' },
+    { name: 'Scripture reading', icon: '📜', type: 'duration', unit: 'minutes', goalDirection: 'atleast' },
+    { name: 'Reflection', icon: '🕯', type: 'text', goalDirection: 'none' },
+  ],
+  productivity: [
+    { name: 'Deep work', icon: '🎯', type: 'duration', unit: 'minutes', goalDirection: 'atleast' },
+    { name: 'Tasks completed', icon: '✅', type: 'count', goalDirection: 'atleast' },
+  ],
+  growth: [
+    { name: 'Journaling', icon: '✍️', type: 'yesno', goalDirection: 'none' },
+    { name: 'Gratitude note', icon: '🌱', type: 'text', goalDirection: 'none' },
+  ],
+  other: [],
+};
+
+const CATEGORY_LABELS = {
+  health: 'Health', fitness: 'Fitness', sleep: 'Sleep', money: 'Money',
+  wellbeing: 'Mental wellbeing', career: 'Career', learning: 'Learning',
+  reading: 'Reading', family: 'Family', relationships: 'Relationships',
+  spiritual: 'Spiritual life', productivity: 'Productivity', growth: 'Personal growth',
+  other: 'Other',
+};
+
+function newTracker(overrides = {}) {
+  return {
+    id: DB.uid(),
+    name: 'Untitled tracker',
+    icon: '⭐',
+    category: 'other',
+    type: 'number',
+    unit: '',
+    goal: null,
+    goalDirection: 'none',
+    frequency: { type: 'daily' },
+    min: null,
+    max: null,
+    showOnToday: true,
+    notes: '',
+    order: Date.now(),
+    createdAt: new Date().toISOString(),
+    archivedAt: null,
+    choiceOptions: [],
+    ...overrides,
+  };
+}
+
+async function listTrackers({ includeArchived = false } = {}) {
+  const all = await DB.getAll('trackers');
+  const filtered = includeArchived ? all : all.filter((t) => !t.archivedAt);
+  return filtered.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+
+async function getTracker(id) { return DB.get('trackers', id); }
+async function saveTracker(tracker) { return DB.put('trackers', tracker); }
+async function archiveTracker(id) {
+  const t = await getTracker(id);
+  if (!t) return;
+  t.archivedAt = new Date().toISOString();
+  return DB.put('trackers', t);
+}
+async function restoreTracker(id) {
+  const t = await getTracker(id);
+  if (!t) return;
+  t.archivedAt = null;
+  return DB.put('trackers', t);
+}
+async function deleteTrackerAndEntries(id) {
+  const entries = await DB.getByIndex('entries', 'trackerId', id);
+  for (const e of entries) await DB.delete('entries', e.id);
+  return DB.delete('trackers', id);
+}
+
+// Entry helpers -------------------------------------------------------------
+
+async function getEntry(trackerId, dateKey) {
+  const rows = await DB.getByIndex('entries', 'trackerId_date', [trackerId, dateKey]);
+  return rows[0] || null;
+}
+
+async function setEntry(trackerId, dateKey, value, note = '') {
+  const existing = await getEntry(trackerId, dateKey);
+  const now = new Date().toISOString();
+  const row = existing
+    ? { ...existing, value, note, updatedAt: now }
+    : { id: DB.uid(), trackerId, date: dateKey, value, note, createdAt: now, updatedAt: now };
+  return DB.put('entries', row);
+}
+
+async function deleteEntry(trackerId, dateKey) {
+  const existing = await getEntry(trackerId, dateKey);
+  if (existing) await DB.delete('entries', existing.id);
+}
+
+async function entriesForTracker(trackerId) {
+  const rows = await DB.getByIndex('entries', 'trackerId', trackerId);
+  return rows.sort((a, b) => (a.date < b.date ? -1 : 1));
+}
+
+async function entriesForDate(dateKey) {
+  return DB.getByIndex('entries', 'date', dateKey);
+}
+
+async function entriesInRange(trackerId, startKey, endKey) {
+  const all = await entriesForTracker(trackerId);
+  return all.filter((e) => e.date >= startKey && e.date <= endKey);
+}
+
+// Goal evaluation -------------------------------------------------------------
+
+// Returns true/false/null (null = no target set, so "reached" is meaningless)
+function goalReached(tracker, value) {
+  if (value === undefined || value === null || value === '') return null;
+  const dir = tracker.goalDirection || 'none';
+  if (dir === 'none' || tracker.goal === null || tracker.goal === undefined || tracker.goal === '') return null;
+
+  if (tracker.type === 'time') {
+    // compare HH:MM strings on a same-day basis
+    const toMinutes = (t) => {
+      const [h, m] = String(t).split(':').map(Number);
+      return h * 60 + m;
+    };
+    const v = toMinutes(value);
+    const g = toMinutes(tracker.goal);
+    if (dir === 'before') return v <= g;
+    if (dir === 'after') return v >= g;
+    if (dir === 'exactly') return v === g;
+    return null;
+  }
+
+  const v = Number(value);
+  const g = Number(tracker.goal);
+  if (Number.isNaN(v) || Number.isNaN(g)) return null;
+  if (dir === 'atleast') return v >= g;
+  if (dir === 'atmost') return v <= g;
+  if (dir === 'exactly') return v === g;
+  return null;
+}
+
+function goalLabel(tracker) {
+  if (!tracker.goal && tracker.goal !== 0) return null;
+  const dir = tracker.goalDirection;
+  const unit = tracker.unit ? ` ${tracker.unit}` : '';
+  const g = tracker.type === 'time' ? tracker.goal : `${tracker.goal}${unit}`;
+  switch (dir) {
+    case 'atleast': return `At least ${g}`;
+    case 'atmost': return `At most ${g}`;
+    case 'exactly': return `Exactly ${g}`;
+    case 'before': return `Before ${g}`;
+    case 'after': return `After ${g}`;
+    default: return null;
+  }
+}
+
+// Consistency: completed target days / expected tracking days, over a
+// window. "Expected" excludes dates before the tracker existed, dates while
+// archived, and dates not scheduled by frequency. "No entry" is distinct
+// from "entered but goal not reached" — both count against consistency,
+// but callers can inspect entries to tell them apart.
+async function consistency(tracker, startKey, endKey) {
+  const today = DateUtil.todayKey();
+  const clampedEnd = endKey > today ? today : endKey;
+  const createdKey = tracker.createdAt ? DateUtil.toDateKey(new Date(tracker.createdAt)) : startKey;
+  const effectiveStart = startKey < createdKey ? createdKey : startKey;
+  if (effectiveStart > clampedEnd) return { expected: 0, completed: 0, entered: 0, pct: null };
+
+  const allDates = DateUtil.dateRangeKeys(effectiveStart, clampedEnd);
+  const expectedDates = allDates.filter((d) => DateUtil.isScheduledOn(tracker, d));
+  const entries = await entriesInRange(tracker.id, effectiveStart, clampedEnd);
+  const byDate = new Map(entries.map((e) => [e.date, e]));
+
+  let completed = 0;
+  let entered = 0;
+  for (const d of expectedDates) {
+    const e = byDate.get(d);
+    if (e) {
+      entered++;
+      const reached = goalReached(tracker, e.value);
+      if (reached === true || reached === null) completed++; // no target => logging counts as success
+    }
+  }
+  const expected = expectedDates.length;
+  return { expected, completed, entered, pct: expected > 0 ? Math.round((completed / expected) * 100) : null };
+}
+
+window.Trackers = {
+  TRACKER_TYPES, GOAL_DIRECTIONS, CATALOGUE, CATEGORY_LABELS,
+  newTracker, listTrackers, getTracker, saveTracker, archiveTracker, restoreTracker, deleteTrackerAndEntries,
+  getEntry, setEntry, deleteEntry, entriesForTracker, entriesForDate, entriesInRange,
+  goalReached, goalLabel, consistency,
+};
+
+
+/* ---- js/tracker-editor.js ---- */
+// ============================================================================
+// tracker-editor.js — the "+ Add Tracker" / edit tracker form. One generic
+// form drives every tracker type; nothing here is hard-coded per subject.
+// ============================================================================
+
+const ICON_CHOICES = ['⭐','⚖️','💧','🍽','🛏','🚶','👟','🏃','💪','🌙','⏰','😴','💰','🍔','🏦',
+  '😊','⚡','🌪','💼','📤','📖','📚','📕','📄','👨‍👩‍👧','📵','❤️','💬','🙏','📜','🕯','🎯','✅','✍️','🌱',
+  '🎵','🎨','🧘','🚭','🚰','📵','🧠','🌤','🐾','🧹','🧾','🎓'];
+
+function openTrackerEditor(existing, onSaved) {
+  const isEdit = !!existing;
+  const t = existing ? { ...existing } : Trackers.newTracker();
+
+  UI.openSheet((close) => {
+    const wrap = UI.el('div', { class: 'stack' });
+
+    // -- name
+    const nameField = UI.el('div', { class: 'field' }, [
+      UI.el('label', {}, 'What do you want to track?'),
+      UI.el('input', { type: 'text', value: t.name, placeholder: 'e.g. Weight, Prayer, Time with Mia',
+        oninput: (e) => { t.name = e.target.value; } }),
+    ]);
+    wrap.appendChild(nameField);
+
+    // -- type
+    const typeField = UI.el('div', { class: 'field' }, [
+      UI.el('label', {}, 'Type'),
+      UI.el('select', { onchange: (e) => { t.type = e.target.value; rebuildTypeExtras(); } },
+        Object.entries(Trackers.TRACKER_TYPES).map(([key, def]) =>
+          UI.el('option', { value: key, ...(t.type === key ? { selected: 'selected' } : {}) }, def.label))),
+      UI.el('div', { class: 'field-hint', id: 'type-example' }, Trackers.TRACKER_TYPES[t.type].example),
+    ]);
+    wrap.appendChild(typeField);
+
+    // -- icon grid
+    const iconGrid = UI.el('div', { class: 'icon-grid' });
+    ICON_CHOICES.forEach((ic) => {
+      const btn = UI.el('div', { class: `icon-opt${t.icon === ic ? ' active' : ''}`, onclick: () => {
+        t.icon = ic;
+        iconGrid.querySelectorAll('.icon-opt').forEach((n) => n.classList.remove('active'));
+        btn.classList.add('active');
+      } }, ic);
+      iconGrid.appendChild(btn);
+    });
+    wrap.appendChild(UI.el('div', { class: 'field' }, [UI.el('label', {}, 'Icon'), iconGrid]));
+
+    // -- category
+    const catField = UI.el('div', { class: 'field' }, [
+      UI.el('label', {}, 'Category'),
+      UI.el('select', { onchange: (e) => { t.category = e.target.value; } },
+        Object.entries(Trackers.CATEGORY_LABELS).map(([key, label]) =>
+          UI.el('option', { value: key, ...(t.category === key ? { selected: 'selected' } : {}) }, label))),
+    ]);
+    wrap.appendChild(catField);
+
+    const extrasHost = UI.el('div');
+    wrap.appendChild(extrasHost);
+
+    function rebuildTypeExtras() {
+      extrasHost.innerHTML = '';
+      document.getElementById('type-example') && (document.getElementById('type-example').textContent = Trackers.TRACKER_TYPES[t.type].example);
+
+      const needsUnit = ['number', 'count', 'duration', 'currency'].includes(t.type);
+      const needsGoal = !['text'].includes(t.type);
+      const needsChoiceOptions = t.type === 'choice';
+
+      if (needsUnit) {
+        extrasHost.appendChild(UI.el('div', { class: 'field' }, [
+          UI.el('label', {}, 'Unit (optional)'),
+          UI.el('input', { type: 'text', value: t.unit || '', placeholder: t.type === 'duration' ? 'minutes' : t.type === 'currency' ? '₹' : 'kg',
+            oninput: (e) => { t.unit = e.target.value; } }),
+        ]));
+      }
+
+      if (needsChoiceOptions) {
+        extrasHost.appendChild(UI.el('div', { class: 'field' }, [
+          UI.el('label', {}, 'Options (comma separated)'),
+          UI.el('input', { type: 'text', value: (t.choiceOptions || []).join(', '), placeholder: 'Low, Normal, High',
+            oninput: (e) => { t.choiceOptions = e.target.value.split(',').map((s) => s.trim()).filter(Boolean); } }),
+        ]));
+      }
+
+      if (needsGoal && t.type !== 'yesno' && t.type !== 'choice') {
+        const dirOptions = t.type === 'time'
+          ? ['none', 'before', 'after']
+          : ['none', 'atleast', 'atmost', 'exactly'];
+        const goalRow = UI.el('div', { class: 'field-row' }, [
+          UI.el('div', { class: 'field' }, [
+            UI.el('label', {}, 'Goal direction'),
+            UI.el('select', { onchange: (e) => { t.goalDirection = e.target.value; renderGoalValue(); } },
+              dirOptions.map((d) => UI.el('option', { value: d, ...(t.goalDirection === d ? { selected: 'selected' } : {}) }, Trackers.GOAL_DIRECTIONS[d]))),
+          ]),
+        ]);
+        extrasHost.appendChild(goalRow);
+        const goalValueHost = UI.el('div');
+        extrasHost.appendChild(goalValueHost);
+        function renderGoalValue() {
+          goalValueHost.innerHTML = '';
+          if (t.goalDirection === 'none') return;
+          const input = t.type === 'time'
+            ? UI.el('input', { type: 'time', value: t.goal || '', oninput: (e) => { t.goal = e.target.value; } })
+            : UI.el('input', { type: 'number', step: 'any', value: t.goal ?? '', placeholder: 'Target value', oninput: (e) => { t.goal = e.target.value; } });
+          goalValueHost.appendChild(UI.el('div', { class: 'field' }, [UI.el('label', {}, 'Target'), input]));
+        }
+        renderGoalValue();
+      } else {
+        t.goalDirection = 'none';
+        t.goal = null;
+      }
+
+      // frequency
+      const freqOptions = { daily: 'Daily', weekdays: 'Weekdays', weekends: 'Weekends', perweek: 'X times per week', weekly: 'Weekly', monthly: 'Monthly' };
+      const freqType = (t.frequency && t.frequency.type) || 'daily';
+      const freqRow = UI.el('div', { class: 'field' }, [
+        UI.el('label', {}, 'How often'),
+        UI.el('select', { onchange: (e) => {
+          t.frequency = { type: e.target.value };
+          if (e.target.value === 'perweek') t.frequency.timesPerWeek = 3;
+        } }, Object.entries(freqOptions).map(([k, label]) => UI.el('option', { value: k, ...(freqType === k ? { selected: 'selected' } : {}) }, label))),
+      ]);
+      extrasHost.appendChild(freqRow);
+
+      // show on today toggle
+      extrasHost.appendChild(UI.el('div', { class: 'settings-item' }, [
+        UI.el('div', {}, [UI.el('div', { class: 'name' }, 'Show on Today'), UI.el('div', { class: 'desc' }, 'Appears as a quick-entry card')]),
+        UI.el('input', { type: 'checkbox', ...(t.showOnToday ? { checked: 'checked' } : {}), onchange: (e) => { t.showOnToday = e.target.checked; } }),
+      ]));
+
+      extrasHost.appendChild(UI.el('div', { class: 'field' }, [
+        UI.el('label', {}, 'Notes (optional)'),
+        UI.el('textarea', { oninput: (e) => { t.notes = e.target.value; } }, t.notes || ''),
+      ]));
+    }
+    rebuildTypeExtras();
+
+    const actions = UI.el('div', { class: 'stack', style: 'margin-top: 10px;' }, [
+      UI.el('button', { class: 'btn btn-primary btn-block', onclick: async () => {
+        if (!t.name || !t.name.trim()) { UI.toast('Give the tracker a name first'); return; }
+        await Trackers.saveTracker(t);
+        close();
+        UI.toast(isEdit ? 'Tracker updated' : 'Tracker created');
+        onSaved && onSaved(t);
+      } }, isEdit ? 'Save changes' : 'Create tracker'),
+    ]);
+
+    if (isEdit) {
+      actions.appendChild(UI.el('button', { class: 'btn btn-ghost btn-block', onclick: async () => {
+        const ok = await UI.confirmDialog({ title: 'Archive this tracker?', message: 'It will disappear from Today, but all history stays and reports keep using it.', confirmLabel: 'Archive' });
+        if (ok) { await Trackers.archiveTracker(t.id); close(); UI.toast('Tracker archived'); onSaved && onSaved(t); }
+      } }, 'Archive tracker'));
+    }
+
+    wrap.appendChild(actions);
+    return wrap;
+  }, { title: isEdit ? 'Edit tracker' : 'Add tracker' });
+}
+
+window.TrackerEditor = { open: openTrackerEditor };
+
+
+/* ---- js/onboarding.js ---- */
+// ============================================================================
+// onboarding.js — first-run experience: pick life areas, choose suggested
+// trackers, optionally load sample data. Nothing here is forced on the user.
+// ============================================================================
+
+const CATEGORY_ORDER = ['health', 'fitness', 'sleep', 'money', 'wellbeing', 'career', 'learning',
+  'reading', 'family', 'relationships', 'spiritual', 'productivity', 'growth', 'other'];
+
+function renderOnboarding(root) {
+  root.innerHTML = '';
+  const state = { step: 'welcome', selectedCategories: new Set(), selectedTrackers: new Map() };
+
+  function renderWelcome() {
+    root.innerHTML = '';
+    const wrap = UI.el('div', { class: 'onboard-wrap' }, [
+      UI.el('h1', {}, 'Welcome to your Life Dashboard.'),
+      UI.el('p', { class: 'lede' }, 'A quiet place to notice what\u2019s actually happening in your life — not another streak app. Everything you enter stays only on this device.'),
+      UI.el('p', { class: 'lede' }, 'What would you like to improve or understand better?'),
+    ]);
+    root.appendChild(wrap);
+    const grid = UI.el('div', { class: 'chip-grid' });
+    CATEGORY_ORDER.forEach((cat) => {
+      const chip = UI.el('div', { class: 'chip', onclick: () => {
+        if (state.selectedCategories.has(cat)) { state.selectedCategories.delete(cat); chip.classList.remove('active'); }
+        else { state.selectedCategories.add(cat); chip.classList.add('active'); }
+      } }, Trackers.CATEGORY_LABELS[cat]);
+      grid.appendChild(chip);
+    });
+    wrap.appendChild(grid);
+    const actions = UI.el('div', { class: 'onboard-actions' }, [
+      UI.el('button', { class: 'btn btn-primary btn-block', onclick: () => {
+        if (state.selectedCategories.size === 0) { UI.toast('Pick at least one area, or explore with sample data below'); return; }
+        renderSuggestions();
+      } }, 'Continue'),
+      UI.el('button', { class: 'btn-link', style: 'text-align:center;', onclick: renderSampleOption }, 'Explore with sample data instead'),
+    ]);
+    wrap.appendChild(actions);
+  }
+
+  function renderSuggestions() {
+    root.innerHTML = '';
+    const wrap = UI.el('div', { class: 'onboard-wrap' }, [
+      UI.el('h1', {}, 'Here are a few trackers that fit.'),
+      UI.el('p', { class: 'lede' }, 'Turn on whatever feels useful. You can add, change or remove trackers any time later.'),
+    ]);
+    root.appendChild(wrap);
+    const list = UI.el('div');
+    wrap.appendChild(list);
+
+    [...state.selectedCategories].forEach((cat) => {
+      const suggestions = Trackers.CATALOGUE[cat] || [];
+      if (suggestions.length === 0) return;
+      list.appendChild(UI.el('h3', { class: 'section-title' }, Trackers.CATEGORY_LABELS[cat]));
+      suggestions.forEach((s) => {
+        const key = `${cat}:${s.name}`;
+        const card = UI.el('label', { class: 'suggest-card' }, [
+          UI.el('span', { class: 'icon' }, s.icon),
+          UI.el('div', { class: 'main' }, [
+            UI.el('div', { class: 'name' }, s.name),
+            UI.el('div', { class: 'meta' }, Trackers.TRACKER_TYPES[s.type].label),
+          ]),
+          UI.el('input', { type: 'checkbox', onchange: (e) => {
+            if (e.target.checked) state.selectedTrackers.set(key, { ...s, category: cat });
+            else state.selectedTrackers.delete(key);
+          } }),
+        ]);
+        list.appendChild(card);
+      });
+    });
+
+    wrap.appendChild(UI.el('button', { class: 'btn-link', onclick: () => {
+      TrackerEditor.open(null, () => {});
+    } }, '+ Create my own tracker'));
+
+    const actions = UI.el('div', { class: 'onboard-actions' }, [
+      UI.el('button', { class: 'btn btn-primary btn-block', onclick: finishOnboarding }, 'Start tracking'),
+      UI.el('button', { class: 'btn btn-ghost btn-block', onclick: renderWelcome }, 'Back'),
+    ]);
+    wrap.appendChild(actions);
+  }
+
+  function renderSampleOption() {
+    root.innerHTML = '';
+    const wrap = UI.el('div', { class: 'onboard-wrap' }, [
+      UI.el('h1', {}, 'Explore with sample data'),
+      UI.el('p', { class: 'lede' }, 'We\u2019ll fill the app with about 30 days of realistic made-up data so you can see how Today, Trends and Reports work. Nothing here is your real data — you can delete it and start fresh whenever you like.'),
+    ]);
+    root.appendChild(wrap);
+    const actions = UI.el('div', { class: 'onboard-actions' }, [
+      UI.el('button', { class: 'btn btn-primary btn-block', onclick: async () => {
+        await SampleData.populate();
+        await Settings.set('onboarded', true);
+        await Settings.set('sampleDataActive', true);
+        UI.toast('Sample data loaded');
+        App.start();
+      } }, 'Load sample data'),
+      UI.el('button', { class: 'btn btn-ghost btn-block', onclick: renderWelcome }, 'Back'),
+    ]);
+    wrap.appendChild(actions);
+  }
+
+  async function finishOnboarding() {
+    for (const [, tmpl] of state.selectedTrackers) {
+      await Trackers.saveTracker(Trackers.newTracker({
+        name: tmpl.name, icon: tmpl.icon, category: tmpl.category, type: tmpl.type,
+        unit: tmpl.unit || '', goal: tmpl.goal ?? null, goalDirection: tmpl.goalDirection || 'none',
+      }));
+    }
+    await Settings.set('onboarded', true);
+    await Settings.set('selectedCategories', [...state.selectedCategories]);
+    UI.toast('You\u2019re all set');
+    App.start();
+  }
+
+  renderWelcome();
+}
+
+window.Onboarding = { render: renderOnboarding };
+
+
+/* ---- js/today.js ---- */
+// ============================================================================
+// today.js — the Today screen: fast entry for every active tracker, the
+// daily note, and Minimum Day mode.
+// ============================================================================
+
+const TodayScreen = (() => {
+  let viewDate = DateUtil.todayKey();
+
+  async function render(root) {
+    root.innerHTML = '';
+    const [trackers, entries, note] = await Promise.all([
+      Trackers.listTrackers(),
+      Trackers.entriesForDate(viewDate),
+      DB.get('dailyNotes', viewDate),
+    ]);
+    const entryByTracker = new Map(entries.map((e) => [e.trackerId, e]));
+    const todayTrackers = trackers.filter((t) => t.showOnToday !== false);
+
+    // -- header
+    const isToday = viewDate === DateUtil.todayKey();
+    const header = UI.el('div', { class: 'top-header' }, [
+      UI.el('div', { style: 'display:flex; align-items:center; justify-content:space-between;' }, [
+        UI.el('div', {}, [
+          UI.el('div', { class: 'dow' }, isToday ? 'Today' : DateUtil.formatShort(viewDate)),
+          UI.el('div', { class: 'date' }, DateUtil.keyToDate(viewDate).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })),
+        ]),
+        dateNav(),
+      ]),
+      isToday ? UI.el('div', { class: 'greeting' }, DateUtil.greeting()) : null,
+    ]);
+    root.appendChild(header);
+
+    // -- minimum day banner
+    const minimumDay = note && note.minimumDay && note.minimumDay.active ? note.minimumDay : null;
+    if (minimumDay) {
+      root.appendChild(renderMinimumDay(minimumDay));
+    } else {
+      // progress line
+      let completed = 0, withGoal = 0;
+      todayTrackers.forEach((t) => {
+        if (t.goalDirection && t.goalDirection !== 'none') {
+          withGoal++;
+          const e = entryByTracker.get(t.id);
+          if (e && Trackers.goalReached(t, e.value) === true) completed++;
+        }
+      });
+      if (withGoal > 0) {
+        root.appendChild(UI.el('div', { class: 'progress-line' }, [
+          UI.el('span', { class: 'dot' }),
+          UI.el('span', {}, `${completed} of ${withGoal} goals completed`),
+        ]));
+      }
+      root.appendChild(UI.el('button', { class: 'btn-link', onclick: () => openMinimumDayPicker(todayTrackers) }, 'Having a hard day? Switch to Minimum Day'));
+    }
+
+    // -- tracker cards
+    if (todayTrackers.length === 0) {
+      root.appendChild(UI.el('div', { class: 'empty-state' }, [
+        UI.el('h3', {}, 'Nothing set up yet'),
+        UI.el('p', {}, 'Add a tracker to start logging your day in seconds.'),
+        UI.el('button', { class: 'btn btn-primary', onclick: () => TrackerEditor.open(null, () => render(root)) }, '+ Add tracker'),
+      ]));
+    } else {
+      const list = UI.el('div', { class: 'tracker-list' });
+      todayTrackers.forEach((t) => list.appendChild(renderTrackerCard(t, entryByTracker.get(t.id), root)));
+      root.appendChild(list);
+    }
+
+    // -- daily note
+    root.appendChild(renderDailyNote(note));
+  }
+
+  function dateNav() {
+    return UI.el('div', { style: 'display:flex; align-items:center; gap:4px;' }, [
+      UI.el('button', { class: 'stepper-btn', 'aria-label': 'Previous day', onclick: () => { viewDate = DateUtil.addDays(viewDate, -1); render(document.getElementById('screen-today')); } }, '‹'),
+      UI.el('input', {
+        type: 'date', value: viewDate, style: 'border:none; background:none; color:var(--text-muted); font-size:12px; width:34px; padding:0;',
+        onchange: (e) => { if (e.target.value) { viewDate = e.target.value; render(document.getElementById('screen-today')); } },
+      }),
+      UI.el('button', { class: 'stepper-btn', 'aria-label': 'Next day', disabled: viewDate >= DateUtil.todayKey() ? 'disabled' : null,
+        onclick: () => { if (viewDate < DateUtil.todayKey()) { viewDate = DateUtil.addDays(viewDate, 1); render(document.getElementById('screen-today')); } } }, '›'),
+    ]);
+  }
+
+  function renderMinimumDay(minimumDay) {
+    const box = UI.el('div', { class: 'progress-line', style: 'background: var(--clay-wash); flex-direction:column; align-items:flex-start; gap:8px;' }, [
+      UI.el('span', { class: 'badge-min' }, '🌤 Minimum Day'),
+      UI.el('p', { class: 'small', style: 'color:var(--clay);' }, 'Today doesn\u2019t need to be perfect. Just protect the basics.'),
+    ]);
+    minimumDay.items.forEach((item, i) => {
+      const row = UI.el('label', { style: 'display:flex; align-items:center; gap:8px; width:100%;' }, [
+        UI.el('input', { type: 'checkbox', ...(item.done ? { checked: 'checked' } : {}), onchange: async (e) => {
+          item.done = e.target.checked;
+          const note = (await DB.get('dailyNotes', viewDate)) || { date: viewDate };
+          note.minimumDay = minimumDay;
+          await DB.put('dailyNotes', note);
+        } }),
+        UI.el('span', { class: 'small' }, item.label),
+      ]);
+      box.appendChild(row);
+    });
+    box.appendChild(UI.el('button', { class: 'btn-link', style: 'color:var(--clay);', onclick: async () => {
+      const note = (await DB.get('dailyNotes', viewDate)) || { date: viewDate };
+      note.minimumDay = { active: false, items: [] };
+      await DB.put('dailyNotes', note);
+      render(document.getElementById('screen-today'));
+    } }, 'End Minimum Day') );
+    return box;
+  }
+
+  function openMinimumDayPicker(trackers) {
+    UI.openSheet((close) => {
+      const wrap = UI.el('div', { class: 'stack' });
+      wrap.appendChild(UI.el('p', {}, 'What are the few things that matter today? Choose up to 3.'));
+      const chosen = new Set();
+      const grid = UI.el('div', { class: 'chip-grid' });
+      trackers.slice(0, 12).forEach((t) => {
+        const chip = UI.el('div', { class: 'chip', onclick: () => {
+          if (chosen.has(t.id)) { chosen.delete(t.id); chip.classList.remove('active'); }
+          else if (chosen.size < 3) { chosen.add(t.id); chip.classList.add('active'); }
+          else { UI.toast('Pick up to 3'); }
+        } }, `${t.icon} ${t.name}`);
+        grid.appendChild(chip);
+      });
+      wrap.appendChild(grid);
+      wrap.appendChild(UI.el('button', { class: 'btn btn-primary btn-block', style: 'margin-top:16px;', onclick: async () => {
+        if (chosen.size === 0) { UI.toast('Choose at least one thing'); return; }
+        const items = [...chosen].map((id) => {
+          const t = trackers.find((tt) => tt.id === id);
+          return { label: `${t.icon} ${t.name}`, done: false };
+        });
+        const note = (await DB.get('dailyNotes', viewDate)) || { date: viewDate };
+        note.minimumDay = { active: true, items };
+        await DB.put('dailyNotes', note);
+        close();
+        render(document.getElementById('screen-today'));
+      } }, 'Start Minimum Day'));
+      return wrap;
+    }, { title: 'Minimum Day' });
+  }
+
+  function renderTrackerCard(tracker, entry, root) {
+    const reached = entry ? Trackers.goalReached(tracker, entry.value) : null;
+    const card = UI.el('div', { class: `tracker-card${reached === true ? ' reached' : ''}` });
+    card.appendChild(UI.el('span', { class: 'icon' }, tracker.icon));
+    const main = UI.el('div', { class: 'main' });
+    const goalLabel = Trackers.goalLabel(tracker);
+    main.appendChild(UI.el('div', { class: 'name-row' }, [
+      UI.el('span', { class: 'name', onclick: () => TrackerEditor.open(tracker, () => render(root)) }, tracker.name),
+      reached === true ? UI.el('span', { class: 'goal-check' }, '✓ Goal reached') : null,
+    ]));
+    if (goalLabel) main.appendChild(UI.el('div', { class: 'goal-text' }, `Goal: ${goalLabel}`));
+
+    const inputRow = UI.el('div', { class: 'input-row' });
+    buildInput(tracker, entry, inputRow, root);
+    main.appendChild(inputRow);
+    card.appendChild(main);
+    return card;
+  }
+
+  async function saveValue(tracker, value, root) {
+    await Trackers.setEntry(tracker.id, viewDate, value);
+    UI.toast('Saved');
+    render(root);
+  }
+
+  function buildInput(tracker, entry, container, root) {
+    const val = entry ? entry.value : undefined;
+    switch (tracker.type) {
+      case 'number':
+      case 'currency': {
+        const step = tracker.type === 'currency' ? 1 : 0.1;
+        const input = UI.el('input', { class: 'value-input', type: 'number', inputmode: 'decimal', step: 'any',
+          value: val ?? '', placeholder: tracker.unit ? `0 ${tracker.unit}` : '0' });
+        input.addEventListener('change', () => { if (input.value !== '') saveValue(tracker, Number(input.value), root); });
+        container.appendChild(UI.el('button', { class: 'stepper-btn', onclick: () => saveValue(tracker, round2((Number(input.value) || 0) - step), root) }, '−'));
+        container.appendChild(input);
+        container.appendChild(UI.el('button', { class: 'stepper-btn', onclick: () => saveValue(tracker, round2((Number(input.value) || 0) + step), root) }, '+'));
+        if (tracker.unit) container.appendChild(UI.el('span', { class: 'small muted' }, tracker.unit));
+        break;
+      }
+      case 'count': {
+        const input = UI.el('input', { class: 'value-input', type: 'number', inputmode: 'numeric', step: '1', value: val ?? '', placeholder: '0' });
+        input.addEventListener('change', () => { if (input.value !== '') saveValue(tracker, Number(input.value), root); });
+        container.appendChild(input);
+        if (tracker.unit) container.appendChild(UI.el('span', { class: 'small muted' }, tracker.unit));
+        break;
+      }
+      case 'duration': {
+        const input = UI.el('input', { class: 'value-input', type: 'number', inputmode: 'numeric', step: '1', value: val ?? '', placeholder: 'minutes' });
+        input.addEventListener('change', () => { if (input.value !== '') saveValue(tracker, Number(input.value), root); });
+        container.appendChild(input);
+        container.appendChild(UI.el('span', { class: 'small muted' }, tracker.unit || 'min'));
+        break;
+      }
+      case 'time': {
+        const input = UI.el('input', { class: 'value-input', type: 'time', value: val || '' });
+        input.addEventListener('change', () => { if (input.value) saveValue(tracker, input.value, root); });
+        container.appendChild(input);
+        break;
+      }
+      case 'yesno': {
+        const toggle = UI.el('div', { class: 'yesno-toggle' }, [
+          UI.el('button', { class: val === true || val === 'true' ? 'on' : '', onclick: () => saveValue(tracker, true, root) }, 'Yes'),
+          UI.el('button', { class: val === false || val === 'false' ? 'on' : '', onclick: () => saveValue(tracker, false, root) }, 'No'),
+        ]);
+        container.appendChild(toggle);
+        break;
+      }
+      case 'rating': {
+        const group = UI.el('div', { class: 'pill-group' });
+        [1, 2, 3, 4, 5].forEach((n) => group.appendChild(UI.el('div', { class: `pill${Number(val) === n ? ' active' : ''}`, onclick: () => saveValue(tracker, n, root) }, String(n))));
+        container.appendChild(group);
+        break;
+      }
+      case 'choice': {
+        const group = UI.el('div', { class: 'pill-group' });
+        (tracker.choiceOptions || []).forEach((opt) => group.appendChild(UI.el('div', { class: `pill${val === opt ? ' active' : ''}`, onclick: () => saveValue(tracker, opt, root) }, opt)));
+        container.appendChild(group);
+        break;
+      }
+      case 'text': {
+        const input = UI.el('input', { class: 'value-input wide', type: 'text', value: val || '', placeholder: 'Tap to add…' });
+        input.addEventListener('change', () => saveValue(tracker, input.value, root));
+        container.appendChild(input);
+        break;
+      }
+      default:
+        container.appendChild(UI.el('span', { class: 'muted small' }, 'Unsupported type'));
+    }
+  }
+
+  function renderDailyNote(note) {
+    const n = note || {};
+    const wrap = UI.el('div', {}, [UI.el('h3', { class: 'section-title' }, 'Daily note')]);
+    const card = UI.el('div', { class: 'tracker-card', style: 'flex-direction:column; align-items:stretch; gap:10px;' });
+
+    const rows = UI.el('div', { class: 'field-row' });
+    const moodGroup = UI.el('div', {}, [UI.el('div', { class: 'small muted', style: 'margin-bottom:5px;' }, 'Mood'), pillRow(n.mood, async (v) => { await saveNoteField('mood', v); })]);
+    const energyGroup = UI.el('div', {}, [UI.el('div', { class: 'small muted', style: 'margin-bottom:5px;' }, 'Energy'), pillRow(n.energy, async (v) => { await saveNoteField('energy', v); })]);
+    rows.appendChild(moodGroup);
+    rows.appendChild(energyGroup);
+    card.appendChild(rows);
+
+    const textarea = UI.el('textarea', { placeholder: 'Today felt good because…', class: '' }, n.note || '');
+    textarea.style.width = '100%'; textarea.style.border = '1px solid var(--border)'; textarea.style.borderRadius = '8px';
+    textarea.style.padding = '9px'; textarea.style.background = 'var(--surface)'; textarea.style.color = 'var(--ink)'; textarea.style.minHeight = '56px';
+    textarea.addEventListener('change', () => saveNoteField('note', textarea.value));
+    card.appendChild(textarea);
+
+    const goodThing = UI.el('input', { type: 'text', class: 'value-input wide', placeholder: 'One good thing today', value: n.goodThing || '' });
+    goodThing.addEventListener('change', () => saveNoteField('goodThing', goodThing.value));
+    card.appendChild(goodThing);
+
+    wrap.appendChild(card);
+    return wrap;
+
+    function pillRow(current, onPick) {
+      const group = UI.el('div', { class: 'pill-group' });
+      [1, 2, 3, 4, 5].forEach((v) => group.appendChild(UI.el('div', { class: `pill${Number(current) === v ? ' active' : ''}`, onclick: () => {
+        group.querySelectorAll('.pill').forEach((p) => p.classList.remove('active'));
+        group.children[v - 1].classList.add('active');
+        onPick(v);
+      } }, String(v))));
+      return group;
+    }
+
+    async function saveNoteField(field, value) {
+      const existing = (await DB.get('dailyNotes', viewDate)) || { date: viewDate };
+      existing[field] = value;
+      await DB.put('dailyNotes', existing);
+      UI.toast('Saved');
+    }
+  }
+
+  function round2(n) { return Math.round(n * 100) / 100; }
+
+  function setViewDate(key) { viewDate = key; }
+  function getViewDate() { return viewDate; }
+
+  return { render, setViewDate, getViewDate };
+})();
+
+window.TodayScreen = TodayScreen;
+
+
+/* ---- js/trends.js ---- */
+// ============================================================================
+// trends.js — automatic per-tracker visualizations across selectable windows.
+// ============================================================================
+
+const TrendsScreen = (() => {
+  const RANGES = [
+    { key: '7d', label: '7 days', days: 7 },
+    { key: '30d', label: '30 days', days: 30 },
+    { key: '3m', label: '3 months', days: 90 },
+    { key: '6m', label: '6 months', days: 182 },
+    { key: '1y', label: '1 year', days: 365 },
+    { key: 'all', label: 'All time', days: null },
+  ];
+  let activeRange = '30d';
+
+  function timeToMinutes(t) { if (!t) return null; const [h, m] = String(t).split(':').map(Number); return h * 60 + m; }
+  function minutesToTime(mins) { const h = Math.floor(mins / 60) % 24; const m = Math.round(mins % 60); return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`; }
+
+  async function render(root) {
+    root.innerHTML = '';
+    root.appendChild(UI.el('h1', { class: 'section-title', style: 'margin-top:4px;' }, 'Trends'));
+
+    const tabs = UI.el('div', { class: 'range-tabs' });
+    RANGES.forEach((r) => {
+      const btn = UI.el('button', { class: r.key === activeRange ? 'active' : '', onclick: () => { activeRange = r.key; render(root); } }, r.label);
+      tabs.appendChild(btn);
+    });
+    root.appendChild(tabs);
+
+    const trackers = (await Trackers.listTrackers()).filter((t) => t.type !== 'text' && t.type !== 'yesno' && t.type !== 'choice');
+    const yesNoTrackers = (await Trackers.listTrackers()).filter((t) => t.type === 'yesno');
+
+    if (trackers.length === 0 && yesNoTrackers.length === 0) {
+      root.appendChild(UI.el('div', { class: 'empty-state' }, [
+        UI.el('h3', {}, 'No trends yet'),
+        UI.el('p', {}, 'Once you log a few days of a number, time, duration or rating tracker, its chart shows up here.'),
+      ]));
+      return;
+    }
+
+    const rangeDef = RANGES.find((r) => r.key === activeRange);
+    const endKey = DateUtil.todayKey();
+    let startKey;
+    if (rangeDef.days === null) startKey = '2000-01-01'; else startKey = DateUtil.addDays(endKey, -(rangeDef.days - 1));
+
+    for (const tracker of trackers) {
+      root.appendChild(await renderTrendCard(tracker, startKey, endKey));
+    }
+    for (const tracker of yesNoTrackers) {
+      root.appendChild(await renderYesNoCard(tracker, startKey, endKey));
+    }
+  }
+
+  async function renderTrendCard(tracker, startKey, endKey) {
+    let entries = await Trackers.entriesInRange(tracker.id, startKey, endKey);
+    const createdKey = tracker.createdAt ? DateUtil.toDateKey(new Date(tracker.createdAt)) : startKey;
+    const effStart = startKey > createdKey ? startKey : createdKey;
+    entries = entries.filter((e) => e.date >= effStart);
+
+    const card = UI.el('div', { class: 'trend-card' });
+    card.appendChild(UI.el('div', { class: 'head' }, [
+      UI.el('span', { class: 'icon' }, tracker.icon),
+      UI.el('span', { class: 'name' }, tracker.name),
+    ]));
+
+    if (entries.length === 0) {
+      card.appendChild(UI.el('p', { class: 'muted small' }, 'Not enough data yet — log a few days to see this chart.'));
+      return card;
+    }
+
+    const isTime = tracker.type === 'time';
+    const isRating = tracker.type === 'rating';
+    const points = entries.map((e) => ({ x: e.date, y: isTime ? timeToMinutes(e.value) : Number(e.value) }));
+    const canvas = UI.el('canvas');
+    card.appendChild(canvas);
+    const goalNum = tracker.goalDirection !== 'none' && tracker.goal !== null && tracker.goal !== undefined && tracker.goal !== ''
+      ? (isTime ? timeToMinutes(tracker.goal) : Number(tracker.goal)) : null;
+    requestAnimationFrame(() => {
+      Charts.drawLineChart(canvas, points, {
+        goal: goalNum,
+        formatY: (v) => (isTime ? minutesToTime(v) : (isRating ? v.toFixed(1) : Math.round(v * 10) / 10)),
+      });
+    });
+
+    const values = points.map((p) => p.y).filter((v) => v !== null && !Number.isNaN(v));
+    const current = values[values.length - 1];
+    const starting = values[0];
+    const change = current - starting;
+    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+    const cons = await Trackers.consistency(tracker, startKey, endKey);
+
+    const fmt = (v) => (isTime ? minutesToTime(v) : (Math.round(v * 100) / 100));
+    const stats = UI.el('div', { class: 'trend-stats' }, [
+      statBox(fmt(current), 'Current'),
+      statBox(fmt(avg), 'Average'),
+      statBox(`${change > 0 ? '+' : ''}${fmt(change)}`, 'Change'),
+    ]);
+    card.appendChild(stats);
+    const stats2 = UI.el('div', { class: 'trend-stats' }, [
+      statBox(tracker.goal ? Trackers.goalLabel(tracker) : '—', 'Goal'),
+      statBox(cons.expected ? `${cons.pct}%` : '—', 'Consistency'),
+      statBox(`${entries.length}/${DateUtil.daysBetween(effStart, endKey) + 1}`, 'Days logged'),
+    ]);
+    card.appendChild(stats2);
+    return card;
+  }
+
+  async function renderYesNoCard(tracker, startKey, endKey) {
+    let entries = await Trackers.entriesInRange(tracker.id, startKey, endKey);
+    const card = UI.el('div', { class: 'trend-card' });
+    card.appendChild(UI.el('div', { class: 'head' }, [
+      UI.el('span', { class: 'icon' }, tracker.icon),
+      UI.el('span', { class: 'name' }, tracker.name),
+    ]));
+    if (entries.length === 0) {
+      card.appendChild(UI.el('p', { class: 'muted small' }, 'Not enough data yet.'));
+      return card;
+    }
+    const dateKeys = DateUtil.dateRangeKeys(startKey, endKey);
+    const byDate = new Map(entries.map((e) => [e.date, e]));
+    const bars = dateKeys.slice(-30).map((d) => ({ label: DateUtil.formatShort(d).slice(0, 2), value: byDate.has(d) ? (byDate.get(d).value === true || byDate.get(d).value === 'true' ? 1 : 0.05) : 0 }));
+    const canvas = UI.el('canvas');
+    card.appendChild(canvas);
+    requestAnimationFrame(() => Charts.drawBarChart(canvas, bars, { formatY: (v) => v }));
+    const yesCount = entries.filter((e) => e.value === true || e.value === 'true').length;
+    const cons = await Trackers.consistency(tracker, startKey, endKey);
+    card.appendChild(UI.el('div', { class: 'trend-stats' }, [
+      statBox(`${yesCount}/${entries.length}`, 'Yes days'),
+      statBox(cons.expected ? `${cons.pct}%` : '—', 'Consistency'),
+      statBox(entries.length, 'Logged'),
+    ]));
+    return card;
+  }
+
+  function statBox(value, label) {
+    return UI.el('div', { class: 'trend-stat' }, [UI.el('div', { class: 'num' }, String(value)), UI.el('div', { class: 'lbl' }, label)]);
+  }
+
+  return { render };
+})();
+
+window.TrendsScreen = TrendsScreen;
+
+
+/* ---- js/reports.js ---- */
+// ============================================================================
+// reports.js — Weekly / Monthly / Yearly reviews. Every number here comes
+// from stored entries; when there isn't enough data, we say so instead of
+// guessing.
+// ============================================================================
+
+const ReportsScreen = (() => {
+  let activeTab = 'weekly';
+  let weekOffset = 0;   // 0 = current week (last 7 days ending today)
+  let monthOffset = 0;  // 0 = current calendar month
+  let yearOffset = 0;   // 0 = current calendar year
+
+  async function render(root) {
+    root.innerHTML = '';
+    const tabs = UI.el('div', { class: 'report-tabs' }, [
+      UI.el('button', { class: activeTab === 'weekly' ? 'active' : '', onclick: () => { activeTab = 'weekly'; render(root); } }, 'Weekly'),
+      UI.el('button', { class: activeTab === 'monthly' ? 'active' : '', onclick: () => { activeTab = 'monthly'; render(root); } }, 'Monthly'),
+      UI.el('button', { class: activeTab === 'yearly' ? 'active' : '', onclick: () => { activeTab = 'yearly'; render(root); } }, 'Yearly'),
+    ]);
+    root.appendChild(tabs);
+    const body = UI.el('div');
+    root.appendChild(body);
+    if (activeTab === 'weekly') await renderWeekly(body);
+    else if (activeTab === 'monthly') await renderMonthly(body);
+    else await renderYearly(body);
+  }
+
+  function numFmt(v) { return Math.abs(v - Math.round(v)) < 0.01 ? Math.round(v) : Math.round(v * 10) / 10; }
+
+  async function trackerStatsInRange(tracker, startKey, endKey) {
+    const entries = await Trackers.entriesInRange(tracker.id, startKey, endKey);
+    const cons = await Trackers.consistency(tracker, startKey, endKey);
+    return { entries, cons };
+  }
+
+  // ---- WEEKLY --------------------------------------------------------------
+
+  async function renderWeekly(body) {
+    const todayKey = DateUtil.todayKey();
+    const endKey = DateUtil.addDays(todayKey, -7 * weekOffset);
+    const startKey = DateUtil.addDays(endKey, -6);
+    const prevEnd = DateUtil.addDays(startKey, -1);
+    const prevStart = DateUtil.addDays(prevEnd, -6);
+
+    body.appendChild(navRow(
+      `${DateUtil.formatShort(startKey)} – ${DateUtil.formatShort(endKey)}`,
+      () => { weekOffset++; render(document.getElementById('screen-reports')); },
+      weekOffset > 0 ? () => { weekOffset--; render(document.getElementById('screen-reports')); } : null,
+    ));
+
+    const trackers = await Trackers.listTrackers();
+    const rows = [];
+    for (const t of trackers) {
+      const { entries, cons } = await trackerStatsInRange(t, startKey, endKey);
+      if (entries.length === 0) continue;
+      rows.push({ tracker: t, entries, cons });
+    }
+
+    if (rows.length === 0) {
+      body.appendChild(UI.el('div', { class: 'empty-state' }, [UI.el('h3', {}, 'Nothing logged this week'), UI.el('p', {}, 'Log a few trackers on Today and come back.')]));
+      return;
+    }
+
+    body.appendChild(UI.el('h3', { class: 'section-title' }, 'This week'));
+    const metricWrap = UI.el('div', { class: 'trend-card' });
+    for (const r of rows) metricWrap.appendChild(await metricRow(r.tracker, r.entries, startKey, endKey, prevStart, prevEnd));
+    body.appendChild(metricWrap);
+
+    // Best/worst by consistency (only trackers with a goal)
+    const withGoal = rows.filter((r) => r.tracker.goalDirection !== 'none' && r.cons.expected > 0);
+    const best = withGoal.slice().sort((a, b) => b.cons.pct - a.cons.pct)[0];
+    const worst = withGoal.slice().sort((a, b) => a.cons.pct - b.cons.pct)[0];
+
+    body.appendChild(UI.el('h3', { class: 'section-title' }, 'What went well'));
+    if (best && best.cons.pct >= 50) {
+      body.appendChild(UI.el('div', { class: 'callout good' }, `${best.tracker.name} was your strongest tracked goal this week — reached on ${best.cons.completed} of ${best.cons.expected} expected days (${best.cons.pct}%).`));
+    } else {
+      body.appendChild(UI.el('div', { class: 'callout neutral' }, 'No tracker cleared its goal on most days this week — that\u2019s useful to know, not a failure.'));
+    }
+
+    body.appendChild(UI.el('h3', { class: 'section-title' }, 'Needs attention'));
+    if (worst && worst.cons.pct < 70 && worst !== best) {
+      body.appendChild(UI.el('div', { class: 'callout attention' }, `${worst.tracker.name}'s goal was reached on only ${worst.cons.completed} of ${worst.cons.expected} expected days (${worst.cons.pct}%).`));
+    } else {
+      body.appendChild(UI.el('div', { class: 'callout neutral' }, 'Nothing stands out as needing attention this week.'));
+    }
+
+    body.appendChild(UI.el('h3', { class: 'section-title' }, 'Patterns'));
+    const weekdayVsWeekend = await weekdayWeekendPattern(rows.map((r) => r.tracker), startKey, endKey);
+    body.appendChild(UI.el('div', { class: 'callout neutral' }, weekdayVsWeekend));
+
+    body.appendChild(UI.el('h3', { class: 'section-title' }, 'Next week'));
+    if (worst && worst.cons.pct < 90) {
+      const nextTarget = Math.min(worst.cons.expected, worst.cons.completed + 2);
+      body.appendChild(UI.el('div', { class: 'callout good' }, `Don\u2019t add another goal yet. Try getting ${worst.tracker.name} to at least ${nextTarget} of ${worst.cons.expected} days next week.`));
+    } else {
+      body.appendChild(UI.el('div', { class: 'callout good' }, 'Everything tracked with a goal is in good shape — a quiet week to simply keep going.'));
+    }
+  }
+
+  async function metricRow(tracker, entries, startKey, endKey, prevStart, prevEnd) {
+    const isTime = tracker.type === 'time';
+    const toNum = (v) => (isTime ? (() => { const [h, m] = String(v).split(':').map(Number); return h * 60 + m; })() : Number(v));
+    const fromNum = (n) => (isTime ? `${String(Math.floor(n / 60) % 24).padStart(2, '0')}:${String(Math.round(n % 60)).padStart(2, '0')}` : numFmt(n));
+
+    let sub = '';
+    let changeStr = '';
+    let changeClass = '';
+    if (['number', 'duration', 'currency', 'count', 'rating', 'time'].includes(tracker.type)) {
+      const vals = entries.map((e) => toNum(e.value)).filter((v) => !Number.isNaN(v));
+      if (vals.length >= 2) {
+        const change = vals[vals.length - 1] - vals[0];
+        changeStr = `${change > 0 ? '+' : ''}${fromNum(change)}`;
+        changeClass = change === 0 ? '' : (tracker.goalDirection === 'atmost' ? (change < 0 ? 'up' : 'down') : (change > 0 ? 'up' : 'down'));
+        sub = `${fromNum(vals[0])} → ${fromNum(vals[vals.length - 1])}`;
+      } else if (vals.length === 1) {
+        sub = fromNum(vals[0]);
+      }
+    } else if (tracker.type === 'yesno') {
+      const yes = entries.filter((e) => e.value === true || e.value === 'true').length;
+      sub = `Yes on ${yes} of ${entries.length} logged days`;
+    } else {
+      sub = `${entries.length} entries`;
+    }
+
+    return UI.el('div', { class: 'metric-row' }, [
+      UI.el('div', { class: 'left' }, [
+        UI.el('span', { class: 'icon' }, tracker.icon),
+        UI.el('div', {}, [UI.el('div', { class: 'name' }, tracker.name), UI.el('div', { class: 'sub' }, sub)]),
+      ]),
+      changeStr ? UI.el('div', { class: 'right' }, [UI.el('div', { class: `change ${changeClass}` }, changeStr)]) : UI.el('div', {}),
+    ]);
+  }
+
+  async function weekdayWeekendPattern(trackers, startKey, endKey) {
+    const withGoal = trackers.filter((t) => t.goalDirection !== 'none');
+    if (withGoal.length === 0) return 'Not enough goal-based trackers yet to compare weekdays and weekends.';
+    let weekdayHit = 0, weekdayTotal = 0, weekendHit = 0, weekendTotal = 0;
+    for (const t of withGoal) {
+      const entries = await Trackers.entriesInRange(t.id, startKey, endKey);
+      for (const e of entries) {
+        const reached = Trackers.goalReached(t, e.value);
+        if (reached === null) continue;
+        if (DateUtil.isWeekend(e.date)) { weekendTotal++; if (reached) weekendHit++; }
+        else { weekdayTotal++; if (reached) weekdayHit++; }
+      }
+    }
+    if (weekdayTotal === 0 || weekendTotal === 0) return 'Not enough spread across weekdays and weekends yet to compare them.';
+    const wdPct = Math.round((weekdayHit / weekdayTotal) * 100);
+    const wePct = Math.round((weekendHit / weekendTotal) * 100);
+    if (wdPct === wePct) return `Your routine was equally consistent on weekdays and weekends (${wdPct}%).`;
+    const stronger = wdPct > wePct ? 'weekdays' : 'weekends';
+    return `Your routine was more consistent on ${stronger} (${Math.max(wdPct, wePct)}%) than the other days (${Math.min(wdPct, wePct)}%).`;
+  }
+
+  // ---- MONTHLY ---------------------------------------------------------------
+
+  async function renderMonthly(body) {
+    const now = new Date();
+    const monthDate = new Date(now.getFullYear(), now.getMonth() - monthOffset, 1);
+    const startKey = DateUtil.toDateKey(monthDate);
+    const lastDay = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
+    const endKeyRaw = DateUtil.toDateKey(lastDay);
+    const endKey = endKeyRaw > DateUtil.todayKey() ? DateUtil.todayKey() : endKeyRaw;
+
+    body.appendChild(navRow(
+      DateUtil.formatMonthYear(startKey),
+      () => { monthOffset++; render(document.getElementById('screen-reports')); },
+      monthOffset > 0 ? () => { monthOffset--; render(document.getElementById('screen-reports')); } : null,
+    ));
+
+    const trackers = await Trackers.listTrackers({ includeArchived: true });
+    const rows = [];
+    for (const t of trackers) {
+      const entries = await Trackers.entriesInRange(t.id, startKey, endKey);
+      if (entries.length === 0) continue;
+      const cons = await Trackers.consistency(t, startKey, endKey);
+      rows.push({ tracker: t, entries, cons });
+    }
+
+    if (rows.length === 0) {
+      body.appendChild(UI.el('div', { class: 'empty-state' }, [UI.el('h3', {}, 'No data for this month')]));
+      return;
+    }
+
+    const goalRows = rows.filter((r) => r.tracker.goalDirection !== 'none' && r.cons.expected > 0);
+    const overallPct = goalRows.length ? Math.round(goalRows.reduce((a, r) => a + r.cons.pct, 0) / goalRows.length) : null;
+
+    body.appendChild(UI.el('div', { class: 'report-hero' }, [
+      overallPct !== null ? UI.el('div', { class: 'title' }, `${overallPct}% overall consistency`) : UI.el('div', { class: 'title' }, 'Monthly review'),
+    ]));
+
+    const metricWrap = UI.el('div', { class: 'trend-card' });
+    for (const r of rows) metricWrap.appendChild(await metricRow(r.tracker, r.entries, startKey, endKey));
+    body.appendChild(metricWrap);
+
+    if (goalRows.length) {
+      const strongest = goalRows.slice().sort((a, b) => b.cons.pct - a.cons.pct)[0];
+      const weakest = goalRows.slice().sort((a, b) => a.cons.pct - b.cons.pct)[0];
+      body.appendChild(UI.el('div', { class: 'callout good' }, `Strongest tracker: ${strongest.tracker.name} (${strongest.cons.pct}% consistency).`));
+      if (weakest !== strongest) body.appendChild(UI.el('div', { class: 'callout attention' }, `Least consistent: ${weakest.tracker.name} (${weakest.cons.pct}% consistency).`));
+    }
+
+    body.appendChild(UI.el('h3', { class: 'section-title' }, 'Weekday vs. weekend'));
+    body.appendChild(UI.el('div', { class: 'callout neutral' }, await weekdayWeekendPattern(rows.map((r) => r.tracker), startKey, endKey)));
+
+    // First half vs second half of month = improving/declining
+    const mid = DateUtil.addDays(startKey, Math.floor(DateUtil.daysBetween(startKey, endKey) / 2));
+    body.appendChild(UI.el('h3', { class: 'section-title' }, 'Improving or declining'));
+    let anyComparison = false;
+    for (const r of goalRows) {
+      const firstHalf = await Trackers.consistency(r.tracker, startKey, mid);
+      const secondHalf = await Trackers.consistency(r.tracker, DateUtil.addDays(mid, 1), endKey);
+      if (firstHalf.expected < 2 || secondHalf.expected < 2) continue;
+      anyComparison = true;
+      const diff = secondHalf.pct - firstHalf.pct;
+      if (Math.abs(diff) >= 15) {
+        body.appendChild(UI.el('div', { class: `callout ${diff > 0 ? 'good' : 'attention'}` }, `${r.tracker.name} went from ${firstHalf.pct}% to ${secondHalf.pct}% consistency across the month.`));
+      }
+    }
+    if (!anyComparison) body.appendChild(UI.el('div', { class: 'callout neutral' }, 'Not enough data yet to compare the first and second half of the month.'));
+
+    // Life events overlay
+    const events = (await DB.getAll('lifeEvents')).filter((ev) => overlaps(ev.startDate, ev.endDate || ev.startDate, startKey, endKey));
+    if (events.length) {
+      body.appendChild(UI.el('h3', { class: 'section-title' }, 'Life events this month'));
+      events.forEach((ev) => body.appendChild(UI.el('div', { class: 'callout neutral' }, `${ev.name}: ${DateUtil.formatShort(ev.startDate)}${ev.endDate && ev.endDate !== ev.startDate ? ` – ${DateUtil.formatShort(ev.endDate)}` : ''}${ev.note ? ` — ${ev.note}` : ''}`)));
+    }
+
+    body.appendChild(UI.el('h3', { class: 'section-title' }, 'Month in one sentence'));
+    const sentenceParts = [];
+    if (goalRows.length) {
+      const strongest = goalRows.slice().sort((a, b) => b.cons.pct - a.cons.pct)[0];
+      sentenceParts.push(`you made steady progress with ${strongest.tracker.name.toLowerCase()}`);
+    }
+    body.appendChild(UI.el('div', { class: 'callout good' }, sentenceParts.length ? `This month, ${sentenceParts.join(', ')}.` : 'Keep logging — a one-sentence summary needs a little more data to be accurate.'));
+  }
+
+  function overlaps(aStart, aEnd, bStart, bEnd) { return aStart <= bEnd && aEnd >= bStart; }
+
+  // ---- YEARLY --------------------------------------------------------------
+
+  async function renderYearly(body) {
+    const now = new Date();
+    const year = now.getFullYear() - yearOffset;
+    const startKey = `${year}-01-01`;
+    const endKeyRaw = `${year}-12-31`;
+    const endKey = endKeyRaw > DateUtil.todayKey() ? DateUtil.todayKey() : endKeyRaw;
+
+    body.appendChild(navRow(`${year}`, () => { yearOffset++; render(document.getElementById('screen-reports')); },
+      yearOffset > 0 ? () => { yearOffset--; render(document.getElementById('screen-reports')); } : null));
+
+    const trackers = await Trackers.listTrackers({ includeArchived: true });
+    const rows = [];
+    for (const t of trackers) {
+      const entries = await Trackers.entriesInRange(t.id, startKey, endKey);
+      if (entries.length === 0) continue;
+      rows.push({ tracker: t, entries });
+    }
+
+    if (rows.length === 0) {
+      body.appendChild(UI.el('div', { class: 'empty-state' }, [UI.el('h3', {}, 'No data for this year yet')]));
+      return;
+    }
+
+    const daysLogged = DateUtil.daysBetween(startKey, endKey) + 1;
+    body.appendChild(UI.el('div', { class: 'report-hero' }, [
+      UI.el('div', { class: 'range' }, 'MY YEAR'),
+      UI.el('div', { class: 'title' }, `${daysLogged} days of my life`),
+    ]));
+
+    const grid = UI.el('div', { class: 'year-stat-grid' });
+    for (const r of rows) grid.appendChild(await yearStatCard(r.tracker, r.entries));
+    body.appendChild(grid);
+
+    // Biggest improvement / most consistent / most difficult (goal trackers)
+    const goalRows = [];
+    for (const r of rows) {
+      if (r.tracker.goalDirection === 'none') continue;
+      const cons = await Trackers.consistency(r.tracker, startKey, endKey);
+      if (cons.expected > 0) goalRows.push({ ...r, cons });
+    }
+    if (goalRows.length) {
+      const mostConsistent = goalRows.slice().sort((a, b) => b.cons.pct - a.cons.pct)[0];
+      const mostDifficult = goalRows.slice().sort((a, b) => a.cons.pct - b.cons.pct)[0];
+      body.appendChild(UI.el('h3', { class: 'section-title' }, 'The year in a few facts'));
+      body.appendChild(UI.el('div', { class: 'callout good' }, `Most consistent habit: ${mostConsistent.tracker.name} (${mostConsistent.cons.pct}%).`));
+      if (mostDifficult !== mostConsistent) body.appendChild(UI.el('div', { class: 'callout attention' }, `Most difficult habit: ${mostDifficult.tracker.name} (${mostDifficult.cons.pct}%).`));
+    }
+
+    // Numeric biggest improvement (first vs last value across the year)
+    const numericImprovements = [];
+    for (const r of rows) {
+      if (!['number', 'duration', 'currency', 'count'].includes(r.tracker.type)) continue;
+      const vals = r.entries.map((e) => Number(e.value)).filter((v) => !Number.isNaN(v));
+      if (vals.length < 5) continue;
+      numericImprovements.push({ tracker: r.tracker, change: vals[vals.length - 1] - vals[0], from: vals[0], to: vals[vals.length - 1] });
+    }
+    if (numericImprovements.length) {
+      const biggest = numericImprovements.slice().sort((a, b) => Math.abs(b.change) - Math.abs(a.change))[0];
+      body.appendChild(UI.el('div', { class: 'callout good' }, `Biggest change: ${biggest.tracker.name} moved from ${numFmt(biggest.from)} to ${numFmt(biggest.to)}${biggest.tracker.unit ? ` ${biggest.tracker.unit}` : ''}.`));
+    }
+
+    // Life events + experiments
+    const events = (await DB.getAll('lifeEvents')).filter((ev) => overlaps(ev.startDate, ev.endDate || ev.startDate, startKey, endKey));
+    const experiments = (await DB.getAll('experiments')).filter((ex) => overlaps(ex.startDate, ex.endDate, startKey, endKey));
+    if (events.length) {
+      body.appendChild(UI.el('h3', { class: 'section-title' }, 'Major life events'));
+      events.forEach((ev) => body.appendChild(UI.el('div', { class: 'callout neutral' }, `${ev.name} — ${DateUtil.formatShort(ev.startDate)}${ev.endDate && ev.endDate !== ev.startDate ? ` to ${DateUtil.formatShort(ev.endDate)}` : ''}`)));
+    }
+    if (experiments.length) {
+      body.appendChild(UI.el('h3', { class: 'section-title' }, 'Experiments completed'));
+      experiments.forEach((ex) => body.appendChild(UI.el('div', { class: 'callout neutral' }, ex.title)));
+    }
+
+    // Trackers started / stopped this year
+    const started = trackers.filter((t) => t.createdAt && DateUtil.toDateKey(new Date(t.createdAt)) >= startKey && DateUtil.toDateKey(new Date(t.createdAt)) <= endKey);
+    const stopped = trackers.filter((t) => t.archivedAt && DateUtil.toDateKey(new Date(t.archivedAt)) >= startKey && DateUtil.toDateKey(new Date(t.archivedAt)) <= endKey);
+    if (started.length || stopped.length) {
+      body.appendChild(UI.el('h3', { class: 'section-title' }, 'What changed'));
+      if (started.length) body.appendChild(UI.el('div', { class: 'callout neutral' }, `Started tracking: ${started.map((t) => t.name).join(', ')}.`));
+      if (stopped.length) body.appendChild(UI.el('div', { class: 'callout neutral' }, `Stopped tracking: ${stopped.map((t) => t.name).join(', ')}.`));
+    }
+
+    body.appendChild(UI.el('h3', { class: 'section-title' }, 'Your year in review'));
+    const summaryBits = [];
+    if (numericImprovements.length) {
+      const biggest = numericImprovements.slice().sort((a, b) => Math.abs(b.change) - Math.abs(a.change))[0];
+      summaryBits.push(`${biggest.tracker.name.toLowerCase()} shifted from ${numFmt(biggest.from)} to ${numFmt(biggest.to)}${biggest.tracker.unit ? ` ${biggest.tracker.unit}` : ''}`);
+    }
+    if (goalRows.length) {
+      const mostConsistent = goalRows.slice().sort((a, b) => b.cons.pct - a.cons.pct)[0];
+      summaryBits.push(`${mostConsistent.tracker.name.toLowerCase()} was the habit you kept most consistently (${mostConsistent.cons.pct}%)`);
+    }
+    body.appendChild(UI.el('div', { class: 'callout good' }, summaryBits.length ? `Based on what you recorded, ${summaryBits.join(', and ')}.` : 'Keep logging through the year — this summary gets richer with more data.'));
+  }
+
+  async function yearStatCard(tracker, entries) {
+    let valueStr = '';
+    if (['number'].includes(tracker.type)) {
+      const vals = entries.map((e) => Number(e.value)).filter((v) => !Number.isNaN(v));
+      if (vals.length >= 2) valueStr = `${numFmt(vals[0])} → ${numFmt(vals[vals.length - 1])}${tracker.unit ? ` ${tracker.unit}` : ''}`;
+      else valueStr = `${numFmt(vals[0])}${tracker.unit ? ` ${tracker.unit}` : ''}`;
+    } else if (['duration', 'count', 'currency'].includes(tracker.type)) {
+      const total = entries.reduce((a, e) => a + (Number(e.value) || 0), 0);
+      valueStr = `${numFmt(total)}${tracker.unit ? ` ${tracker.unit}` : ''}`;
+    } else if (tracker.type === 'time') {
+      const mins = entries.map((e) => { const [h, m] = String(e.value).split(':').map(Number); return h * 60 + m; });
+      const avg = mins.reduce((a, b) => a + b, 0) / mins.length;
+      valueStr = `${String(Math.floor(avg / 60) % 24).padStart(2, '0')}:${String(Math.round(avg % 60)).padStart(2, '0')} avg`;
+    } else if (tracker.type === 'rating') {
+      const avg = entries.reduce((a, e) => a + Number(e.value), 0) / entries.length;
+      valueStr = `${avg.toFixed(1)} avg`;
+    } else if (tracker.type === 'yesno') {
+      const yes = entries.filter((e) => e.value === true || e.value === 'true').length;
+      valueStr = `${yes} days`;
+    } else {
+      valueStr = `${entries.length} entries`;
+    }
+    return UI.el('div', { class: 'year-stat' }, [
+      UI.el('div', { class: 'icon' }, tracker.icon),
+      UI.el('div', { class: 'value' }, valueStr),
+      UI.el('div', { class: 'label' }, tracker.name),
+    ]);
+  }
+
+  function navRow(label, onNext, onPrev) {
+    return UI.el('div', { class: 'cal-month-nav' }, [
+      UI.el('button', { onclick: onPrev, disabled: onPrev ? null : 'disabled', style: onPrev ? '' : 'visibility:hidden;' }, '‹'),
+      UI.el('span', { class: 'label' }, label),
+      UI.el('button', { onclick: onNext }, '›'),
+    ]);
+  }
+
+  return { render };
+})();
+
+window.ReportsScreen = ReportsScreen;
+
+
+/* ---- js/history.js ---- */
+// ============================================================================
+// history.js — calendar view of every date: entries, notes, life events,
+// and Minimum Day status, with the ability to edit any past day.
+// ============================================================================
+
+const HistoryScreen = (() => {
+  let cursor = new Date();
+
+  async function render(root) {
+    root.innerHTML = '';
+    root.appendChild(UI.el('h1', { class: 'section-title', style: 'margin-top:4px;' }, 'History'));
+
+    const monthStart = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+    const monthEnd = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0);
+    const startKey = DateUtil.toDateKey(monthStart);
+    const endKey = DateUtil.toDateKey(monthEnd);
+
+    root.appendChild(UI.el('div', { class: 'cal-month-nav' }, [
+      UI.el('button', { onclick: () => { cursor = new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1); render(root); } }, '‹'),
+      UI.el('span', { class: 'label' }, DateUtil.formatMonthYear(startKey)),
+      UI.el('button', { onclick: () => { cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1); render(root); } }, '›'),
+    ]));
+
+    const [entries, notes, events] = await Promise.all([
+      allEntriesInRange(startKey, endKey),
+      DB.getAll('dailyNotes'),
+      DB.getAll('lifeEvents'),
+    ]);
+    const entryDates = new Set(entries.map((e) => e.date));
+    const noteByDate = new Map(notes.map((n) => [n.date, n]));
+
+    const grid = UI.el('div', { class: 'cal-grid' });
+    ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach((d) => grid.appendChild(UI.el('div', { class: 'cal-dow' }, d)));
+    const firstDow = monthStart.getDay();
+    for (let i = 0; i < firstDow; i++) grid.appendChild(UI.el('div', { class: 'cal-day empty' }));
+    for (let d = 1; d <= monthEnd.getDate(); d++) {
+      const key = DateUtil.toDateKey(new Date(cursor.getFullYear(), cursor.getMonth(), d));
+      const hasData = entryDates.has(key) || noteByDate.has(key);
+      const isMin = noteByDate.get(key)?.minimumDay?.active;
+      const isToday = key === DateUtil.todayKey();
+      grid.appendChild(UI.el('div', {
+        class: `cal-day${hasData ? ' has-data' : ''}${isMin ? ' minimum' : ''}${isToday ? ' today' : ''}`,
+        onclick: () => openDayDetail(key),
+      }, String(d)));
+    }
+    root.appendChild(grid);
+
+    // life events list for the visible month
+    const monthEvents = events.filter((ev) => (ev.startDate <= endKey) && ((ev.endDate || ev.startDate) >= startKey));
+    if (monthEvents.length) {
+      root.appendChild(UI.el('h3', { class: 'section-title' }, 'Life events'));
+      monthEvents.forEach((ev) => root.appendChild(UI.el('div', { class: 'list-row' }, [
+        UI.el('span', { class: 'icon' }, '📌'),
+        UI.el('div', { class: 'main' }, [
+          UI.el('div', { class: 'name' }, ev.name),
+          UI.el('div', { class: 'meta' }, `${DateUtil.formatShort(ev.startDate)}${ev.endDate && ev.endDate !== ev.startDate ? ` – ${DateUtil.formatShort(ev.endDate)}` : ''}${ev.note ? ` · ${ev.note}` : ''}`),
+        ]),
+      ])));
+    }
+  }
+
+  async function allEntriesInRange(startKey, endKey) {
+    const all = await DB.getAll('entries');
+    return all.filter((e) => e.date >= startKey && e.date <= endKey);
+  }
+
+  async function openDayDetail(dateKey) {
+    const [entries, note, trackers] = await Promise.all([
+      Trackers.entriesForDate(dateKey),
+      DB.get('dailyNotes', dateKey),
+      Trackers.listTrackers({ includeArchived: true }),
+    ]);
+    const trackerById = new Map(trackers.map((t) => [t.id, t]));
+
+    UI.openSheet((close) => {
+      const wrap = UI.el('div', { class: 'stack' });
+      if (note?.minimumDay?.active) {
+        wrap.appendChild(UI.el('span', { class: 'badge-min' }, '🌤 Minimum Day'));
+      }
+      if (entries.length === 0) {
+        wrap.appendChild(UI.el('p', { class: 'muted' }, 'No entries recorded for this day.'));
+      }
+      entries.forEach((e) => {
+        const t = trackerById.get(e.trackerId);
+        if (!t) return;
+        wrap.appendChild(UI.el('div', { class: 'list-row' }, [
+          UI.el('span', { class: 'icon' }, t.icon),
+          UI.el('div', { class: 'main' }, [
+            UI.el('div', { class: 'name' }, t.name),
+            UI.el('div', { class: 'meta' }, UI.formatValueForDisplay(t, e.value)),
+          ]),
+          UI.el('button', { class: 'action', onclick: () => { close(); openEditEntry(t, dateKey); } }, 'Edit'),
+        ]));
+      });
+      if (note?.note || note?.mood || note?.goodThing) {
+        wrap.appendChild(UI.el('div', { class: 'trend-card' }, [
+          note?.mood ? UI.el('p', { class: 'small' }, `Mood: ${note.mood}/5`) : null,
+          note?.energy ? UI.el('p', { class: 'small' }, `Energy: ${note.energy}/5`) : null,
+          note?.note ? UI.el('p', { class: 'small', style: 'margin-top:6px;' }, note.note) : null,
+          note?.goodThing ? UI.el('p', { class: 'small', style: 'margin-top:6px; font-style:italic;' }, `“${note.goodThing}”`) : null,
+        ]));
+      }
+      wrap.appendChild(UI.el('button', { class: 'btn btn-ghost btn-block', onclick: () => {
+        close();
+        TodayScreen.setViewDate(dateKey);
+        App.go('today');
+      } }, 'Open this day on Today'));
+      return wrap;
+    }, { title: DateUtil.formatFriendly(dateKey) });
+  }
+
+  function openEditEntry(tracker, dateKey) {
+    TodayScreen.setViewDate(dateKey);
+    App.go('today');
+  }
+
+  return { render };
+})();
+
+window.HistoryScreen = HistoryScreen;
+
+
+/* ---- js/backup.js ---- */
+// ============================================================================
+// backup.js — export/import a full JSON backup, export CSV, and wipe data.
+// This is the app's safety net since everything else lives only in the
+// browser's IndexedDB.
+// ============================================================================
+
+function downloadBlob(content, filename, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+async function exportBackup() {
+  const data = await DB.exportAll();
+  const stamp = DateUtil.todayKey();
+  downloadBlob(JSON.stringify(data, null, 2), `life-dashboard-backup-${stamp}.json`, 'application/json');
+  UI.toast('Backup exported');
+}
+
+async function importBackup(file) {
+  const text = await file.text();
+  let data;
+  try { data = JSON.parse(text); } catch { throw new Error('That file isn\u2019t valid JSON'); }
+  if (!data._meta || data._meta.app !== 'life-dashboard') {
+    const ok = await UI.confirmDialog({ title: 'Unrecognized backup', message: 'This file doesn\u2019t look like a Life Dashboard backup. Try to import it anyway?', confirmLabel: 'Import anyway', danger: true });
+    if (!ok) return false;
+  }
+  await DB.importAll(data);
+  return true;
+}
+
+function csvEscape(v) {
+  const s = String(v ?? '');
+  if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+async function exportCSV() {
+  const [trackers, entries] = await Promise.all([DB.getAll('trackers'), DB.getAll('entries')]);
+  const trackerById = new Map(trackers.map((t) => [t.id, t]));
+  const rows = [['date', 'tracker', 'category', 'type', 'value', 'unit', 'note']];
+  entries
+    .slice()
+    .sort((a, b) => (a.date < b.date ? -1 : 1))
+    .forEach((e) => {
+      const t = trackerById.get(e.trackerId);
+      if (!t) return;
+      rows.push([e.date, t.name, t.category, t.type, e.value, t.unit || '', e.note || '']);
+    });
+  const csv = rows.map((r) => r.map(csvEscape).join(',')).join('\n');
+  downloadBlob(csv, `life-dashboard-export-${DateUtil.todayKey()}.csv`, 'text/csv');
+  UI.toast('CSV exported');
+}
+
+async function clearAllData() {
+  await DB.clearAll();
+}
+
+window.Backup = { exportBackup, importBackup, exportCSV, clearAllData };
+
+
+/* ---- js/sampledata.js ---- */
+// ============================================================================
+// sampledata.js — "Explore with sample data": ~30 days of realistic made-up
+// entries so a new user can see Today, Trends and Reports working before
+// they've logged anything themselves. Fully removable.
+// ============================================================================
+
+const SampleData = (() => {
+  function rand(min, max) { return min + Math.random() * (max - min); }
+  function round1(n) { return Math.round(n * 10) / 10; }
+
+  async function populate() {
+    const days = 30;
+    const trackerDefs = [
+      { name: 'Weight', icon: '⚖️', category: 'health', type: 'number', unit: 'kg', goal: 78, goalDirection: 'atleast', gen: (i) => round1(84 - (i / days) * 4 + rand(-0.3, 0.3)) },
+      { name: 'Walking', icon: '🚶', category: 'fitness', type: 'number', unit: 'km', goal: 2.5, goalDirection: 'atleast', gen: () => round1(rand(1, 4.5)) },
+      { name: 'Water', icon: '💧', category: 'health', type: 'number', unit: 'L', goal: 2.5, goalDirection: 'atleast', gen: () => round1(rand(1.2, 3.1)) },
+      { name: 'Wake-up', icon: '⏰', category: 'sleep', type: 'time', goal: '05:30', goalDirection: 'before', gen: () => `${String(Math.floor(rand(5, 7))).padStart(2, '0')}:${String(Math.floor(rand(0, 59))).padStart(2, '0')}` },
+      { name: 'Reading', icon: '📖', category: 'learning', type: 'duration', unit: 'minutes', goal: 20, goalDirection: 'atleast', gen: () => Math.round(rand(0, 45)) },
+      { name: 'Mood', icon: '😊', category: 'wellbeing', type: 'rating', goalDirection: 'none', gen: () => Math.round(rand(2, 5)) },
+      { name: 'Exercise', icon: '🏃', category: 'fitness', type: 'yesno', goalDirection: 'none', gen: () => Math.random() > 0.4 },
+      { name: 'Spending', icon: '💰', category: 'money', type: 'currency', unit: '₹', goal: 800, goalDirection: 'atmost', gen: () => Math.round(rand(150, 1400)) },
+    ];
+
+    const sampleTrackerIds = [];
+    const trackers = [];
+    for (const def of trackerDefs) {
+      const t = Trackers.newTracker({
+        name: def.name, icon: def.icon, category: def.category, type: def.type,
+        unit: def.unit || '', goal: def.goal ?? null, goalDirection: def.goalDirection,
+        createdAt: new Date(Date.now() - days * 86400000).toISOString(),
+      });
+      await Trackers.saveTracker(t);
+      sampleTrackerIds.push(t.id);
+      trackers.push({ t, def });
+    }
+
+    const today = DateUtil.todayKey();
+    for (let i = days; i >= 1; i--) {
+      const dateKey = DateUtil.addDays(today, -i);
+      const isTravel = i >= 18 && i <= 15; // placeholder, replaced below
+      for (const { t, def } of trackers) {
+        // Skip some days randomly so it looks like real logging, not perfect
+        if (Math.random() < 0.12) continue;
+        const value = def.gen(days - i);
+        await Trackers.setEntry(t.id, dateKey, value);
+      }
+      if (Math.random() < 0.3) {
+        await DB.put('dailyNotes', {
+          date: dateKey,
+          mood: Math.round(rand(2, 5)),
+          energy: Math.round(rand(2, 5)),
+          goodThing: ['A good walk outside', 'Finished a chapter', 'Quiet evening at home', 'Caught up with a friend'][Math.floor(rand(0, 4))],
+        });
+      }
+    }
+
+    // one life event: a short travel period ~10 days ago
+    const travelStart = DateUtil.addDays(today, -12);
+    const travelEnd = DateUtil.addDays(today, -9);
+    await DB.put('lifeEvents', {
+      id: DB.uid(), name: 'Travel', startDate: travelStart, endDate: travelEnd,
+      note: 'Short trip — routine was looser than usual', createdAt: new Date().toISOString(),
+    });
+
+    await Settings.set('sampleTrackerIds', sampleTrackerIds);
+  }
+
+  async function remove() {
+    const ids = await Settings.get('sampleTrackerIds', []);
+    for (const id of ids) await Trackers.deleteTrackerAndEntries(id);
+    const events = await DB.getAll('lifeEvents');
+    for (const ev of events) if (ev.name === 'Travel') await DB.delete('lifeEvents', ev.id);
+    await Settings.set('sampleTrackerIds', []);
+    await Settings.set('sampleDataActive', false);
+  }
+
+  return { populate, remove };
+})();
+
+window.SampleData = SampleData;
+
+
+/* ---- js/experiments.js ---- */
+// ============================================================================
+// experiments.js — time-boxed personal experiments: pick related trackers,
+// run for N days, then compare before / during / after. No causal claims.
+// ============================================================================
+
+const Experiments = (() => {
+  function newExperiment(overrides = {}) {
+    return {
+      id: DB.uid(), title: '', startDate: DateUtil.todayKey(), endDate: DateUtil.addDays(DateUtil.todayKey(), 29),
+      trackerIds: [], createdAt: new Date().toISOString(), ...overrides,
+    };
+  }
+
+  async function list() { return (await DB.getAll('experiments')).sort((a, b) => (a.startDate < b.startDate ? 1 : -1)); }
+  async function save(exp) { return DB.put('experiments', exp); }
+  async function remove(id) { return DB.delete('experiments', id); }
+
+  function openCreateSheet(onSaved) {
+    const exp = newExperiment();
+    UI.openSheet((close) => {
+      const wrap = UI.el('div', { class: 'stack' });
+      wrap.appendChild(UI.el('div', { class: 'field' }, [
+        UI.el('label', {}, 'Experiment'),
+        UI.el('input', { type: 'text', placeholder: 'e.g. No food after 7 PM', oninput: (e) => { exp.title = e.target.value; } }),
+      ]));
+      wrap.appendChild(UI.el('div', { class: 'field-row' }, [
+        UI.el('div', { class: 'field' }, [UI.el('label', {}, 'Start date'), UI.el('input', { type: 'date', value: exp.startDate, onchange: (e) => { exp.startDate = e.target.value; } })]),
+        UI.el('div', { class: 'field' }, [UI.el('label', {}, 'End date'), UI.el('input', { type: 'date', value: exp.endDate, onchange: (e) => { exp.endDate = e.target.value; } })]),
+      ]));
+
+      const trackerListHost = UI.el('div', { class: 'field' }, [UI.el('label', {}, 'Related trackers')]);
+      Trackers.listTrackers().then((trackers) => {
+        const grid = UI.el('div', { class: 'chip-grid' });
+        trackers.forEach((t) => {
+          const chip = UI.el('div', { class: 'chip', onclick: () => {
+            if (exp.trackerIds.includes(t.id)) { exp.trackerIds = exp.trackerIds.filter((id) => id !== t.id); chip.classList.remove('active'); }
+            else { exp.trackerIds.push(t.id); chip.classList.add('active'); }
+          } }, `${t.icon} ${t.name}`);
+          grid.appendChild(chip);
+        });
+        trackerListHost.appendChild(grid);
+      });
+      wrap.appendChild(trackerListHost);
+
+      wrap.appendChild(UI.el('button', { class: 'btn btn-primary btn-block', style: 'margin-top:10px;', onclick: async () => {
+        if (!exp.title.trim()) { UI.toast('Give the experiment a name'); return; }
+        await save(exp);
+        close();
+        UI.toast('Experiment started');
+        onSaved && onSaved();
+      } }, 'Start experiment'));
+
+      return wrap;
+    }, { title: 'Start Experiment' });
+  }
+
+  async function openReportSheet(exp) {
+    const beforeStart = DateUtil.addDays(exp.startDate, -DateUtil.daysBetween(exp.startDate, exp.endDate) - 1);
+    const beforeEnd = DateUtil.addDays(exp.startDate, -1);
+    const today = DateUtil.todayKey();
+    const afterStart = DateUtil.addDays(exp.endDate, 1);
+    const hasAfter = today > exp.endDate;
+
+    const trackers = await Promise.all(exp.trackerIds.map((id) => Trackers.getTracker(id)));
+
+    UI.openSheet((close) => {
+      const wrap = UI.el('div', { class: 'stack' });
+      wrap.appendChild(UI.el('p', { class: 'small muted' }, `${DateUtil.formatShort(exp.startDate)} – ${DateUtil.formatShort(exp.endDate)}. During this period, your recorded data shows the following. This does not establish that one caused the other.`));
+
+      (async () => {
+        for (const t of trackers) {
+          if (!t) continue;
+          const beforeEntries = await Trackers.entriesInRange(t.id, beforeStart, beforeEnd);
+          const duringEntries = await Trackers.entriesInRange(t.id, exp.startDate, today < exp.endDate ? today : exp.endDate);
+          const afterEntries = hasAfter ? await Trackers.entriesInRange(t.id, afterStart, DateUtil.addDays(exp.endDate, DateUtil.daysBetween(exp.startDate, exp.endDate) + 1)) : [];
+
+          const avg = (entries) => {
+            if (t.type === 'time') {
+              const mins = entries.map((e) => { const [h, m] = String(e.value).split(':').map(Number); return h * 60 + m; });
+              if (!mins.length) return null;
+              const a = mins.reduce((x, y) => x + y, 0) / mins.length;
+              return `${String(Math.floor(a / 60) % 24).padStart(2, '0')}:${String(Math.round(a % 60)).padStart(2, '0')}`;
+            }
+            if (t.type === 'yesno') {
+              if (!entries.length) return null;
+              return `${entries.filter((e) => e.value === true || e.value === 'true').length}/${entries.length} days`;
+            }
+            const nums = entries.map((e) => Number(e.value)).filter((v) => !Number.isNaN(v));
+            if (!nums.length) return null;
+            return Math.round((nums.reduce((x, y) => x + y, 0) / nums.length) * 100) / 100;
+          };
+
+          const b = avg(beforeEntries), d = avg(duringEntries), a = hasAfter ? avg(afterEntries) : null;
+          const card = UI.el('div', { class: 'trend-card' });
+          card.appendChild(UI.el('div', { class: 'head' }, [UI.el('span', { class: 'icon' }, t.icon), UI.el('span', { class: 'name' }, t.name)]));
+          card.appendChild(UI.el('div', { class: 'metric-row' }, [UI.el('span', { class: 'small muted' }, 'Before'), UI.el('span', { class: 'small' }, b === null ? 'Insufficient data' : String(b))]));
+          card.appendChild(UI.el('div', { class: 'metric-row' }, [UI.el('span', { class: 'small muted' }, 'During'), UI.el('span', { class: 'small' }, d === null ? 'Insufficient data' : String(d))]));
+          if (hasAfter) card.appendChild(UI.el('div', { class: 'metric-row' }, [UI.el('span', { class: 'small muted' }, 'After'), UI.el('span', { class: 'small' }, a === null ? 'Insufficient data' : String(a))]));
+          wrap.appendChild(card);
+        }
+      })();
+
+      wrap.appendChild(UI.el('button', { class: 'btn btn-ghost btn-block', onclick: async () => {
+        const ok = await UI.confirmDialog({ title: 'Delete this experiment?', message: 'This removes the experiment record but keeps all tracker data.', confirmLabel: 'Delete', danger: true });
+        if (ok) { await remove(exp.id); close(); UI.toast('Experiment deleted'); MeScreen.refresh(); }
+      } }, 'Delete experiment'));
+
+      return wrap;
+    }, { title: exp.title });
+  }
+
+  return { list, save, remove, newExperiment, openCreateSheet, openReportSheet };
+})();
+
+window.Experiments = Experiments;
+
+
+/* ---- js/life-events.js ---- */
+// ============================================================================
+// life-events.js — record periods that explain unusual data (travel, sick,
+// deadlines, etc.), shown in monthly/yearly reports.
+// ============================================================================
+
+const LifeEvents = (() => {
+  const PRESETS = ['Sick', 'Travel', 'Vacation', 'Festival', 'Work deadline', 'Family event', 'Period', 'Injury', 'Celebration', 'Custom'];
+
+  function openAddSheet(onSaved) {
+    const ev = { id: DB.uid(), name: '', startDate: DateUtil.todayKey(), endDate: DateUtil.todayKey(), note: '', createdAt: new Date().toISOString() };
+    UI.openSheet((close) => {
+      const wrap = UI.el('div', { class: 'stack' });
+      const chipGrid = UI.el('div', { class: 'chip-grid' });
+      PRESETS.forEach((p) => {
+        const chip = UI.el('div', { class: 'chip', onclick: () => {
+          chipGrid.querySelectorAll('.chip').forEach((c) => c.classList.remove('active'));
+          chip.classList.add('active');
+          ev.name = p === 'Custom' ? '' : p;
+          nameInput.value = ev.name;
+          if (p === 'Custom') nameInput.focus();
+        } }, p);
+        chipGrid.appendChild(chip);
+      });
+      wrap.appendChild(chipGrid);
+
+      const nameInput = UI.el('input', { type: 'text', placeholder: 'Event name', oninput: (e) => { ev.name = e.target.value; } });
+      wrap.appendChild(UI.el('div', { class: 'field' }, [UI.el('label', {}, 'Name'), nameInput]));
+
+      wrap.appendChild(UI.el('div', { class: 'field-row' }, [
+        UI.el('div', { class: 'field' }, [UI.el('label', {}, 'Start date'), UI.el('input', { type: 'date', value: ev.startDate, onchange: (e) => { ev.startDate = e.target.value; } })]),
+        UI.el('div', { class: 'field' }, [UI.el('label', {}, 'End date'), UI.el('input', { type: 'date', value: ev.endDate, onchange: (e) => { ev.endDate = e.target.value; } })]),
+      ]));
+      wrap.appendChild(UI.el('div', { class: 'field' }, [UI.el('label', {}, 'Note (optional)'), UI.el('textarea', { oninput: (e) => { ev.note = e.target.value; } })]));
+
+      wrap.appendChild(UI.el('button', { class: 'btn btn-primary btn-block', onclick: async () => {
+        if (!ev.name.trim()) { UI.toast('Give the event a name'); return; }
+        await DB.put('lifeEvents', ev);
+        close();
+        UI.toast('Life event added');
+        onSaved && onSaved();
+      } }, 'Save life event'));
+
+      return wrap;
+    }, { title: 'Add Life Event' });
+  }
+
+  return { openAddSheet, PRESETS };
+})();
+
+window.LifeEvents = LifeEvents;
+
+
+/* ---- js/me.js ---- */
+// ============================================================================
+// me.js — the "Me" tab: My Trackers, Goals, Experiments, History,
+// Appearance, Backup & Restore, and Settings.
+// ============================================================================
+
+const MeScreen = (() => {
+  let sub = 'menu';
+  let lastRoot = null;
+
+  async function render(root) {
+    lastRoot = root;
+    root.innerHTML = '';
+    if (sub !== 'menu') {
+      root.appendChild(UI.el('button', { class: 'btn-link', style: 'margin-bottom:6px;', onclick: () => { sub = 'menu'; render(root); } }, '‹ Back'));
+    }
+    if (sub === 'menu') await renderMenu(root);
+    else if (sub === 'trackers') await renderTrackers(root);
+    else if (sub === 'goals') await renderGoals(root);
+    else if (sub === 'experiments') await renderExperiments(root);
+    else if (sub === 'history') await HistoryScreen.render(root);
+    else if (sub === 'appearance') await renderAppearance(root);
+    else if (sub === 'backup') await renderBackup(root);
+    else if (sub === 'settings') await renderSettings(root);
+  }
+
+  function refresh() { if (lastRoot) render(lastRoot); }
+
+  async function renderMenu(root) {
+    root.appendChild(UI.el('h1', { class: 'section-title', style: 'margin-top:4px;' }, 'Me'));
+    const items = [
+      ['trackers', '📋', 'My Trackers', 'Add, edit, reorder and archive'],
+      ['goals', '🎯', 'Goals', 'Every tracker with a target'],
+      ['experiments', '🧪', 'Experiments', 'Time-boxed self-tests'],
+      ['history', '📅', 'History', 'Browse and edit any past day'],
+      ['appearance', '🎨', 'Appearance', 'Light, dark, or automatic'],
+      ['backup', '💾', 'Backup & Restore', 'Export, import, or clear your data'],
+      ['settings', '⚙️', 'Settings', 'Privacy and app info'],
+    ];
+    const list = UI.el('div', {});
+    items.forEach(([key, icon, name, meta]) => {
+      list.appendChild(UI.el('div', { class: 'list-row', style: 'cursor:pointer;', onclick: () => { sub = key; render(root); } }, [
+        UI.el('span', { class: 'icon' }, icon),
+        UI.el('div', { class: 'main' }, [UI.el('div', { class: 'name' }, name), UI.el('div', { class: 'meta' }, meta)]),
+        UI.el('span', { class: 'muted' }, '›'),
+      ]));
+    });
+    root.appendChild(list);
+  }
+
+  // -- My Trackers -----------------------------------------------------------
+
+  async function renderTrackers(root) {
+    root.appendChild(UI.el('h1', { class: 'section-title', style: 'margin-top:0;' }, 'My Trackers'));
+    root.appendChild(UI.el('button', { class: 'btn btn-primary btn-block', style: 'margin-bottom:14px;', onclick: () => TrackerEditor.open(null, () => render(root)) }, '+ Add tracker'));
+
+    const active = await Trackers.listTrackers();
+    const archived = await Trackers.listTrackers({ includeArchived: true }).then((all) => all.filter((t) => t.archivedAt));
+
+    root.appendChild(UI.el('h3', { class: 'section-title' }, `Active (${active.length})`));
+    if (active.length === 0) root.appendChild(UI.el('p', { class: 'muted small' }, 'No active trackers.'));
+    active.forEach((t, i) => root.appendChild(trackerRow(t, i, active.length, root)));
+
+    if (archived.length) {
+      root.appendChild(UI.el('h3', { class: 'section-title' }, `Archived (${archived.length})`));
+      archived.forEach((t) => root.appendChild(archivedRow(t, root)));
+    }
+  }
+
+  function trackerRow(t, index, total, root) {
+    return UI.el('div', { class: 'list-row' }, [
+      UI.el('span', { class: 'icon' }, t.icon),
+      UI.el('div', { class: 'main', style: 'cursor:pointer;', onclick: () => TrackerEditor.open(t, () => render(root)) }, [
+        UI.el('div', { class: 'name' }, t.name),
+        UI.el('div', { class: 'meta' }, `${Trackers.TRACKER_TYPES[t.type].label} · ${Trackers.CATEGORY_LABELS[t.category]}`),
+      ]),
+      UI.el('button', { class: 'action', disabled: index === 0 ? 'disabled' : null, onclick: async () => { await reorder(t, -1); render(root); } }, '↑'),
+      UI.el('button', { class: 'action', disabled: index === total - 1 ? 'disabled' : null, onclick: async () => { await reorder(t, 1); render(root); } }, '↓'),
+    ]);
+  }
+
+  async function reorder(tracker, dir) {
+    const all = await Trackers.listTrackers();
+    const idx = all.findIndex((t) => t.id === tracker.id);
+    const swapIdx = idx + dir;
+    if (swapIdx < 0 || swapIdx >= all.length) return;
+    const a = all[idx], b = all[swapIdx];
+    const tmp = a.order; a.order = b.order; b.order = tmp;
+    await Trackers.saveTracker(a);
+    await Trackers.saveTracker(b);
+  }
+
+  function archivedRow(t, root) {
+    return UI.el('div', { class: 'list-row archived' }, [
+      UI.el('span', { class: 'icon' }, t.icon),
+      UI.el('div', { class: 'main' }, [UI.el('div', { class: 'name' }, t.name), UI.el('div', { class: 'meta' }, 'Archived')]),
+      UI.el('button', { class: 'action', onclick: async () => { await Trackers.restoreTracker(t.id); UI.toast('Restored'); render(root); } }, 'Restore'),
+      UI.el('button', { class: 'action', style: 'color:var(--danger);', onclick: async () => {
+        const ok = await UI.confirmDialog({ title: 'Delete permanently?', message: `This removes "${t.name}" and all of its history for good.`, confirmLabel: 'Delete', danger: true });
+        if (ok) { await Trackers.deleteTrackerAndEntries(t.id); UI.toast('Deleted'); render(root); }
+      } }, 'Delete'),
+    ]);
+  }
+
+  // -- Goals -------------------------------------------------------------------
+
+  async function renderGoals(root) {
+    root.appendChild(UI.el('h1', { class: 'section-title', style: 'margin-top:0;' }, 'Goals'));
+    const trackers = (await Trackers.listTrackers()).filter((t) => t.goalDirection && t.goalDirection !== 'none');
+    if (trackers.length === 0) {
+      root.appendChild(UI.el('div', { class: 'empty-state' }, [UI.el('h3', {}, 'No goals set'), UI.el('p', {}, 'Open a tracker and set a target to see it here.')]));
+      return;
+    }
+    trackers.forEach((t) => {
+      root.appendChild(UI.el('div', { class: 'list-row', style: 'cursor:pointer;', onclick: () => TrackerEditor.open(t, () => render(root)) }, [
+        UI.el('span', { class: 'icon' }, t.icon),
+        UI.el('div', { class: 'main' }, [UI.el('div', { class: 'name' }, t.name), UI.el('div', { class: 'meta' }, Trackers.goalLabel(t))]),
+        UI.el('span', { class: 'muted' }, '›'),
+      ]));
+    });
+  }
+
+  // -- Experiments ---------------------------------------------------------------
+
+  async function renderExperiments(root) {
+    root.appendChild(UI.el('h1', { class: 'section-title', style: 'margin-top:0;' }, 'Experiments'));
+    root.appendChild(UI.el('button', { class: 'btn btn-primary btn-block', style: 'margin-bottom:14px;', onclick: () => Experiments.openCreateSheet(() => render(root)) }, '+ Start experiment'));
+    const list = await Experiments.list();
+    if (list.length === 0) {
+      root.appendChild(UI.el('p', { class: 'muted small' }, 'No experiments yet.'));
+      return;
+    }
+    const today = DateUtil.todayKey();
+    list.forEach((exp) => {
+      const totalDays = DateUtil.daysBetween(exp.startDate, exp.endDate) + 1;
+      const dayNum = Math.min(totalDays, Math.max(1, DateUtil.daysBetween(exp.startDate, today) + 1));
+      const isActive = today >= exp.startDate && today <= exp.endDate;
+      const isDone = today > exp.endDate;
+      root.appendChild(UI.el('div', { class: 'list-row', style: 'cursor:pointer;', onclick: () => Experiments.openReportSheet(exp) }, [
+        UI.el('span', { class: 'icon' }, '🧪'),
+        UI.el('div', { class: 'main' }, [
+          UI.el('div', { class: 'name' }, exp.title),
+          UI.el('div', { class: 'meta' }, isActive ? `Day ${dayNum} / ${totalDays}` : isDone ? 'Completed — view report' : 'Upcoming'),
+        ]),
+        UI.el('span', { class: 'muted' }, '›'),
+      ]));
+    });
+  }
+
+  // -- Appearance ---------------------------------------------------------------
+
+  async function renderAppearance(root) {
+    root.appendChild(UI.el('h1', { class: 'section-title', style: 'margin-top:0;' }, 'Appearance'));
+    const current = await Settings.get('theme', 'auto');
+    const row = UI.el('div', { class: 'theme-row' });
+    [['auto', 'Automatic'], ['light', 'Light'], ['dark', 'Dark']].forEach(([key, label]) => {
+      row.appendChild(UI.el('button', { class: current === key ? 'active' : '', onclick: async () => { await Settings.set('theme', key); await Settings.applyTheme(); render(root); } }, label));
+    });
+    root.appendChild(row);
+  }
+
+  // -- Backup ---------------------------------------------------------------
+
+  async function renderBackup(root) {
+    root.appendChild(UI.el('h1', { class: 'section-title', style: 'margin-top:0;' }, 'Backup & Restore'));
+    root.appendChild(UI.el('p', { class: 'muted small', style: 'margin-bottom:16px;' }, 'Your life data stays on this device unless you export it. There is no account, no server, and no analytics.'));
+
+    const sampleActive = await Settings.get('sampleDataActive', false);
+    if (sampleActive) {
+      root.appendChild(UI.el('div', { class: 'callout attention', style: 'margin-bottom:16px;' }, [
+        UI.el('h4', {}, 'Sample data is active'),
+        UI.el('p', {}, 'You\u2019re exploring the app with made-up data.'),
+        UI.el('button', { class: 'btn btn-danger', style: 'margin-top:10px;', onclick: async () => {
+          const ok = await UI.confirmDialog({ title: 'Delete sample data?', message: 'This removes all the sample trackers and entries so you can start logging your real life.', confirmLabel: 'Delete sample data', danger: true });
+          if (ok) { await SampleData.remove(); UI.toast('Sample data removed'); render(root); }
+        } }, 'Delete sample data and start my life'),
+      ]));
+    }
+
+    const group = UI.el('div', { class: 'settings-group' }, [
+      UI.el('h4', {}, 'Data'),
+      settingsAction('Export backup', 'A JSON file with everything — trackers, entries, notes, events', 'Export', Backup.exportBackup),
+      settingsAction('Import backup', 'Restore from a previously exported JSON file', 'Choose file', null, true),
+      settingsAction('Export CSV', 'Human-readable spreadsheet of all entries', 'Export', Backup.exportCSV),
+      settingsAction('Clear all data', 'Permanently erase everything on this device', 'Clear', async () => {
+        const ok = await UI.confirmDialog({ title: 'Clear all data?', message: 'This permanently deletes every tracker, entry, note and event on this device. This cannot be undone.', confirmLabel: 'Clear everything', danger: true });
+        if (ok) {
+          const ok2 = await UI.confirmDialog({ title: 'Are you absolutely sure?', message: 'Consider exporting a backup first. There is no way to recover this data afterward.', confirmLabel: 'Yes, delete everything', danger: true });
+          if (ok2) { await Backup.clearAllData(); UI.toast('All data cleared'); App.start(); }
+        }
+      }, false, true),
+    ]);
+    root.appendChild(group);
+  }
+
+  function settingsAction(name, desc, actionLabel, handler, isFileImport = false, danger = false) {
+    if (isFileImport) {
+      const inputId = `import-file-${Math.random().toString(36).slice(2)}`;
+      const fileInput = UI.el('input', { type: 'file', id: inputId, accept: 'application/json', style: 'display:none;', onchange: async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const ok = await UI.confirmDialog({ title: 'Import backup?', message: 'This replaces all current data on this device with the contents of the backup file.', confirmLabel: 'Import', danger: true });
+        if (!ok) { e.target.value = ''; return; }
+        try {
+          await Backup.importBackup(file);
+          UI.toast('Backup imported');
+          App.start();
+        } catch (err) {
+          UI.toast(err.message || 'Import failed');
+        }
+      } });
+      return UI.el('div', { class: 'settings-item' }, [
+        UI.el('div', {}, [UI.el('div', { class: 'name' }, name), UI.el('div', { class: 'desc' }, desc)]),
+        UI.el('label', { class: 'btn btn-ghost', for: inputId, style: 'margin:0;' }, [actionLabel, fileInput]),
+      ]);
+    }
+    return UI.el('div', { class: 'settings-item' }, [
+      UI.el('div', {}, [UI.el('div', { class: 'name' }, name), UI.el('div', { class: 'desc' }, desc)]),
+      UI.el('button', { class: danger ? 'btn btn-danger' : 'btn btn-ghost', onclick: handler }, actionLabel),
+    ]);
+  }
+
+  // -- Settings ---------------------------------------------------------------
+
+  async function renderSettings(root) {
+    root.appendChild(UI.el('h1', { class: 'section-title', style: 'margin-top:0;' }, 'Settings'));
+    root.appendChild(UI.el('div', { class: 'callout neutral' }, [
+      UI.el('h4', {}, 'Privacy'),
+      UI.el('p', {}, 'Your life data stays on this device unless you export it. No analytics, no account, no server upload, no external tracking.'),
+    ]));
+    root.appendChild(UI.el('div', { class: 'settings-group' }, [
+      UI.el('h4', {}, 'About'),
+      UI.el('div', { class: 'settings-item' }, [UI.el('div', { class: 'name' }, 'Life Dashboard'), UI.el('div', { class: 'muted small' }, 'v1.0')]),
+    ]));
+  }
+
+  return { render, refresh, goTo: (key) => { sub = key; } };
+})();
+
+window.MeScreen = MeScreen;
+
+
+/* ---- js/app.js ---- */
+// ============================================================================
+// app.js — bootstraps the app: onboarding check, bottom navigation, screen
+// router, and the central "+" quick-add menu.
+// ============================================================================
+
+const App = (() => {
+  const SCREENS = [
+    { key: 'today', label: 'Today', icon: '🏠', render: (root) => TodayScreen.render(root) },
+    { key: 'trends', label: 'Trends', icon: '📈', render: (root) => TrendsScreen.render(root) },
+    { key: 'reports', label: 'Reports', icon: '📊', render: (root) => ReportsScreen.render(root) },
+    { key: 'me', label: 'Me', icon: '🙂', render: (root) => MeScreen.render(root) },
+  ];
+  let current = 'today';
+
+  function go(key) {
+    current = key;
+    renderShell();
+  }
+
+  function renderShell() {
+    const appRoot = document.getElementById('app');
+    appRoot.innerHTML = '';
+
+    SCREENS.forEach((s) => {
+      const screenDiv = document.createElement('div');
+      screenDiv.className = `screen${s.key === current ? ' active' : ''}`;
+      screenDiv.id = `screen-${s.key}`;
+      appRoot.appendChild(screenDiv);
+      if (s.key === current) s.render(screenDiv);
+    });
+
+    appRoot.appendChild(renderNav());
+  }
+
+  function renderNav() {
+    const nav = UI.el('nav', { class: 'bottom-nav' });
+    const order = ['today', 'trends', '__add__', 'reports', 'me'];
+    order.forEach((key) => {
+      if (key === '__add__') {
+        nav.appendChild(UI.el('button', { class: 'nav-add', 'aria-label': 'Quick add', onclick: openQuickAdd }, '+'));
+        return;
+      }
+      const s = SCREENS.find((x) => x.key === key);
+      nav.appendChild(UI.el('button', { class: `nav-btn${current === key ? ' active' : ''}`, onclick: () => go(key) }, [
+        UI.el('span', { class: 'nav-icon' }, s.icon),
+        UI.el('span', {}, s.label),
+      ]));
+    });
+    return nav;
+  }
+
+  function openQuickAdd() {
+    UI.openSheet((close) => {
+      const wrap = UI.el('div', { class: 'stack' });
+      const actions = [
+        ['📋', 'Add Tracker', () => { close(); TrackerEditor.open(null, () => go(current)); }],
+        ['📝', 'Add Note', () => { close(); go('today'); }],
+        ['📌', 'Add Life Event', () => { close(); LifeEvents.openAddSheet(() => { if (current === 'reports' || current === 'me') go(current); }); }],
+        ['🧪', 'Start Experiment', () => { close(); Experiments.openCreateSheet(() => { if (current === 'me') go(current); }); }],
+      ];
+      actions.forEach(([icon, label, handler]) => {
+        wrap.appendChild(UI.el('div', { class: 'list-row', style: 'cursor:pointer;', onclick: handler }, [
+          UI.el('span', { class: 'icon' }, icon),
+          UI.el('div', { class: 'main' }, [UI.el('div', { class: 'name' }, label)]),
+        ]));
+      });
+      return wrap;
+    }, { title: 'Quick add' });
+  }
+
+  async function start() {
+    await Settings.applyTheme();
+    const onboarded = await Settings.get('onboarded', false);
+    const appRoot = document.getElementById('app');
+    if (!onboarded) {
+      Onboarding.render(appRoot);
+      return;
+    }
+    current = 'today';
+    renderShell();
+  }
+
+  return { start, go };
+})();
+
+window.App = App;
+
+document.addEventListener('DOMContentLoaded', () => {
+  App.start();
+  // This single-file build has no separate sw.js to register (everything lives
+  // in this one HTML file already, so there is nothing extra to cache).
+});
+
+</script>
+</body>
+</html>
