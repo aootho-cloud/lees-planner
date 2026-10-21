@@ -792,12 +792,12 @@
     {id:'floater', name:'Floater',      c:3, builtin:true},
     {id:'unpaid',  name:'Unpaid Leave', c:4},
   ];
-  // your company's rules: paid 1/month (carries over), casual & sick 1.5 each quarter (lapse), unpaid 80/yr (lapses)
+  // your company's rules: paid 1/month (carries over), casual & sick 1.5 each quarter (lapse), floater 2/yr and unpaid 80/yr (lapse)
   const DEFAULT_POLICY = {
     casual:  { quota:6,    accrual:'quarterly', carry:false },
     paid:    { quota:12,   accrual:'monthly',   carry:true  },
     sick:    { quota:6,    accrual:'quarterly', carry:false },
-    floater: { quota:null, accrual:'yearly',    carry:false },
+    floater: { quota:2,    accrual:'yearly',    carry:false },
     unpaid:  { quota:80,   accrual:'yearly',    carry:false },
   };
 
@@ -819,6 +819,10 @@
         if (id === 'paid' && typeof x.carryover === 'number' && x.carryover > 0) d.policy[y][id] = { carryover:x.carryover }; else delete d.policy[y][id];
       }
       d.seeded.policyV2 = true;
+    }
+    if (!d.seeded.floaterV1){
+      for (const y of Object.keys(d.policy)) if (d.policy[y].floater) delete d.policy[y].floater;   // use the 2-per-year rule
+      d.seeded.floaterV1 = true;
     }
     if (!d.seeded.cleanV3){
       for (const y of [2025, 2026]) for (const [k,t] of Object.entries(legacySeed(y))) if (d.marks[k] === t){ delete d.marks[k]; delete d.kind[k]; delete d.half[k]; }
