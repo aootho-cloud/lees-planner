@@ -120,6 +120,7 @@
   .day.leave.split{background:linear-gradient(135deg,var(--leave-bg) 48.5%,rgba(176,0,0,.45) 49.5%,rgba(176,0,0,.45) 50.5%,var(--leave-bg) 51.5%)}
   .day.leave.split.split-f1{background:linear-gradient(135deg,var(--floater-bg) 50%,var(--leave-bg) 50%)}
   .day.leave.split.split-f2{background:linear-gradient(135deg,var(--leave-bg) 50%,var(--floater-bg) 50%)}
+  .day.leave.planned{outline:2px dashed var(--leave-fg);outline-offset:-5px}
   .day.leave.half.half-second{background:linear-gradient(135deg,#fff 50%,var(--leave-bg) 50%)}
   .day.floater.half.half-second{background:linear-gradient(135deg,#fff 50%,var(--floater-bg) 50%)}
   .day[data-date]:hover{filter:brightness(.95)}
@@ -263,6 +264,14 @@
   .wfh-m .bar{display:block;width:100%;height:5px;border-radius:99px;background:#ece8f6;overflow:hidden}
   .wfh-m .bar i{display:block;height:100%;background:#6a55a8}
   .wfh-m.over .v{color:#b00000}.wfh-m.over .bar i{background:#b00000}
+  .plan-card{background:#fff;border:1px dashed #b00000;border-radius:8px;padding:14px 18px;margin:24px 0 0}
+  .plan-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+  .plan-top h3{margin:0;font-size:16px;font-weight:600}
+  .plan-card p{margin:8px 0 0}
+  .sug{display:inline-block;font-size:12px;font-weight:600;color:#2d6a2f;background:#e8f4e5;border-radius:99px;padding:2px 9px;margin-top:4px}
+  .sug.warn{color:#8a3b00;background:#fdeedd}
+  .lv-table tr.is-planned td:first-child{box-shadow:inset 3px 0 0 #b00000}
+  .proj{text-align:center;margin:-18px 16px 14px}
   .pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:6px;margin-top:10px}
   .pager .meta{margin-right:auto}
   .pager .btn{min-width:36px}
@@ -928,17 +937,19 @@
   const leaveKindsForMenu = () => data.leaveTypes.filter(t => t.id !== 'floater');
   const dayWeight = k => data.half[k] ? 0.5 : 1;
   // which leave-type a marked day counts against (null = untagged leave)
-  const leaveTypeOf = k => data.marks[k] === 'floater' ? 'floater' : data.marks[k] === 'leave' ? (data.kind[k] && typeById(data.kind[k]) ? data.kind[k] : null) : undefined;
+  const PLANNED = 'planned';
+  const leaveTypeOf = k => data.marks[k] === 'floater' ? 'floater' : data.marks[k] === 'leave' ? (data.kind[k] === PLANNED ? PLANNED : data.kind[k] && typeById(data.kind[k]) ? data.kind[k] : null) : undefined;
   // a full-day leave made of two different halves, e.g. first half Sick + second half Casual
   const splitOf = k => (data.marks[k] === 'leave' && data.split && data.split[k]) || null;
-  const validType = id => id && typeById(id) ? id : null;
+  const validType = id => id === PLANNED || (id && typeById(id)) ? id : null;
+  const nameOf = id => id === 'floater' ? 'Floater' : id === PLANNED ? 'Planned leave' : (typeById(id) || {}).name || 'Leave';
   function leaveParts(k){            // [[typeId|null, days]] for every leave portion on a day
     const sp = splitOf(k);
     if (sp) return [[validType(sp.first), 0.5], [validType(sp.second), 0.5]];
     const t = leaveTypeOf(k);
     return t === undefined ? [] : [[t, dayWeight(k)]];
   }
-  const shortType = id => { const t = typeById(id); return t ? t.name.replace(/ Leave$/,'') : 'Leave'; };
+  const shortType = id => { if (id === PLANNED) return 'Planned'; const t = typeById(id); return t ? t.name.replace(/ Leave$/,'') : 'Leave'; };
   function clearSplit(k){ if (data.split) delete data.split[k]; }
 
   function policyFor(y, id){
@@ -970,23 +981,74 @@
   }
   function usage(y){
     const byType = {}, weekday = Array(7).fill(0), month = Array(12).fill(0), list = {};
-    let untagged = 0, untaggedKeys = [];
+    let untagged = 0, untaggedKeys = [], planned = 0, plannedKeys = [];
     for (const k of Object.keys(data.marks)){
       if (!k.startsWith(y+'-')) continue;
       const d = parseKey(k);
       for (const [t, w] of leaveParts(k)){
         weekday[monIdx(d)] += w; month[d.getMonth()] += w;
+        if (t === PLANNED){ weekday[monIdx(d)] -= w; month[d.getMonth()] -= w; planned += w; if (!plannedKeys.includes(k)) plannedKeys.push(k); continue; }   // not taken yet: keep out of the stats
         if (t === null){ untagged += w; if (!untaggedKeys.includes(k)) untaggedKeys.push(k); continue; }
         byType[t] = (byType[t]||0) + w; ((list[t] ||= []).includes(k)) || list[t].push(k);
       }
     }
-    return { byType, weekday, month, untagged, untaggedKeys, list };
+    return { byType, weekday, month, untagged, untaggedKeys, list, planned, plannedKeys };
   }
   function balance(y, id, used){
     const p = policyFor(y, id);
     if (p.quota == null) return { ...p, carryover:0, accrued:null, available:null, consumed:used };
     const accrued = accruedFor(p, y), carryover = carryFor(y, id);
     return { ...p, accrued, carryover, consumed:used, available: Math.round((accrued + carryover - used)*100)/100 };
+  }
+
+  /* ---------- planning undecided leave ---------- */
+  const PLAN_ORDER = ['casual', 'sick', 'paid', 'unpaid'];        // lapsing types first, Paid kept for carryover; never Floater
+  function creditedBy(T, y, key){
+    const p = policyFor(y, T); if (p.quota == null) return Infinity;
+    const m = +key.slice(5,7) - 1;
+    const acc = p.accrual === 'monthly' ? p.quota * (m+1) / 12 : p.accrual === 'quarterly' ? p.quota * (Math.floor(m/3)+1) / 4 : p.quota;
+    return acc + carryFor(y, T);
+  }
+  // -> { byPart: {'k|half': typeId|null}, byType: {T: days}, short: [{k,half,w}] }
+  function suggestPlan(y){
+    const order = PLAN_ORDER.filter(id => typeById(id));
+    const ev = [];
+    for (const k of Object.keys(data.marks).filter(k => k.startsWith(y+'-')).sort()){
+      const sp = splitOf(k);
+      const parts = sp ? [[sp.first, .5, 'first'], [sp.second, .5, 'second']] : (t => t === undefined ? [] : [[t, dayWeight(k), data.half[k] ? (data.half[k] === 'second' ? 'second' : 'first') : 'full']])(leaveTypeOf(k));
+      for (const [t, w, half] of parts) if (t) ev.push({ k, t, w, half });
+    }
+    const used = {}, byPart = {}, byType = {}, short = [];
+    order.forEach(T => { used[T] = 0; byType[T] = 0; });
+    const fits = (T, i, w) => {
+      let u = used[T] + w; if (u > creditedBy(T, y, ev[i].k) + 1e-9) return false;
+      for (let j = i+1; j < ev.length; j++) if (ev[j].t === T){ u += ev[j].w; if (u > creditedBy(T, y, ev[j].k) + 1e-9) return false; }
+      return true;
+    };
+    ev.forEach((e, i) => {
+      if (e.t !== PLANNED){ if (e.t in used) used[e.t] += e.w; return; }
+      const T = order.find(T => fits(T, i, e.w)) || null;
+      byPart[e.k + '|' + e.half] = T;
+      if (T){ used[T] += e.w; byType[T] += e.w; } else short.push(e);
+    });
+    return { byPart, byType, short };
+  }
+  const plannedHalves = k => { const sp = splitOf(k); return sp ? ['first','second'].filter(h => sp[h] === PLANNED) : (data.marks[k] === 'leave' && data.kind[k] === PLANNED ? [data.half[k] ? (data.half[k] === 'second' ? 'second' : 'first') : 'full'] : []); };
+  function suggestionText(k, plan){
+    const hs = plannedHalves(k); if (!hs.length) return '';
+    const ts = hs.map(h => plan.byPart[k + '|' + h]);
+    if (ts.some(t => !t)) return `<span class="sug warn">⚠ Not enough leave credited by ${fmtShort(parseKey(k))}</span>`;
+    return `<span class="sug">Suggested: ${[...new Set(ts)].map(shortType).join(' + ')}</span>`;
+  }
+  function applySuggestions(y){
+    const plan = suggestPlan(y); let n = 0;
+    for (const [pk, T] of Object.entries(plan.byPart)){
+      if (!T) continue;
+      const [k, half] = pk.split('|');
+      if (half === 'full' || !splitOf(k)){ data.kind[k] = T; n++; continue; }
+      const h = halvesOf(k); h[half] = T; setHalves(k, h); n++;
+    }
+    return n;
   }
 
   /* ---------- sidebar ---------- */
@@ -1107,7 +1169,7 @@
   function markLabel(k){
     const t = data.marks[k]; if (!t) return '';
     const sp = splitOf(k); if (sp) return `${shortType(sp.first)} (1st half) + ${shortType(sp.second)} (2nd half)`;
-    if (t === 'leave'){ const lt = typeById(data.kind[k]); return `${lt ? lt.name : 'Leave'}${data.half[k]?` (${halfText(k)})`:''}`; }
+    if (t === 'leave'){ const nm = data.kind[k] === PLANNED ? 'Planned leave' : (typeById(data.kind[k]) || {}).name || 'Leave'; return `${nm}${data.half[k]?` (${halfText(k)})`:''}`; }
     if (t === 'floater') return `Floater${data.half[k]?` (${halfText(k)})`:''}`;
     return TYPES[t];
   }
@@ -1122,6 +1184,7 @@
   function dayCls(d, extra=''){
     const k = keyOf(d), t = data.marks[k], c = ['day'];
     if (isWeekend(d)) c.push('we'); if (t) c.push(t); if (data.half[k] && t){ c.push('half'); if (data.half[k] === 'second') c.push('half-second'); }
+    if (t === 'leave' && (data.kind[k] === PLANNED || (splitOf(k) && (splitOf(k).first === PLANNED || splitOf(k).second === PLANNED)))) c.push('planned');
     const sp = splitOf(k); if (sp){ c.push('split'); if (sp.first === 'floater') c.push('split-f1'); if (sp.second === 'floater') c.push('split-f2'); }
     if (k === todayKey()) c.push('is-today'); if (extra) c.push(extra);
     return c.join(' ');
@@ -1214,8 +1277,9 @@
     const keys = Object.keys(data.marks).filter(k => k.startsWith(y+'-') && (data.marks[k] === 'leave' || data.marks[k] === 'floater')).sort().reverse();
     const shown = keys.filter(k => leaveFilter === 'all' || leaveParts(k).some(([t]) => (t ?? 'untagged') === leaveFilter));
     const total = shown.reduce((a,k) => a + leaveParts(k).filter(([t]) => leaveFilter === 'all' || (t ?? 'untagged') === leaveFilter).reduce((b,[,w]) => b + w, 0), 0);
-    const opts = [...leaveKindsForMenu().map(t => [t.id, t.name]), ['floater','Floater']];
-    const typeColor = id => { const t = typeById(id); return t ? col(t.c ?? 0) : '#9e9e9e'; };
+    const opts = [...leaveKindsForMenu().map(t => [t.id, t.name]), ['floater','Floater'], [PLANNED, 'Planned (decide later)']];
+    const plan = suggestPlan(y);
+    const typeColor = id => { if (id === PLANNED) return 'transparent;border:2px dashed #b00000'; const t = typeById(id); return t ? col(t.c ?? 0) : '#9e9e9e'; };
     if (leavePageKey !== y + '|' + leaveFilter){ leavePageKey = y + '|' + leaveFilter; leavePage = 1; }
     const pages = Math.max(1, Math.ceil(shown.length / LEAVE_PAGE_SIZE));
     leavePage = Math.min(Math.max(1, leavePage), pages);
@@ -1225,13 +1289,14 @@
       const typeCell = sp
         ? `<span class="lv-split"><i style="background:${typeColor(sp.first)}"></i>${esc(shortType(sp.first))} <small>1st half</small> + <i style="background:${typeColor(sp.second)}"></i>${esc(shortType(sp.second))} <small>2nd half</small></span>`
         : `<span class="lv-type"><i style="background:${typeColor(cur)}" aria-hidden="true"></i><select data-lv-type="${k}" aria-label="Leave type on ${fmtShort(d)}">${cur ? '' : '<option value="" selected>— Untagged —</option>'}${opts.map(([id,n]) => `<option value="${id}" ${id===cur?'selected':''}>${esc(n)}</option>`).join('')}</select></span>`;
+      const sug = suggestionText(k, plan);
       const durCell = sp ? 'Full day' : `<select data-lv-half="${k}" aria-label="Duration on ${fmtShort(d)}"><option value="" ${!data.half[k]?'selected':''}>Full day</option><option value="first" ${data.half[k]==='first'||data.half[k]===true?'selected':''}>First half</option><option value="second" ${data.half[k]==='second'?'selected':''}>Second half</option></select>`;
-      const tintOf = id => { const t = typeById(id); return t ? tint(t.c ?? 0) : '#ececec'; };
+      const tintOf = id => { if (id === PLANNED) return '#fff'; const t = typeById(id); return t ? tint(t.c ?? 0) : '#ececec'; };
       const bg = sp ? `linear-gradient(90deg, ${tintOf(sp.first)} 50%, ${tintOf(sp.second)} 50%)` : tintOf(cur);
-      return `<tr class="lv-row-${esc(cur || 'untagged')}" style="background:${bg}">
+      return `<tr class="lv-row-${esc(cur || 'untagged')}${plannedHalves(k).length ? ' is-planned' : ''}" style="background:${bg}">
         <td data-label="Date"><button type="button" class="link" data-goto-cal="${k}">${fmtShort(d)} ${d.getFullYear()}</button></td>
         <td data-label="Day">${DOW_LONG[monIdx(d)]}</td>
-        <td data-label="Leave type">${typeCell}</td>
+        <td data-label="Leave type">${typeCell}${sug ? `<div>${sug}</div>` : ''}</td>
         <td data-label="Duration">${durCell}</td>
         <td data-label="Days">${num(leaveParts(k).reduce((a,[,w]) => a + w, 0))}</td>
         <td data-label="Comment"><input data-note="${k}" id="lvn-${k}" value="${esc(data.notes[k]||'')}" placeholder="—" aria-label="Comment for ${fmtShort(d)}"></td>
@@ -1246,6 +1311,16 @@
         <tbody>${rows || `<tr class="tk-empty"><td colspan="7">${keys.length ? 'No leaves of this type.' : 'No leaves added for '+y+' yet.'}</td></tr>`}</tbody>
         ${rows ? `<tfoot><tr><th scope="row" colspan="4">Total${pages > 1 ? ' (all pages)' : ''}</th><td>${num(total)}</td><td colspan="2"></td></tr></tfoot>` : ''}</table></div>
       ${pages > 1 ? pager(leavePage, pages, from + 1, from + pageKeys.length, shown.length) : ''}`;
+  }
+  function plannedPanel(y){
+    const u = usage(y); if (!u.plannedKeys.length) return '';
+    const plan = suggestPlan(y), past = u.plannedKeys.filter(k => k < todayKey()).length;
+    const mix = Object.entries(plan.byType).filter(([,v]) => v > 0).map(([T,v]) => `${num(v)} ${shortType(T)}`).join(' · ');
+    return `<section class="plan-card" aria-labelledby="planH"><div class="plan-top"><h3 id="planH">📝 ${days(u.planned)} planned, type not decided</h3>
+        <button type="button" class="btn primary" data-plan-apply="${y}" ${mix ? '' : 'disabled'}>Use suggested types</button></div>
+      <p class="meta">${mix ? `Suggested from what you'll have credited by each date: <b>${mix}</b>. Casual and Sick go first (they lapse), then Paid (it carries over), then Unpaid. Floaters are never used.` : 'Not enough leave credited for these dates yet.'}</p>
+      ${plan.short.length ? `<p class="sug warn">⚠ ${plan.short.length} planned day${plan.short.length===1?'':'s'} can't be covered by the leave credited by then.</p>` : ''}
+      ${past ? `<p class="sug warn">⏰ ${past} planned day${past===1?' has':'s have'} already passed — set the type you applied in Keka (filter the table by “Planned”).</p>` : ''}</section>`;
   }
   function pager(cur, pages, a, b, total){
     const nums = [];
@@ -1304,6 +1379,7 @@
       <article class="kc wide"><h3>Monthly Stats</h3>${bars(u.month, MONTHS.map(m=>m.slice(0,3)), MONTHS, 'Leave days by month')}</article>
     </div>`;
 
+    const cardPlan = suggestPlan(y);
     const cards = types.map(t => {
       const b = balance(y, t.id, u.byType[t.id]||0);
       const hasQ = b.quota != null;
@@ -1318,13 +1394,15 @@
         : `<div><dt>Consumed</dt><dd>${days(b.consumed)}</dd></div><div><dt>Annual quota</dt><dd>No limit</dd></div>`;
       const r2 = hasQ ? [`<div><dt>Accrued so far</dt><dd>${days(b.accrued)}</dd></div>`, b.carryover ? `<div><dt>Carryover</dt><dd>${days(b.carryover)}</dd></div>` : '', `<div><dt>Annual quota</dt><dd>${days(b.quota)}</dd></div>`].filter(Boolean) : [];
       const list = (u.list[t.id]||[]).sort();
+      const pl = cardPlan.byType[t.id] || 0;
+      const proj = hasQ && pl ? `<p class="meta proj">With planned leave (${days(pl)} suggested): <b>${days(Math.round((b.quota + (b.carryover||0) - b.consumed - pl)*100)/100)}</b> left by year end</p>` : '';
       return `<article class="kcard" aria-label="${esc(t.name)}">
         <header><h3>${esc(t.name)}</h3><button type="button" class="link" data-edit-type="${t.id}" aria-label="Edit ${esc(t.name)} quota">Edit</button></header>
         ${hasQ ? `<p class="meta" style="text-align:center;margin:0 16px">${num(b.quota)} a year · ${ACCRUAL_TEXT[b.accrual]} · ${b.carry ? 'unused carries over' : 'lapses at year end'}</p>` : ''}
         ${hasQ && b.carry && y === yearBounds().min ? (b.manualCarry == null
           ? `<div class="carry-cta"><button type="button" class="btn" data-carry-open="${t.id}">+ Add leaves carried over from ${y-1}</button><span class="meta">One-time — ${y-1} isn't tracked here. From ${y+1} this is worked out automatically.</span></div>`
           : `<p class="meta carry-note">Carried over from ${y-1}: <b>${days(b.manualCarry)}</b> · <button type="button" class="link" data-carry-open="${t.id}">Change</button></p>`) : ''}
-        <div class="ring"><div class="donut-wrap">${ring}<div class="ctr">${ctr}</div></div></div>
+        <div class="ring"><div class="donut-wrap">${ring}<div class="ctr">${ctr}</div></div></div>${proj}
         <dl class="kgrid" style="grid-template-columns:1fr 1fr">${row1}</dl>
         ${r2.length?`<dl class="kgrid r2" style="grid-template-columns:repeat(${r2.length},1fr)">${r2.join('')}</dl>`:''}
         <details><summary>View dates (${list.length})</summary>${list.length?`<ul>${list.map(k=>{const d=parseKey(k);return `<li><span>${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)}${(sp => sp ? ' · ' + (sp.first === t.id && sp.second === t.id ? 'both halves' : sp.first === t.id ? 'first half' : 'second half') : '')(splitOf(k))}${!splitOf(k) && data.half[k]?' · '+halfText(k):''}</span><span>${esc(data.notes[k]||'')}</span><button type="button" class="x" data-rm-leave="${k}" data-rm-type="${t.id}" aria-label="Remove ${esc(t.name)} on ${fmtShort(d)}">✕</button></li>`;}).join('')}</ul>`:'<p class="meta">No dates yet.</p>'}</details>
@@ -1335,7 +1413,7 @@
     const addLeave = `<form class="add-leave" id="addLeave" aria-labelledby="alHead"><h3 id="alHead">Add leave <span class="meta" style="font-size:13px">· shows up in Calendar and Tasks automatically</span></h3>
       <div><label for="alFrom">From</label><input type="date" id="alFrom" value="${dflt}" required></div>
       <div><label for="alTo">To</label><input type="date" id="alTo" value="${dflt}" required></div>
-      <div><label for="alType">Leave type</label><select id="alType">${leaveKindsForMenu().map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}<option value="floater">Floater</option></select></div>
+      <div><label for="alType">Leave type</label><select id="alType">${leaveKindsForMenu().map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}<option value="floater">Floater</option><option value="${PLANNED}">Planned — decide type later</option></select></div>
       <div><label class="chk" for="alHalf"><input type="checkbox" id="alHalf"> Half day</label>
         <label class="sr-only" for="alWhich">Which half</label><select id="alWhich" hidden><option value="first">First half</option><option value="second">Second half</option></select></div>
       <div><label for="alNote">Comment</label><input id="alNote" placeholder="Optional — e.g. family trip"></div>
@@ -1346,7 +1424,7 @@
       <div class="aw-left"><span class="meta" id="awInfo"></span></div>
       <div><label for="awNote">Comment</label><input id="awNote" placeholder="Optional — e.g. plumber visit"></div>
       <div><button type="submit" class="btn primary" style="height:36px;background:#6a55a8;border-color:#6a55a8">Add WFH</button></div></form>`;
-    return `<div class="lv">${addLeave}${addWfh}<h2>My Leave Stats</h2>${banner}${stats}<div class="lv-row"><h2>Leave Balances</h2></div><div class="kbal">${cards}</div>${leaveTable(y)}${wfhSection(y)}</div>`;
+    return `<div class="lv">${addLeave}${addWfh}<h2>My Leave Stats</h2>${banner}${stats}<div class="lv-row"><h2>Leave Balances</h2></div><div class="kbal">${cards}</div>${plannedPanel(y)}${leaveTable(y)}${wfhSection(y)}</div>`;
   }
 
   /* leave-type dialog */
@@ -1707,7 +1785,7 @@
       const k = e.target.dataset.lvType, v = e.target.value; if (!v) return;
       clearSplit(k);
       if (v === 'floater'){ data.marks[k] = 'floater'; delete data.kind[k]; } else { data.marks[k] = 'leave'; data.kind[k] = v; }
-      save(); renderKeep(); toast(`${fmtShort(parseKey(k))} changed to ${v === 'floater' ? 'Floater' : typeById(v).name}`); return;
+      save(); renderKeep(); toast(`${fmtShort(parseKey(k))} changed to ${nameOf(v)}`); return;
     }
     if (e.target.dataset.lvHalf !== undefined){
       const k = e.target.dataset.lvHalf, v = e.target.value;
@@ -1969,7 +2047,7 @@
 
   /* context menu */
   const ctx = $('#ctx'); let ctxKey = null;
-  const KEYS = { casual:'C', paid:'P', sick:'S', unpaid:'U', wfh:'W', holiday:'H', floater:'F' };
+  const KEYS = { casual:'C', paid:'P', sick:'S', unpaid:'U', planned:'L', wfh:'W', holiday:'H', floater:'F' };
   function openCtx(k, x, y){
     hideInfo(); closePop(false); ctxKey = k;
     const d = parseKey(k), cur = data.marks[k], curKind = data.kind[k];
@@ -1978,6 +2056,7 @@
     ctx.innerHTML = `<div class="hd" aria-hidden="true">${DOW_LONG[monIdx(d)].slice(0,3)}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}</div>
       <div class="grp" aria-hidden="true">Leave</div>`
       + leaveKindsForMenu().map(t => item(`data-pick="leave" data-kind="${t.id}" aria-label="Leave: ${esc(t.name)}"`, 't-leave', t.name.replace(/ Leave$/,''), cur==='leave' && curKind===t.id, KEYS[t.id], true)).join('')
+      + item(`data-pick="leave" data-kind="${PLANNED}" aria-label="Planned leave, decide the type later"`, 't-leave', 'Planned — decide later', cur==='leave' && curKind===PLANNED, KEYS[PLANNED], true)
       + `<hr>` + ['wfh','holiday','floater'].map(t => item(`data-pick="${t}"`, `t-${t}`, TYPES[t], cur===t, KEYS[t])).join('')
       + `<hr><button type="button" role="menuitem" data-act="weekoff">${isWeekend(d)?'Mark as working day':'Mark as week off'}</button>`
       + `<button type="button" role="menuitem" data-act="comment">${data.notes[k]?'Edit comment':'Add comment'}<span class="k">Enter</span></button>`
@@ -2125,6 +2204,7 @@
     const mins = tasks.reduce((a,x) => a + (x.mins||0), 0);
     info.innerHTML = `<h3 id="diTitle">${DOW_LONG[monIdx(d)]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}<button type="button" class="x" data-info-act="close" aria-label="Close">✕</button></h3>
       ${chips.length ? `<div class="chips">${chips.join('')}</div>` : ''}
+      ${plannedHalves(k).length ? `<p style="margin:0 0 8px">${suggestionText(k, suggestPlan(d.getFullYear()))}</p>` : ''}
       ${(data.notes[k]||'').trim() ? `<div class="lbl">Comment</div><p class="cmt">${esc(data.notes[k])}</p>` : ''}
       ${tasks.length ? `<div class="lbl">Tasks · ${tasks.length}${mins ? ' · ' + fmtTime(mins) : ''}</div><ul>${tasks.slice(0,6).map(x => `<li><span title="${TSTAT[x.status].label}">${TSTAT[x.status].emo}</span><span>${esc(x.title || 'Untitled task')}</span>${x.mins ? `<span class="tm">${fmtTime(x.mins)}</span>` : ''}</li>`).join('')}${tasks.length > 6 ? `<li class="meta">+${tasks.length-6} more</li>` : ''}</ul>` : ''}
       <div class="acts"><button type="button" class="link" data-info-act="comment" data-k="${k}">${(data.notes[k]||'').trim() ? 'Edit comment' : 'Add comment'}</button>
@@ -2237,6 +2317,11 @@
       delete data.marks[k]; delete data.kind[k]; delete data.half[k]; clearSplit(k); save(); render(); toast(`Removed ${what} on ${fmtShort(parseKey(k))}`, true); return;
     }
     if (b.dataset.gotoCal){ cursor = parseKey(b.dataset.gotoCal); focusKey = b.dataset.gotoCal; section = 'calendar'; view = 'month'; render(true); return; }
+    if (b.dataset.planApply){
+      const y = +b.dataset.planApply;
+      if (!confirm('Set every planned leave to its suggested type? You can still change any of them afterwards.')) return;
+      const n = applySuggestions(y); save(); render(); toast(`Set ${n} planned leave${n===1?'':'s'} to the suggested type`); return;
+    }
     if (b.dataset.lvPage){ leavePage = +b.dataset.lvPage; render(); const t = viewEl.querySelector('.lv-table'); t && t.scrollIntoView({block:'nearest'}); viewEl.querySelector('.pager [aria-current]')?.focus(); return; }
     if (b.dataset.wfhMonth !== undefined){ cursor = new Date(cursor.getFullYear(), +b.dataset.wfhMonth, 1); renderKeep(); return; }
     if (b.dataset.obj) return openObjective(b.dataset.obj);
