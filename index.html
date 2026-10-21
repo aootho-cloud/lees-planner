@@ -263,6 +263,11 @@
   .wfh-m .bar{display:block;width:100%;height:5px;border-radius:99px;background:#ece8f6;overflow:hidden}
   .wfh-m .bar i{display:block;height:100%;background:#6a55a8}
   .wfh-m.over .v{color:#b00000}.wfh-m.over .bar i{background:#b00000}
+  .pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:6px;margin-top:10px}
+  .pager .meta{margin-right:auto}
+  .pager .btn{min-width:36px}
+  .pager .btn.on{background:var(--keka);border-color:var(--keka);color:#fff;font-weight:600}
+  .pager .btn:disabled{opacity:.4;cursor:not-allowed}
   .lv-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .lv-tools select{border:1px solid #bbb;border-radius:8px;padding:6px 8px;background:#fff}
   .lv-table{min-width:760px}
@@ -1202,14 +1207,20 @@
   }
 
   /* ---------- Leaves section ---------- */
-  let leaveFilter = 'all';
+  let leaveFilter = 'all', leavePage = 1, leavePageKey = '';
+  const LEAVE_PAGE_SIZE = 10;
   function leaveTable(y){
-    const keys = Object.keys(data.marks).filter(k => k.startsWith(y+'-') && (data.marks[k] === 'leave' || data.marks[k] === 'floater')).sort();
+    // newest first
+    const keys = Object.keys(data.marks).filter(k => k.startsWith(y+'-') && (data.marks[k] === 'leave' || data.marks[k] === 'floater')).sort().reverse();
     const shown = keys.filter(k => leaveFilter === 'all' || leaveParts(k).some(([t]) => (t ?? 'untagged') === leaveFilter));
     const total = shown.reduce((a,k) => a + leaveParts(k).filter(([t]) => leaveFilter === 'all' || (t ?? 'untagged') === leaveFilter).reduce((b,[,w]) => b + w, 0), 0);
     const opts = [...leaveKindsForMenu().map(t => [t.id, t.name]), ['floater','Floater']];
     const typeColor = id => { const t = typeById(id); return t ? col(t.c ?? 0) : '#9e9e9e'; };
-    const rows = shown.map(k => {
+    if (leavePageKey !== y + '|' + leaveFilter){ leavePageKey = y + '|' + leaveFilter; leavePage = 1; }
+    const pages = Math.max(1, Math.ceil(shown.length / LEAVE_PAGE_SIZE));
+    leavePage = Math.min(Math.max(1, leavePage), pages);
+    const from = (leavePage - 1) * LEAVE_PAGE_SIZE, pageKeys = shown.slice(from, from + LEAVE_PAGE_SIZE);
+    const rows = pageKeys.map(k => {
       const d = parseKey(k), sp = splitOf(k), cur = data.marks[k] === 'floater' ? 'floater' : (validType(data.kind[k]) || '');
       const typeCell = sp
         ? `<span class="lv-split"><i style="background:${typeColor(sp.first)}"></i>${esc(shortType(sp.first))} <small>1st half</small> + <i style="background:${typeColor(sp.second)}"></i>${esc(shortType(sp.second))} <small>2nd half</small></span>`
@@ -1233,7 +1244,16 @@
       <div class="tk-wrap"><table class="tk-table lv-table"><caption class="sr-only">All leaves in ${y}</caption>
         <thead><tr><th scope="col">Date</th><th scope="col">Day</th><th scope="col">Leave type</th><th scope="col">Duration</th><th scope="col">Days</th><th scope="col">Comment</th><th scope="col"><span class="sr-only">Remove</span></th></tr></thead>
         <tbody>${rows || `<tr class="tk-empty"><td colspan="7">${keys.length ? 'No leaves of this type.' : 'No leaves added for '+y+' yet.'}</td></tr>`}</tbody>
-        ${rows ? `<tfoot><tr><th scope="row" colspan="4">Total</th><td>${num(total)}</td><td colspan="2"></td></tr></tfoot>` : ''}</table></div>`;
+        ${rows ? `<tfoot><tr><th scope="row" colspan="4">Total${pages > 1 ? ' (all pages)' : ''}</th><td>${num(total)}</td><td colspan="2"></td></tr></tfoot>` : ''}</table></div>
+      ${pages > 1 ? pager(leavePage, pages, from + 1, from + pageKeys.length, shown.length) : ''}`;
+  }
+  function pager(cur, pages, a, b, total){
+    const nums = [];
+    for (let i = 1; i <= pages; i++) if (i === 1 || i === pages || Math.abs(i - cur) <= 1) nums.push(i); else if (nums.at(-1) !== '…') nums.push('…');
+    return `<nav class="pager" aria-label="All leaves pages"><span class="meta">Showing ${a}–${b} of ${total}</span>
+      <button type="button" class="btn" data-lv-page="${cur-1}" ${cur===1?'disabled':''} aria-label="Previous page">‹ Prev</button>
+      ${nums.map(n => n === '…' ? '<span class="meta" aria-hidden="true">…</span>' : `<button type="button" class="btn${n===cur?' on':''}" data-lv-page="${n}" ${n===cur?'aria-current="page"':''} aria-label="Page ${n}">${n}</button>`).join('')}
+      <button type="button" class="btn" data-lv-page="${cur+1}" ${cur===pages?'disabled':''} aria-label="Next page">Next ›</button></nav>`;
   }
   function wfhByMonth(y){
     const m = Array(12).fill(0), keys = Array.from({length:12}, () => []);
@@ -2217,6 +2237,7 @@
       delete data.marks[k]; delete data.kind[k]; delete data.half[k]; clearSplit(k); save(); render(); toast(`Removed ${what} on ${fmtShort(parseKey(k))}`, true); return;
     }
     if (b.dataset.gotoCal){ cursor = parseKey(b.dataset.gotoCal); focusKey = b.dataset.gotoCal; section = 'calendar'; view = 'month'; render(true); return; }
+    if (b.dataset.lvPage){ leavePage = +b.dataset.lvPage; render(); const t = viewEl.querySelector('.lv-table'); t && t.scrollIntoView({block:'nearest'}); viewEl.querySelector('.pager [aria-current]')?.focus(); return; }
     if (b.dataset.wfhMonth !== undefined){ cursor = new Date(cursor.getFullYear(), +b.dataset.wfhMonth, 1); renderKeep(); return; }
     if (b.dataset.obj) return openObjective(b.dataset.obj);
     if (b.dataset.rv) return reviewAction(b.dataset.rv);
