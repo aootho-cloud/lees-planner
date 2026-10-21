@@ -233,6 +233,21 @@
   .kcard details li span:last-child{color:var(--muted)}
   .carry-cta{display:flex;flex-direction:column;align-items:center;gap:4px;margin:12px 16px 0;text-align:center}
   .carry-note{text-align:center;margin:10px 16px 0}
+  .add-wfh{grid-template-columns:150px 150px minmax(170px,1fr) minmax(180px,2fr) auto}
+  .add-wfh .aw-left{display:flex;align-items:flex-end;height:100%;padding-bottom:8px}
+  .wfh-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:28px}
+  @media (max-width:1000px){.wfh-row{grid-template-columns:1fr}}
+  .wfh-months{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+  @media (max-width:700px){.wfh-months{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  .wfh-m{display:flex;flex-direction:column;gap:4px;align-items:flex-start;border:1px solid #e4e4e4;background:#fff;border-radius:8px;padding:8px 10px;text-align:left}
+  .wfh-m:hover{background:#f7f5fc}
+  .wfh-m.cur{border-color:#6a55a8;box-shadow:inset 0 0 0 1px #6a55a8;background:#f4f1fb}
+  .wfh-m .n{font-size:12px;color:var(--muted)}
+  .wfh-m .v{font-size:18px;font-weight:600;color:var(--wfh-fg)}
+  .wfh-m .v small{font-size:12px;font-weight:400;color:var(--muted)}
+  .wfh-m .bar{display:block;width:100%;height:5px;border-radius:99px;background:#ece8f6;overflow:hidden}
+  .wfh-m .bar i{display:block;height:100%;background:#6a55a8}
+  .wfh-m.over .v{color:#b00000}.wfh-m.over .bar i{background:#b00000}
   .kcard.add{align-items:center;justify-content:center;border-style:dashed;color:var(--keka);font-weight:600;min-height:200px;background:#fbfaff}
   .banner{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:#fff8e6;border:1px solid #f0d9a0;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:13px}
   .banner select{border:1px solid #ccc;border-radius:6px;padding:4px 6px}
@@ -398,7 +413,7 @@
     .snav::-webkit-scrollbar{display:none}
     .snav button{flex:none;padding:7px 11px;white-space:nowrap}
     .title{font-size:26px}
-    .tk-form,.tk-form.noday,.add-leave{grid-template-columns:1fr 1fr}
+    .tk-form,.tk-form.noday,.add-leave,.add-wfh{grid-template-columns:1fr 1fr}
   }
   @media (max-width:600px){
     main{padding:12px}
@@ -413,7 +428,7 @@
     .title{font-size:24px;margin-bottom:10px}
     .month-name{font-size:20px}
     .quarter .day{font-size:17px}
-    .tk-form,.tk-form.noday,.add-leave,.grid2{grid-template-columns:1fr}
+    .tk-form,.tk-form.noday,.add-leave,.add-wfh,.grid2{grid-template-columns:1fr}
     .tk-filters input{min-width:0;width:100%;margin-left:0}
     .tk-day-head .btn{flex:1 1 auto}
     .tk-daynote{flex-direction:column;align-items:stretch}
@@ -823,6 +838,7 @@
     d = d && typeof d === 'object' ? d : {};
     d.marks ||= {}; d.notes ||= {}; d.career ||= []; d.ui ||= {};
     d.kind ||= {}; d.half ||= {}; d.policy ||= {}; d.tasks ||= []; d.weekoff ||= {}; d.objectives ||= []; d.reviews ||= {};
+    if (typeof d.wfhLimit !== 'number') d.wfhLimit = 5;   // WFH days allowed per month
     d.leaveTypes ||= DEFAULT_TYPES.map(t => ({...t}));
     d.seeded ||= {};
     // older versions kept a simple floater allowance
@@ -1141,6 +1157,34 @@
   }
 
   /* ---------- Leaves section ---------- */
+  function wfhByMonth(y){
+    const m = Array(12).fill(0), keys = Array.from({length:12}, () => []);
+    for (const [k,t] of Object.entries(data.marks)) if (t === 'wfh' && k.startsWith(y+'-')){ const i = +k.slice(5,7)-1; m[i]++; keys[i].push(k); }
+    keys.forEach(a => a.sort());
+    return { m, keys };
+  }
+  function wfhSection(y){
+    const { m, keys } = wfhByMonth(y), lim = data.wfhLimit, mi = cursor.getMonth();
+    const used = m[mi], left = lim - used, over = left < 0;
+    const ring = donut([{ value:Math.max(0,left), color:'#6a55a8', tip:`Available: ${days(left)}` }, { value:Math.min(used,lim) || (!left ? 1 : 0), color:'#d9d2e9', tip:`Used: ${days(used)}` }], 210, 28, 0);
+    const card = `<article class="kcard" aria-label="WFH in ${MONTHS[mi]}">
+      <header><h3>WFH · ${MONTHS[mi]} ${y}</h3></header>
+      <p class="meta" style="text-align:center;margin:0 16px">${lim} days a month · resets every month</p>
+      <div class="ring"><div class="donut-wrap">${ring}<div class="ctr"${over?' style="color:#b00000"':''}>${num(left)} ${Math.abs(left)===1?'Day':'Days'}<br>Available</div></div></div>
+      <dl class="kgrid" style="grid-template-columns:1fr 1fr 1fr">
+        <div><dt>Available</dt><dd${over?' style="color:#b00000"':''}>${days(left)}</dd></div>
+        <div><dt>Used</dt><dd>${days(used)}</dd></div>
+        <div><dt><label for="wfhLimit">Monthly limit</label></dt><dd><input id="wfhLimit" type="number" min="0" max="31" step="1" value="${lim}" style="width:64px;border:1px solid #bbb;border-radius:6px;padding:3px 6px"></dd></div>
+      </dl>
+      <details><summary>View dates (${keys[mi].length})</summary>${keys[mi].length?`<ul>${keys[mi].map(k=>{const d=parseKey(k);return `<li><span>${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)}</span><span>${esc(data.notes[k]||'')}</span><button type="button" class="x" data-rm-leave="${k}" aria-label="Remove WFH on ${fmtShort(d)}">✕</button></li>`;}).join('')}</ul>`:'<p class="meta">No WFH days this month.</p>'}</details>
+    </article>`;
+    const months = `<div class="wfh-months" role="group" aria-label="WFH used per month in ${y}">${MONTHS.map((n,i) => {
+      const o = m[i] > lim, pct = lim ? Math.min(100, m[i]/lim*100) : 0;
+      return `<button type="button" class="wfh-m${i===mi?' cur':''}${o?' over':''}" data-wfh-month="${i}" aria-pressed="${i===mi}" aria-label="${n}: ${m[i]} of ${lim} WFH days used">
+        <span class="n">${n.slice(0,3)}</span><span class="v">${m[i]}<small>/${lim}</small></span><span class="bar" aria-hidden="true"><i style="width:${pct}%"></i></span></button>`; }).join('')}</div>`;
+    return `<div class="lv-row"><h2>Work From Home</h2><span class="meta">${m.reduce((a,b)=>a+b,0)} WFH day${m.reduce((a,b)=>a+b,0)===1?'':'s'} in ${y}</span></div>
+      <div class="wfh-row">${card}<div class="kc"><h3>WFH by month</h3><p class="meta" style="margin:-6px 0 12px">Pick a month to see its balance. Red means over the limit.</p>${months}</div></div>`;
+  }
   function leavesView(){
     const y = cursor.getFullYear(), u = usage(y);
     const types = data.leaveTypes.map((t,i) => ({...t, ci: t.c ?? i}));
@@ -1198,7 +1242,13 @@
         <label class="sr-only" for="alWhich">Which half</label><select id="alWhich" hidden><option value="first">First half</option><option value="second">Second half</option></select></div>
       <div><label for="alNote">Comment</label><input id="alNote" placeholder="Optional — e.g. family trip"></div>
       <div><button type="submit" class="btn primary" style="height:36px">Add leave</button></div></form>`;
-    return `<div class="lv">${addLeave}<h2>My Leave Stats</h2>${banner}${stats}<div class="lv-row"><h2>Leave Balances</h2></div><div class="kbal">${cards}</div></div>`;
+    const addWfh = `<form class="add-leave add-wfh" id="addWfh" aria-labelledby="awHead"><h3 id="awHead">Add WFH <span class="meta" style="font-size:13px">· ${data.wfhLimit} per month · skips week-offs, holidays and leave days</span></h3>
+      <div><label for="awFrom">From</label><input type="date" id="awFrom" value="${dflt}" required></div>
+      <div><label for="awTo">To</label><input type="date" id="awTo" value="${dflt}" required></div>
+      <div class="aw-left"><span class="meta" id="awInfo"></span></div>
+      <div><label for="awNote">Comment</label><input id="awNote" placeholder="Optional — e.g. plumber visit"></div>
+      <div><button type="submit" class="btn primary" style="height:36px;background:#6a55a8;border-color:#6a55a8">Add WFH</button></div></form>`;
+    return `<div class="lv">${addLeave}${addWfh}<h2>My Leave Stats</h2>${banner}${stats}<div class="lv-row"><h2>Leave Balances</h2></div><div class="kbal">${cards}</div>${wfhSection(y)}</div>`;
   }
 
   /* leave-type dialog */
@@ -1526,6 +1576,7 @@
     save(); render(); $('#nTitle')?.focus(); toast('Task logged');
   });
   document.addEventListener('submit', e => {
+    if (e.target.id === 'addWfh'){ e.preventDefault(); return addWfhRange(); }
     if (e.target.id !== 'addLeave') return;
     e.preventDefault();
     let from = $('#alFrom').value, to = $('#alTo').value; if (!from || !to) return;
@@ -1543,7 +1594,16 @@
     save(); render();
     toast(`Added ${num(half ? 0.5 : n)} leave day${n===1&&!half?'':'s'}${skipped?` (skipped ${skipped} week-off/holiday)`:''} — synced to Calendar & Tasks`);
   });
+  function wfhInfo(){
+    const el = $('#awInfo'); if (!el) return;
+    const f = $('#awFrom').value; if (!f) return;
+    const n = Object.entries(data.marks).filter(([k,t]) => t === 'wfh' && k.startsWith(f.slice(0,7))).length;
+    el.textContent = `${MONTHS[+f.slice(5,7)-1]}: ${n}/${data.wfhLimit} used`;
+  }
   document.addEventListener('change', e => {
+    if (e.target.id === 'awFrom' && $('#awTo').value < e.target.value) $('#awTo').value = e.target.value;
+    if (e.target.id === 'awFrom' || e.target.id === 'awTo') wfhInfo();
+    if (e.target.id === 'wfhLimit'){ const v = Math.max(0, Math.round(+e.target.value || 0)); data.wfhLimit = v; save(); renderKeep(); toast(`WFH limit set to ${v} a month`); }
     if (e.target.id === 'alFrom' && $('#alTo') && $('#alTo').value < e.target.value) $('#alTo').value = e.target.value;
     if (['alHalf','alFrom','alTo'].includes(e.target.id) && $('#alHalf')){
       const single = $('#alFrom').value === $('#alTo').value;
@@ -1742,6 +1802,7 @@
     document.body.className = 'sec-' + section;
     $('#title').textContent = title; $('#title').style.color = color;
     viewEl.innerHTML = html;
+    if (section === 'leaves') wfhInfo();
     const ds = [...viewEl.querySelectorAll('.day[data-date]')];
     if (ds.length){ const t = ds.find(b => b.dataset.date === focusKey) || ds.find(b => b.dataset.date === todayKey()) || ds[0]; t.tabIndex = 0; if (keepFocus) t.focus(); }
     data.ui.view = view; data.ui.taskView = taskView; data.ui.section = section; save();
@@ -1751,6 +1812,29 @@
   const focusDay = k => viewEl.querySelector(`[data-date="${k}"]`)?.focus();
 
   /* ---------- marking ---------- */
+  function wfhOverMsg(keys){
+    const lim = data.wfhLimit, seen = new Set(), msgs = [];
+    for (const k of keys){ const ym = k.slice(0,7); if (seen.has(ym)) continue; seen.add(ym);
+      const n = Object.entries(data.marks).filter(([kk,t]) => t === 'wfh' && kk.startsWith(ym)).length;
+      if (n > lim) msgs.push(`${MONTHS[+ym.slice(5)-1].slice(0,3)} (${n}/${lim})`); }
+    return msgs.length ? ` — over the WFH limit in ${msgs.join(', ')}` : '';
+  }
+  function addWfhRange(){
+    let from = $('#awFrom').value, to = $('#awTo').value; if (!from || !to) return;
+    if (to < from) [from, to] = [to, from];
+    const note = $('#awNote').value.trim(), added = []; let skipped = 0;
+    for (let d = parseKey(from); keyOf(d) <= to; d = addDays(d,1)){
+      const k = keyOf(d), t = data.marks[k];
+      if (isWeekend(d) || t === 'holiday' || t === 'leave' || t === 'floater'){ skipped++; continue; }
+      data.marks[k] = 'wfh'; delete data.kind[k]; delete data.half[k];
+      if (note && !data.notes[k]) data.notes[k] = note;
+      added.push(k);
+    }
+    if (!added.length){ toast('Nothing added — those dates are week-offs, holidays or leave'); return; }
+    cursor = new Date(cursor.getFullYear(), +added[0].slice(5,7)-1, 1);
+    save(); render();
+    toast(`Added ${added.length} WFH day${added.length===1?'':'s'}${skipped?` (skipped ${skipped})`:''} — synced to Calendar & Tasks${wfhOverMsg(added)}`);
+  }
   function setType(k, t, kind){
     data.marks[k] = t;
     if (t === 'leave' && kind) data.kind[k] = kind; else delete data.kind[k];
@@ -1758,6 +1842,7 @@
     save(); focusKey = k; render(true);
     const y = +k.slice(0,4), id = t === 'floater' ? 'floater' : kind;
     if (id){ const b = balance(y, id, usage(y).byType[id]||0); if (b.available != null && b.available < 0) toast(`Over your ${typeById(id).name} balance for ${y}`); }
+    if (t === 'wfh'){ const w = wfhOverMsg([k]); if (w) toast('Marked as WFH' + w); }
   }
   let lastCleared = null;
   function clearDay(k){
@@ -1923,7 +2008,8 @@
     if (b.dataset.gotoTaskMonth !== undefined){ cursor = new Date(cursor.getFullYear(), +b.dataset.gotoTaskMonth, 1); taskView = 'month'; render(); return; }
     if (b.dataset.tfilter){ const s = b.dataset.tfilter; taskFilter.has(s) ? taskFilter.delete(s) : taskFilter.add(s); renderKeep(); return; }
     if (b.dataset.delTask) return deleteTask(b.dataset.delTask);
-    if (b.dataset.rmLeave){ const k = b.dataset.rmLeave; lastTask = null; lastCleared = { k, mark:data.marks[k], kind:data.kind[k], half:data.half[k] }; delete data.marks[k]; delete data.kind[k]; delete data.half[k]; save(); render(); toast(`Removed leave on ${fmtShort(parseKey(k))}`, true); return; }
+    if (b.dataset.rmLeave){ const k = b.dataset.rmLeave, what = data.marks[k] === 'wfh' ? 'WFH' : 'leave'; lastTask = null; lastCleared = { k, mark:data.marks[k], kind:data.kind[k], half:data.half[k] }; delete data.marks[k]; delete data.kind[k]; delete data.half[k]; save(); render(); toast(`Removed ${what} on ${fmtShort(parseKey(k))}`, true); return; }
+    if (b.dataset.wfhMonth !== undefined){ cursor = new Date(cursor.getFullYear(), +b.dataset.wfhMonth, 1); renderKeep(); return; }
     if (b.dataset.obj) return openObjective(b.dataset.obj);
     if (b.dataset.rv) return reviewAction(b.dataset.rv);
     if (b.dataset.print) return printNow();
