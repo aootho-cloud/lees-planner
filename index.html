@@ -117,6 +117,8 @@
   .day.leave.half{background:linear-gradient(135deg,var(--leave-bg) 50%,#fff 50%)}
   .day.floater.half{background:linear-gradient(135deg,var(--floater-bg) 50%,#fff 50%)}
   .day.we.half.leave{background:linear-gradient(135deg,var(--leave-bg) 50%,var(--weekoff-bg) 50%)}
+  .day.leave.half.half-second{background:linear-gradient(135deg,#fff 50%,var(--leave-bg) 50%)}
+  .day.floater.half.half-second{background:linear-gradient(135deg,#fff 50%,var(--floater-bg) 50%)}
   .day[data-date]:hover{filter:brightness(.95)}
   .day.is-today::after{content:"";position:absolute;inset:2px;border:2.5px solid var(--today);border-radius:50%;pointer-events:none}
   .day .dot{position:absolute;top:3px;right:4px;width:0;height:0;border-left:7px solid transparent;border-top:7px solid currentColor;opacity:.75}
@@ -626,7 +628,11 @@
   <form method="dialog" id="cForm">
     <h3 id="cDlgT"></h3>
     <p class="sub">Add a comment if you like — it's optional.</p>
-    <label class="check" id="halfRow"><input type="checkbox" id="cHalf"> Half day (counts as 0.5)</label>
+    <div id="halfRow">
+      <label class="check"><input type="checkbox" id="cHalf"> Half day (counts as 0.5)</label>
+      <fieldset class="field" id="cWhich" hidden><legend>Which half?</legend>
+        <div class="radios"><label><input type="radio" name="cHalfWhich" value="first" checked> First half (morning)</label><label><input type="radio" name="cHalfWhich" value="second"> Second half (afternoon)</label></div></fieldset>
+    </div>
     <label class="sr-only" for="cText">Comment</label>
     <textarea id="cText" placeholder="e.g. trip, festival, doctor visit…"></textarea>
     <div class="actions">
@@ -643,11 +649,13 @@
     <div class="field"><label for="tName">Leave type name <span class="req">*</span></label><input id="tName" required></div>
     <div class="grid2">
       <div class="field"><label for="tQuota">Annual quota (days)</label><input id="tQuota" type="number" min="0" step="0.5" placeholder="No limit"></div>
-      <div class="field"><label for="tCarry">Carryover into this year</label><input id="tCarry" type="number" min="0" step="0.01" placeholder="0"></div>
+      <div class="field"><label for="tCarry">Carryover into this year</label><input id="tCarry" type="number" min="0" step="0.01" placeholder="Auto"></div>
     </div>
     <fieldset class="field"><legend>How the quota is credited</legend>
-      <div class="radios"><label><input type="radio" name="tAcc" value="yearly"> All at the start of the year</label><label><input type="radio" name="tAcc" value="monthly"> Monthly accrual</label></div>
+      <div class="radios" style="flex-wrap:wrap"><label><input type="radio" name="tAcc" value="monthly"> Every month</label><label><input type="radio" name="tAcc" value="quarterly"> Every quarter</label><label><input type="radio" name="tAcc" value="yearly"> All at the start of the year</label></div>
     </fieldset>
+    <label class="check"><input type="checkbox" id="tCarryOn"> Unused balance carries over to next year (otherwise it lapses)</label>
+    <p class="meta" style="margin:-4px 0 6px;font-size:12px">Leave carryover blank to work it out from last year's unused balance. Fill it in only to override (e.g. your first year here).</p>
     <div class="actions">
       <button type="button" class="btn danger left" id="tDelete" hidden>Delete type</button>
       <button type="button" class="btn" id="tCancel">Cancel</button>
@@ -672,6 +680,17 @@
       <div class="field"><label for="rEnd">End</label><input id="rEnd" type="month"></div>
     </div>
     <label class="check"><input type="checkbox" id="rCurrent"> I currently work in this role</label>
+    <div id="rChangeBox" hidden style="border:1px dashed #bbb;border-radius:10px;padding:10px 12px;margin:0 0 10px">
+      <button type="button" class="link" id="rChangeBtn" aria-expanded="false" aria-controls="rChangeFields" style="color:#0a66c2;font-weight:600">↪ Record a role or team change</button>
+      <div id="rChangeFields" hidden style="margin-top:8px">
+        <p class="sub" style="margin:0 0 8px">This role will end the month before the change, and a new entry starts from the change month (same company).</p>
+        <div class="grid2">
+          <div class="field"><label for="rcDate">Changed from</label><input id="rcDate" type="month"></div>
+          <div class="field"><label for="rcTitle">New title / post</label><input id="rcTitle"></div>
+        </div>
+        <div class="field"><label for="rcTeam">New team</label><input id="rcTeam"></div>
+      </div>
+    </div>
     <div class="field"><label for="rLoc">Location</label><input id="rLoc" placeholder="e.g. Kochi, India · Hybrid"></div>
     <div class="field"><label for="rDesc">Highlights / skills</label><textarea id="rDesc" style="font-family:var(--ui);font-size:14px" placeholder="What you did, tools, achievements…"></textarea></div>
     <div class="actions">
@@ -773,7 +792,14 @@
     {id:'floater', name:'Floater',      c:3, builtin:true},
     {id:'unpaid',  name:'Unpaid Leave', c:4},
   ];
-  const DEFAULT_POLICY = { casual:{quota:null,accrual:'yearly'}, paid:{quota:null,accrual:'monthly'}, sick:{quota:null,accrual:'yearly'}, floater:{quota:null,accrual:'yearly'}, unpaid:{quota:null,accrual:'yearly'} };
+  // your company's rules: paid 1/month (carries over), casual & sick 1.5 each quarter (lapse), unpaid 80/yr (lapses)
+  const DEFAULT_POLICY = {
+    casual:  { quota:6,    accrual:'quarterly', carry:false },
+    paid:    { quota:12,   accrual:'monthly',   carry:true  },
+    sick:    { quota:6,    accrual:'quarterly', carry:false },
+    floater: { quota:null, accrual:'yearly',    carry:false },
+    unpaid:  { quota:80,   accrual:'yearly',    carry:false },
+  };
 
   /* ---------- storage ---------- */
   const pickYear = (obj,y) => Object.fromEntries(Object.entries(obj).filter(([k]) => k.startsWith(y+'-')));
@@ -787,13 +813,20 @@
     // older versions kept a simple floater allowance
     if (d.allowance){ for (const [y,a] of Object.entries(d.allowance)) if (typeof a.floater === 'number'){ d.policy[y] ||= {}; d.policy[y].floater = {...(d.policy[y].floater||{}), quota:a.floater, accrual:'yearly'}; } delete d.allowance; }
     // one-time clean-up: remove the sample data earlier versions pre-filled (your own entries are kept)
+    if (!d.seeded.policyV2){
+      for (const y of Object.keys(d.policy)) for (const id of ['casual','paid','sick','unpaid']){
+        const x = d.policy[y][id]; if (!x) continue;
+        if (id === 'paid' && typeof x.carryover === 'number' && x.carryover > 0) d.policy[y][id] = { carryover:x.carryover }; else delete d.policy[y][id];
+      }
+      d.seeded.policyV2 = true;
+    }
     if (!d.seeded.cleanV3){
       for (const y of [2025, 2026]) for (const [k,t] of Object.entries(legacySeed(y))) if (d.marks[k] === t){ delete d.marks[k]; delete d.kind[k]; delete d.half[k]; }
       d.tasks = d.tasks.filter(t => !/^s(19|20)10[abc]$/.test(t.id));
       const pd = d.policy[2026] && d.policy[2026].paid;
       if (pd && pd.quota === 12 && pd.carryover === 8.84) delete d.policy[2026].paid;
       for (const y of Object.keys(d.policy)) for (const [id,dq] of [['casual',6],['paid',12],['sick',6]]){ const x = d.policy[y][id]; if (x && x.quota === dq && !x.carryover) delete d.policy[y][id]; }
-      d.seeded = { cleanV3:true };
+      d.seeded = { ...d.seeded, cleanV3:true };
     }
     return d;
   }
@@ -827,10 +860,31 @@
   const leaveTypeOf = k => data.marks[k] === 'floater' ? 'floater' : data.marks[k] === 'leave' ? (data.kind[k] && typeById(data.kind[k]) ? data.kind[k] : null) : undefined;
 
   function policyFor(y, id){
-    const own = (data.policy[y]||{})[id];
-    let base = DEFAULT_POLICY[id] || {quota:null, accrual:'yearly'};
-    for (let py = y-1; py >= y-10; py--){ const p = (data.policy[py]||{})[id]; if (p){ base = {quota:p.quota, accrual:p.accrual}; break; } }
-    return { quota: base.quota ?? null, accrual: base.accrual || 'yearly', carryover: 0, ...(own||{}) };
+    const own = (data.policy[y]||{})[id] || {};
+    let base = DEFAULT_POLICY[id] || { quota:null, accrual:'yearly', carry:false };
+    for (let py = y-1; py >= y-10; py--){ const p = (data.policy[py]||{})[id]; if (p && 'quota' in p){ base = { quota:p.quota, accrual:p.accrual, carry:!!p.carry }; break; } }
+    const pick = (k, d) => own[k] !== undefined ? own[k] : d;
+    return { quota: pick('quota', base.quota ?? null), accrual: pick('accrual', base.accrual || 'yearly'), carry: !!pick('carry', base.carry),
+             manualCarry: typeof own.carryover === 'number' ? own.carryover : null };
+  }
+  const ACCRUAL_TEXT = { monthly:'credited every month', quarterly:'credited every quarter', yearly:'credited at the start of the year' };
+  function accruedFor(p, y){
+    const now = new Date(), cy = now.getFullYear();
+    if (p.quota == null) return null;
+    if (y < cy) return p.quota;
+    if (y > cy) return p.accrual === 'yearly' ? p.quota : 0;
+    if (p.accrual === 'monthly') return Math.round(p.quota * (now.getMonth()+1) / 12 * 100)/100;
+    if (p.accrual === 'quarterly') return Math.round(p.quota * (Math.floor(now.getMonth()/3)+1) / 4 * 100)/100;
+    return p.quota;
+  }
+  // unused balance brought into year y (only for types that carry over, e.g. Paid)
+  function carryFor(y, id, depth=0){
+    const p = policyFor(y, id);
+    if (p.manualCarry != null) return p.manualCarry;
+    if (!p.carry || depth > 15 || y - 1 < yearBounds().min) return 0;
+    const pp = policyFor(y-1, id); if (pp.quota == null) return 0;
+    const left = pp.quota + carryFor(y-1, id, depth+1) - (usage(y-1).byType[id] || 0);
+    return Math.max(0, Math.round(left*100)/100);
   }
   function usage(y){
     const byType = {}, weekday = Array(7).fill(0), month = Array(12).fill(0), list = {};
@@ -846,14 +900,10 @@
     return { byType, weekday, month, untagged, untaggedKeys, list };
   }
   function balance(y, id, used){
-    const p = policyFor(y, id), now = new Date();
-    if (p.quota == null) return { ...p, accrued:null, available:null, consumed:used };
-    let accrued = p.quota;
-    if (p.accrual === 'monthly'){
-      if (y > now.getFullYear()) accrued = 0;
-      else if (y === now.getFullYear()) accrued = Math.round(p.quota * (now.getMonth()+1) / 12 * 100)/100;
-    }
-    return { ...p, accrued, consumed:used, available: Math.round((accrued + (p.carryover||0) - used)*100)/100 };
+    const p = policyFor(y, id);
+    if (p.quota == null) return { ...p, carryover:0, accrued:null, available:null, consumed:used };
+    const accrued = accruedFor(p, y), carryover = carryFor(y, id);
+    return { ...p, accrued, carryover, consumed:used, available: Math.round((accrued + carryover - used)*100)/100 };
   }
 
   /* ---------- sidebar ---------- */
@@ -864,6 +914,18 @@
   const LOGO_COLORS = ['#0a66c2','#915907','#5f9b41','#8f5849','#057642','#b24020','#7a3e9d','#2e6b8a'];
   const logoColor = name => LOGO_COLORS[[...name].reduce((a,c)=>a+c.charCodeAt(0),0) % LOGO_COLORS.length];
   const initials = name => name.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+  // roles at the same company count as one continuous stint unless there's a gap of a year or more
+  function stints(){
+    const roles = [...data.career].sort((a,b) => months(b.end||'9999-12') - months(a.end||'9999-12') || months(b.start) - months(a.start));
+    const groups = [];
+    for (const r of roles){
+      const g = groups.at(-1), oldest = g && g.roles.reduce((a,x) => months(x.start) < months(a.start) ? x : a, g.roles[0]);
+      const gap = g ? months(oldest.start) - months(r.end || nowYM()) : 0;
+      if (g && g.company.toLowerCase() === r.company.toLowerCase() && gap < 12) g.roles.push(r); else groups.push({ company:r.company, roles:[r] });
+    }
+    for (const g of groups){ g.start = g.roles.reduce((a,r) => months(r.start) < months(a) ? r.start : a, g.roles[0].start); g.end = g.roles.some(r => !r.end) ? '' : g.roles.reduce((a,r) => months(r.end) > months(a) ? r.end : a, g.roles[0].end); }
+    return groups;
+  }
   function currentRole(){
     const cur = data.career.filter(r => !r.end).sort((a,b)=>months(b.start)-months(a.start));
     return cur[0] || null;
@@ -871,7 +933,7 @@
   function renderSidebar(){
     const r = currentRole();
     if (r){
-      const coStart = data.career.filter(x => x.company.toLowerCase() === r.company.toLowerCase()).reduce((a,x)=> months(x.start)<months(a)?x.start:a, r.start);
+      const coStart = (stints().find(g => g.roles.includes(r)) || { start:r.start }).start;
       $('#curCo').innerHTML = `<button type="button" class="cur-co" data-section="career" aria-label="Current company ${esc(r.company)}, ${esc(r.title)}. Open career">
         <span class="logo" style="background:${logoColor(r.company)}" aria-hidden="true">${esc(initials(r.company))}</span>
         <span><b>${esc(r.company)}</b><span class="co-line">${esc(r.title)}</span>${r.team?`<span class="meta" style="display:block">${esc(r.team)} team</span>`:''}
@@ -958,10 +1020,11 @@
   }
 
   /* ---------- day cells ---------- */
+  const halfText = k => data.half[k] === 'second' ? 'second half' : data.half[k] === 'first' ? 'first half' : 'half day';
   function markLabel(k){
     const t = data.marks[k]; if (!t) return '';
-    if (t === 'leave'){ const lt = typeById(data.kind[k]); return `${lt ? lt.name : 'Leave'}${data.half[k]?' (half day)':''}`; }
-    if (t === 'floater') return `Floater${data.half[k]?' (half day)':''}`;
+    if (t === 'leave'){ const lt = typeById(data.kind[k]); return `${lt ? lt.name : 'Leave'}${data.half[k]?` (${halfText(k)})`:''}`; }
+    if (t === 'floater') return `Floater${data.half[k]?` (${halfText(k)})`:''}`;
     return TYPES[t];
   }
   function dayLabel(d){
@@ -974,7 +1037,7 @@
   }
   function dayCls(d, extra=''){
     const k = keyOf(d), t = data.marks[k], c = ['day'];
-    if (isWeekend(d)) c.push('we'); if (t) c.push(t); if (data.half[k] && t) c.push('half');
+    if (isWeekend(d)) c.push('we'); if (t) c.push(t); if (data.half[k] && t){ c.push('half'); if (data.half[k] === 'second') c.push('half-second'); }
     if (k === todayKey()) c.push('is-today'); if (extra) c.push(extra);
     return c.join(' ');
   }
@@ -1096,10 +1159,11 @@
       const list = (u.list[t.id]||[]).sort();
       return `<article class="kcard" aria-label="${esc(t.name)}">
         <header><h3>${esc(t.name)}</h3><button type="button" class="link" data-edit-type="${t.id}" aria-label="Edit ${esc(t.name)} quota">Edit</button></header>
+        ${hasQ ? `<p class="meta" style="text-align:center;margin:0 16px">${num(b.quota)} a year · ${ACCRUAL_TEXT[b.accrual]} · ${b.carry ? 'unused carries over' : 'lapses at year end'}</p>` : ''}
         <div class="ring"><div class="donut-wrap">${ring}<div class="ctr">${ctr}</div></div></div>
         <dl class="kgrid" style="grid-template-columns:1fr 1fr">${row1}</dl>
         ${r2.length?`<dl class="kgrid r2" style="grid-template-columns:repeat(${r2.length},1fr)">${r2.join('')}</dl>`:''}
-        <details><summary>View dates (${list.length})</summary>${list.length?`<ul>${list.map(k=>{const d=parseKey(k);return `<li><span>${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)}${data.half[k]?' · ½':''}</span><span>${esc(data.notes[k]||'')}</span><button type="button" class="x" data-rm-leave="${k}" aria-label="Remove leave on ${fmtShort(d)}">✕</button></li>`;}).join('')}</ul>`:'<p class="meta">No dates yet.</p>'}</details>
+        <details><summary>View dates (${list.length})</summary>${list.length?`<ul>${list.map(k=>{const d=parseKey(k);return `<li><span>${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)}${data.half[k]?' · '+halfText(k):''}</span><span>${esc(data.notes[k]||'')}</span><button type="button" class="x" data-rm-leave="${k}" aria-label="Remove leave on ${fmtShort(d)}">✕</button></li>`;}).join('')}</ul>`:'<p class="meta">No dates yet.</p>'}</details>
       </article>`;
     }).join('') + `<button type="button" class="kcard add" data-edit-type="__new">+ Add leave type</button>`;
 
@@ -1108,7 +1172,8 @@
       <div><label for="alFrom">From</label><input type="date" id="alFrom" value="${dflt}" required></div>
       <div><label for="alTo">To</label><input type="date" id="alTo" value="${dflt}" required></div>
       <div><label for="alType">Leave type</label><select id="alType">${leaveKindsForMenu().map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}<option value="floater">Floater</option></select></div>
-      <div><label class="chk" for="alHalf"><input type="checkbox" id="alHalf"> Half day</label></div>
+      <div><label class="chk" for="alHalf"><input type="checkbox" id="alHalf"> Half day</label>
+        <label class="sr-only" for="alWhich">Which half</label><select id="alWhich" hidden><option value="first">First half</option><option value="second">Second half</option></select></div>
       <div><label for="alNote">Comment</label><input id="alNote" placeholder="Optional — e.g. family trip"></div>
       <div><button type="submit" class="btn primary" style="height:36px">Add leave</button></div></form>`;
     return `<div class="lv">${addLeave}<h2>My Leave Stats</h2>${banner}${stats}<div class="lv-row"><h2>Leave Balances</h2></div><div class="kbal">${cards}</div></div>`;
@@ -1119,25 +1184,29 @@
   function openType(id){
     const y = cursor.getFullYear(), isNew = id === '__new', t = isNew ? null : typeById(id);
     tEdit = isNew ? null : id;
-    const p = isNew ? {quota:null, accrual:'yearly', carryover:0} : policyFor(y, id);
+    const p = isNew ? {quota:null, accrual:'yearly', carry:false, manualCarry:null} : policyFor(y, id);
     $('#tDlgT').textContent = isNew ? 'Add leave type' : `Edit ${t.name}`;
     $('#tDlgSub').textContent = `Quota and carryover apply to ${y}. Later years copy the quota unless you change it there.`;
     $('#tName').value = t ? t.name : ''; $('#tName').disabled = !!(t && t.builtin);
-    $('#tQuota').value = p.quota ?? ''; $('#tCarry').value = p.carryover || '';
+    $('#tQuota').value = p.quota ?? ''; $('#tCarry').value = p.manualCarry ?? '';
+    $('#tCarryOn').checked = !!p.carry; $('#tCarry').disabled = !p.carry;
+    $('#tCarry').placeholder = p.carry && !isNew ? `Auto (${num(carryFor(y, id))})` : 'Auto';
     tDlg.querySelectorAll('[name=tAcc]').forEach(r => r.checked = r.value === (p.accrual||'yearly'));
     $('#tDelete').hidden = isNew || !!(t && t.builtin);
     tDlg.showModal(); (t && t.builtin ? $('#tQuota') : $('#tName')).focus();
   }
   $('#tForm').addEventListener('submit', () => {
     const y = cursor.getFullYear(), q = $('#tQuota').value === '' ? null : +$('#tQuota').value;
-    const acc = tDlg.querySelector('[name=tAcc]:checked')?.value || 'yearly', carry = +$('#tCarry').value || 0;
+    const acc = tDlg.querySelector('[name=tAcc]:checked')?.value || 'yearly', carryOn = $('#tCarryOn').checked;
+    const manual = !carryOn || $('#tCarry').value === '' ? null : +$('#tCarry').value;
     let id = tEdit;
     if (!id){ id = 'lt' + Date.now(); data.leaveTypes.push({ id, name:$('#tName').value.trim(), c: data.leaveTypes.length }); }
     else { const t = typeById(id); if (!t.builtin) t.name = $('#tName').value.trim(); }
-    data.policy[y] ||= {}; data.policy[y][id] = { quota:q, accrual:acc, carryover:carry };
+    data.policy[y] ||= {}; data.policy[y][id] = { quota:q, accrual:acc, carry:carryOn, ...(manual != null ? { carryover:manual } : {}) };
     save(); render(); toast('Leave type saved');
   });
   $('#tCancel').addEventListener('click', () => tDlg.close());
+  $('#tCarryOn').addEventListener('change', e => { $('#tCarry').disabled = !e.target.checked; if (!e.target.checked) $('#tCarry').value = ''; });
   $('#tDelete').addEventListener('click', () => {
     const t = typeById(tEdit); if (!confirm(`Delete "${t.name}"? Leaves tagged with it become untagged.`)) return;
     data.leaveTypes = data.leaveTypes.filter(x => x.id !== tEdit);
@@ -1150,29 +1219,27 @@
     const roles = [...data.career].sort((a,b) => months(b.end||'9999-12') - months(a.end||'9999-12') || months(b.start) - months(a.start));
     const addBtn = `<button class="btn primary" type="button" data-career="add" style="background:#0a66c2;border-color:#0a66c2">+ Add experience</button>`;
     if (!roles.length) return `<div class="career"><div class="li-card"><div class="li-head"><h3>Experience</h3>${addBtn}</div><div class="empty-state">Add your roles — company, post, team and joining date — to see your growth here.</div></div></div>`;
-    const groups = [];
-    for (const r of roles){ const g = groups.at(-1); if (g && g.company.toLowerCase() === r.company.toLowerCase()) g.roles.push(r); else groups.push({company:r.company, roles:[r]}); }
+    const groups = stints();
     const asc = [...data.career].sort((a,b)=>months(a.start)-months(b.start));
     const covered = new Set(); for (const r of asc) for (let i=months(r.start); i<=months(r.end||nowYM()); i++) covered.add(i);
     const totalM = covered.size, ty = Math.floor(totalM/12), tm = totalM%12;
-    const companies = new Set(asc.map(r=>r.company.toLowerCase())).size;
+    const companies = groups.length;   // a rejoin after a year+ break counts as its own stint
     const current = currentRole() || asc.at(-1);
     const stats = `<div class="li-card"><div class="li-head"><h3>Growth</h3></div><div class="stats">
         <div class="stat"><b>${ty?`${ty}y `:''}${tm}m</b><span>Total experience</span></div>
-        <div class="stat"><b>${companies}</b><span>Compan${companies===1?'y':'ies'}</span></div>
+        <div class="stat"><b>${companies}</b><span>Compan${companies===1?'y':'ies'} / stints</span></div>
         <div class="stat"><b>${asc.length}</b><span>Roles</span></div>
         <div class="stat"><b>${Math.max(0,asc.length-companies)}</b><span>Internal moves / promotions</span></div></div>
-      <div class="path" aria-label="Career path">${asc.map((r,i)=>`${i?'<span class="arr" aria-hidden="true">→</span>':''}<span class="step${r===current?' now':''}">${esc(r.title)} <span style="font-weight:400">· ${r.start.slice(0,4)}</span></span>`).join('')}</div></div>`;
+      <div class="path" aria-label="Career path">${asc.map((r,i)=>`${i?'<span class="arr" aria-hidden="true">→</span>':''}<span class="step${r===current?' now':''}">${esc(r.title)}${r.team?` · ${esc(r.team)}`:''} <span style="font-weight:400">· ${r.start.slice(0,4)}</span></span>`).join('')}</div></div>`;
     const exp = groups.map(g => {
       const multi = g.roles.length > 1;
-      const gStart = g.roles.reduce((a,r)=> months(r.start)<months(a)?r.start:a, g.roles[0].start);
-      const gEnd = g.roles.some(r=>!r.end) ? '' : g.roles.reduce((a,r)=> months(r.end)>months(a)?r.end:a, g.roles[0].end);
+      const gStart = g.start, gEnd = g.end;
       const roleHtml = g.roles.map(r => `<li class="role">
           ${multi ? `<div class="role-t">${esc(r.title)}</div><div class="meta">${esc(r.type||'')}${r.team?` · ${esc(r.team)} team`:''}</div>` : ''}
           <div class="meta">${fmtYM(r.start)} – ${r.end?fmtYM(r.end):'Present'} · ${dur(r.start,r.end)}</div>
           ${r.location?`<div class="meta">${esc(r.location)}</div>`:''}${r.desc?`<div class="role-desc">${esc(r.desc)}</div>`:''}
           <div class="role-act"><button type="button" data-career="edit" data-id="${r.id}" aria-label="Edit ${esc(r.title)} at ${esc(r.company)}">Edit</button></div></li>`).join('');
-      const head = multi ? `<div class="co-name">${esc(g.company)}</div><div class="meta">${dur(gStart,gEnd)}</div>`
+      const head = multi ? `<div class="co-name">${esc(g.company)}</div><div class="meta">${fmtYM(gStart)} – ${gEnd?fmtYM(gEnd):'Present'} · ${dur(gStart,gEnd)}</div>`
         : `<div class="co-name">${esc(g.roles[0].title)}</div><div>${esc(g.company)}${g.roles[0].type?` · ${esc(g.roles[0].type)}`:''}</div>${g.roles[0].team?`<div class="meta">${esc(g.roles[0].team)} team</div>`:''}`;
       return `<div class="co"><div class="logo" style="background:${logoColor(g.company)}" aria-hidden="true">${esc(initials(g.company))}</div><div class="co-body">${head}<ul class="roles${multi?'':' single'}">${roleHtml}</ul></div></div>`;
     }).join('');
@@ -1186,6 +1253,8 @@
     $('#rType').value = r.type || 'Full-time'; $('#rStart').value = r.start || ''; $('#rEnd').value = r.end || '';
     $('#rCurrent').checked = id ? !r.end : true; $('#rEnd').disabled = $('#rCurrent').checked;
     $('#rLoc').value = r.location || ''; $('#rDesc').value = r.desc || ''; $('#rDelete').hidden = !id;
+    $('#rChangeBox').hidden = !id; $('#rChangeFields').hidden = true; $('#rChangeBtn').setAttribute('aria-expanded','false');
+    $('#rcDate').value = ''; $('#rcTitle').value = r.title || ''; $('#rcTeam').value = r.team || '';
     $('#coList').innerHTML = [...new Set(data.career.map(x=>x.company))].map(c=>`<option value="${esc(c)}">`).join('');
     rDlg.showModal(); $('#rTitle').focus();
   }
@@ -1194,10 +1263,27 @@
     const start = $('#rStart').value, end = $('#rCurrent').checked ? '' : $('#rEnd').value;
     if (end && months(end) < months(start)){ e.preventDefault(); $('#rEnd').setCustomValidity('End must be after start'); $('#rEnd').reportValidity(); return; }
     const rec = { id: rEditId || String(Date.now()), title:$('#rTitle').value.trim(), company:$('#rCompany').value.trim(), team:$('#rTeam').value.trim(), type:$('#rType').value, start, end, location:$('#rLoc').value.trim(), desc:$('#rDesc').value.trim() };
+    // role / team change recorded from this entry -> split into two experiences
+    const cd = rEditId && !$('#rChangeFields').hidden ? $('#rcDate').value : '';
+    let next = null;
+    if (cd){
+      if (months(cd) <= months(start) || (end && months(cd) > months(end))){
+        e.preventDefault(); $('#rcDate').setCustomValidity(end ? 'Pick a month between the start and end of this role' : 'Pick a month after this role started'); $('#rcDate').reportValidity(); return;
+      }
+      const [cy, cm] = cd.split('-').map(Number), before = cm === 1 ? `${cy-1}-12` : `${cy}-${pad(cm-1)}`;
+      next = { ...rec, id: String(Date.now()) + 'c', title: $('#rcTitle').value.trim() || rec.title, team: $('#rcTeam').value.trim(), start: cd, end: rec.end, desc: '' };
+      rec.end = before;
+    }
     const i = data.career.findIndex(x => x.id === rec.id); if (i >= 0) data.career[i] = rec; else data.career.push(rec);
-    save(); render(); toast('Experience saved');
+    if (next) data.career.push(next);
+    save(); render(); toast(next ? 'Change recorded — saved as two experiences' : 'Experience saved');
   });
   $('#rEnd').addEventListener('input', e => e.target.setCustomValidity(''));
+  $('#rcDate').addEventListener('input', e => e.target.setCustomValidity(''));
+  $('#rChangeBtn').addEventListener('click', () => {
+    const open = $('#rChangeFields').hidden; $('#rChangeFields').hidden = !open; $('#rChangeBtn').setAttribute('aria-expanded', open);
+    if (open){ $('#rcDate').value ||= nowYM(); $('#rcDate').focus(); }
+  });
   $('#rCancel').addEventListener('click', () => rDlg.close());
   $('#rDelete').addEventListener('click', () => { if (!confirm('Delete this role?')) return; data.career = data.career.filter(x => x.id !== rEditId); save(); rDlg.close(); render(); toast('Role deleted'); });
 
@@ -1267,7 +1353,7 @@
   const autoKeys = (sk, ek) => [...new Set([...Object.keys(data.marks), ...Object.keys(data.notes)])].filter(k => k >= sk && k <= ek && k <= maxTaskKey() && (data.marks[k] in AUTO_TYPES || (data.notes[k]||'').trim())).sort();
   function dayRowCls(k){ const t = data.marks[k]; return t ? 'day-' + t : (isWeekend(parseKey(k)) ? 'day-off' : ''); }
   const autoLabel = k => data.marks[k] in AUTO_TYPES ? `${AUTO_TYPES[data.marks[k]]} ${markLabel(k)}` : '📝 Day comment';
-  const autoLen = k => !(data.marks[k] in AUTO_TYPES) || data.marks[k] === 'holiday' ? '—' : (data.half[k] ? 'Half day' : 'Full day');
+  const autoLen = k => !(data.marks[k] in AUTO_TYPES) || data.marks[k] === 'holiday' ? '—' : (data.half[k] ? (data.half[k] === 'second' ? 'Second half' : data.half[k] === 'first' ? 'First half' : 'Half day') : 'Full day');
   function autoRow(k){
     const d = parseKey(k);
     return `<tr class="tk-auto ${dayRowCls(k)}"><td class="c-date" data-label="Date"><span class="auto-date">${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)} ${d.getFullYear()}</span></td>
@@ -1400,20 +1486,27 @@
     e.preventDefault();
     let from = $('#alFrom').value, to = $('#alTo').value; if (!from || !to) return;
     if (to < from) [from, to] = [to, from];
-    const type = $('#alType').value, half = $('#alHalf').checked && from === to, note = $('#alNote').value.trim();
+    const type = $('#alType').value, half = $('#alHalf').checked && from === to ? $('#alWhich').value : null, note = $('#alNote').value.trim();
     let n = 0, skipped = 0;
     for (let d = parseKey(from); keyOf(d) <= to; d = addDays(d,1)){
       const k = keyOf(d);
       if (from !== to && (isWeekend(d) || data.marks[k] === 'holiday')){ skipped++; continue; }
       if (type === 'floater'){ data.marks[k] = 'floater'; delete data.kind[k]; } else { data.marks[k] = 'leave'; data.kind[k] = type; }
-      if (half) data.half[k] = true; else delete data.half[k];
+      if (half) data.half[k] = half; else delete data.half[k];
       if (note && !data.notes[k]) data.notes[k] = note;
       n++;
     }
     save(); render();
     toast(`Added ${num(half ? 0.5 : n)} leave day${n===1&&!half?'':'s'}${skipped?` (skipped ${skipped} week-off/holiday)`:''} — synced to Calendar & Tasks`);
   });
-  document.addEventListener('change', e => { if (e.target.id === 'alFrom' && $('#alTo') && $('#alTo').value < e.target.value) $('#alTo').value = e.target.value; });
+  document.addEventListener('change', e => {
+    if (e.target.id === 'alFrom' && $('#alTo') && $('#alTo').value < e.target.value) $('#alTo').value = e.target.value;
+    if (['alHalf','alFrom','alTo'].includes(e.target.id) && $('#alHalf')){
+      const single = $('#alFrom').value === $('#alTo').value;
+      if (!single) $('#alHalf').checked = false;
+      $('#alHalf').disabled = !single; $('#alWhich').hidden = !$('#alHalf').checked;
+    }
+  });
   document.addEventListener('change', e => { if (e.target.id === 'nStatus') e.target.className = 'st st-' + e.target.value; });
   let lastTask = null;
   function deleteTask(id){
@@ -1697,18 +1790,21 @@
   const cDlg = $('#cDlg'); let cKey = null;
   function askDetails(k){
     cKey = k; const d = parseKey(k), t = data.marks[k];
-    $('#cDlgT').textContent = `${markLabel(k).replace(' (half day)','')} · ${fmtShort(d)} ${d.getFullYear()}`;
+    $('#cDlgT').textContent = `${markLabel(k).replace(/ \((first half|second half|half day)\)/,'')} · ${fmtShort(d)} ${d.getFullYear()}`;
     $('#halfRow').hidden = !(t === 'leave' || t === 'floater'); $('#cHalf').checked = !!data.half[k];
+    $('#cWhich').hidden = !data.half[k];
+    cDlg.querySelectorAll('[name=cHalfWhich]').forEach(r => r.checked = r.value === (data.half[k] === 'second' ? 'second' : 'first'));
     $('#cText').value = data.notes[k] || '';
     cDlg.showModal(); $('#cText').focus();
   }
   $('#cForm').addEventListener('submit', () => {
     const v = $('#cText').value.trim();
     if (v) data.notes[cKey] = v; else delete data.notes[cKey];
-    if (!$('#halfRow').hidden && $('#cHalf').checked) data.half[cKey] = true; else delete data.half[cKey];
+    if (!$('#halfRow').hidden && $('#cHalf').checked) data.half[cKey] = cDlg.querySelector('[name=cHalfWhich]:checked')?.value || 'first'; else delete data.half[cKey];
     save(); focusKey = cKey; render(true);
   });
   $('#cSkip').addEventListener('click', () => { cDlg.close(); focusDay(cKey); });
+  $('#cHalf').addEventListener('change', e => { $('#cWhich').hidden = !e.target.checked; });
 
   /* quick comment popover */
   const pop = $('#pop'); let popKey = null;
