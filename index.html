@@ -231,6 +231,8 @@
   .kcard details li{display:flex;gap:8px;padding:4px 0;border-bottom:1px dashed #eee}
   .kcard details li span:first-child{min-width:110px;font-weight:600}
   .kcard details li span:last-child{color:var(--muted)}
+  .carry-cta{display:flex;flex-direction:column;align-items:center;gap:4px;margin:12px 16px 0;text-align:center}
+  .carry-note{text-align:center;margin:10px 16px 0}
   .kcard.add{align-items:center;justify-content:center;border-style:dashed;color:var(--keka);font-weight:600;min-height:200px;background:#fbfaff}
   .banner{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:#fff8e6;border:1px solid #f0d9a0;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:13px}
   .banner select{border:1px solid #ccc;border-radius:6px;padding:4px 6px}
@@ -649,16 +651,29 @@
     <div class="field"><label for="tName">Leave type name <span class="req">*</span></label><input id="tName" required></div>
     <div class="grid2">
       <div class="field"><label for="tQuota">Annual quota (days)</label><input id="tQuota" type="number" min="0" step="0.5" placeholder="No limit"></div>
-      <div class="field"><label for="tCarry">Carryover into this year</label><input id="tCarry" type="number" min="0" step="0.01" placeholder="Auto"></div>
+      <div class="field" id="tCarryWrap"><label for="tCarry">Carried over from last year</label><input id="tCarry" type="number" min="0" step="0.01" placeholder="Auto"></div>
     </div>
     <fieldset class="field"><legend>How the quota is credited</legend>
       <div class="radios" style="flex-wrap:wrap"><label><input type="radio" name="tAcc" value="monthly"> Every month</label><label><input type="radio" name="tAcc" value="quarterly"> Every quarter</label><label><input type="radio" name="tAcc" value="yearly"> All at the start of the year</label></div>
     </fieldset>
     <label class="check"><input type="checkbox" id="tCarryOn"> Unused balance carries over to next year (otherwise it lapses)</label>
-    <p class="meta" style="margin:-4px 0 6px;font-size:12px">Leave carryover blank to work it out from last year's unused balance. Fill it in only to override (e.g. your first year here).</p>
+    <p class="meta" id="tCarryHelp" style="margin:-4px 0 6px;font-size:12px"></p>
     <div class="actions">
       <button type="button" class="btn danger left" id="tDelete" hidden>Delete type</button>
       <button type="button" class="btn" id="tCancel">Cancel</button>
+      <button type="submit" class="btn primary">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="cfDlg" aria-labelledby="cfT">
+  <form method="dialog" id="cfForm">
+    <h3 id="cfT"></h3>
+    <p class="sub" id="cfSub"></p>
+    <div class="field"><label for="cfVal">Days carried over</label><input id="cfVal" type="number" min="0" step="0.01" inputmode="decimal" required placeholder="e.g. 8.84"></div>
+    <div class="actions">
+      <button type="button" class="btn danger left" id="cfRemove" hidden>Remove</button>
+      <button type="button" class="btn" id="cfCancel">Cancel</button>
       <button type="submit" class="btn primary">Save</button>
     </div>
   </form>
@@ -1164,6 +1179,9 @@
       return `<article class="kcard" aria-label="${esc(t.name)}">
         <header><h3>${esc(t.name)}</h3><button type="button" class="link" data-edit-type="${t.id}" aria-label="Edit ${esc(t.name)} quota">Edit</button></header>
         ${hasQ ? `<p class="meta" style="text-align:center;margin:0 16px">${num(b.quota)} a year · ${ACCRUAL_TEXT[b.accrual]} · ${b.carry ? 'unused carries over' : 'lapses at year end'}</p>` : ''}
+        ${hasQ && b.carry && y === yearBounds().min ? (b.manualCarry == null
+          ? `<div class="carry-cta"><button type="button" class="btn" data-carry-open="${t.id}">+ Add leaves carried over from ${y-1}</button><span class="meta">One-time — ${y-1} isn't tracked here. From ${y+1} this is worked out automatically.</span></div>`
+          : `<p class="meta carry-note">Carried over from ${y-1}: <b>${days(b.manualCarry)}</b> · <button type="button" class="link" data-carry-open="${t.id}">Change</button></p>`) : ''}
         <div class="ring"><div class="donut-wrap">${ring}<div class="ctr">${ctr}</div></div></div>
         <dl class="kgrid" style="grid-template-columns:1fr 1fr">${row1}</dl>
         ${r2.length?`<dl class="kgrid r2" style="grid-template-columns:repeat(${r2.length},1fr)">${r2.join('')}</dl>`:''}
@@ -1194,7 +1212,10 @@
     $('#tName').value = t ? t.name : ''; $('#tName').disabled = !!(t && t.builtin);
     $('#tQuota').value = p.quota ?? ''; $('#tCarry').value = p.manualCarry ?? '';
     $('#tCarryOn').checked = !!p.carry; $('#tCarry').disabled = !p.carry;
-    $('#tCarry').placeholder = p.carry && !isNew ? `Auto (${num(carryFor(y, id))})` : 'Auto';
+    const first = y === yearBounds().min;
+    $('#tCarryWrap').hidden = !first;
+    $('#tCarryHelp').textContent = first ? `${y-1} isn't tracked, so enter what carried over into ${y} (one time). Later years are worked out automatically.` : `Carryover into ${y} is worked out automatically from ${y-1}'s unused balance${p.carry && !isNew ? ` (${days(carryFor(y, id))})` : ''}.`;
+    if (!first) $('#tCarry').value = '';
     tDlg.querySelectorAll('[name=tAcc]').forEach(r => r.checked = r.value === (p.accrual||'yearly'));
     $('#tDelete').hidden = isNew || !!(t && t.builtin);
     tDlg.showModal(); (t && t.builtin ? $('#tQuota') : $('#tName')).focus();
@@ -1202,7 +1223,7 @@
   $('#tForm').addEventListener('submit', () => {
     const y = cursor.getFullYear(), q = $('#tQuota').value === '' ? null : +$('#tQuota').value;
     const acc = tDlg.querySelector('[name=tAcc]:checked')?.value || 'yearly', carryOn = $('#tCarryOn').checked;
-    const manual = !carryOn || $('#tCarry').value === '' ? null : +$('#tCarry').value;
+    const manual = !carryOn || $('#tCarryWrap').hidden || $('#tCarry').value === '' ? null : +$('#tCarry').value;
     let id = tEdit;
     if (!id){ id = 'lt' + Date.now(); data.leaveTypes.push({ id, name:$('#tName').value.trim(), c: data.leaveTypes.length }); }
     else { const t = typeById(id); if (!t.builtin) t.name = $('#tName').value.trim(); }
@@ -1210,6 +1231,25 @@
     save(); render(); toast('Leave type saved');
   });
   $('#tCancel').addEventListener('click', () => tDlg.close());
+  // one-time opening carryover for the first tracked year (the year before isn't in the app)
+  const cfDlg = $('#cfDlg'); let cfId = null;
+  function openCarry(id){
+    const y = yearBounds().min, p = policyFor(y, id), t = typeById(id); cfId = id;
+    $('#cfT').textContent = `${t.name} carried over from ${y-1}`;
+    $('#cfSub').textContent = `Enter your unused ${t.name.toLowerCase()} from the end of ${y-1} (check Keka's "Carryover"). It's added to your ${y} balance. From ${y+1} onwards this is calculated automatically.`;
+    $('#cfVal').value = p.manualCarry ?? ''; $('#cfRemove').hidden = p.manualCarry == null;
+    cfDlg.showModal(); $('#cfVal').focus();
+  }
+  $('#cfForm').addEventListener('submit', () => {
+    const y = yearBounds().min, v = +$('#cfVal').value;
+    data.policy[y] ||= {}; data.policy[y][cfId] = { ...(data.policy[y][cfId] || {}), carryover: Math.max(0, v) };
+    save(); render(); toast(`Added ${days(Math.max(0, v))} carried over into ${y}`);
+  });
+  $('#cfCancel').addEventListener('click', () => cfDlg.close());
+  $('#cfRemove').addEventListener('click', () => {
+    const y = yearBounds().min; if (data.policy[y] && data.policy[y][cfId]) delete data.policy[y][cfId].carryover;
+    save(); cfDlg.close(); render(); toast('Carryover removed');
+  });
   $('#tCarryOn').addEventListener('change', e => { $('#tCarry').disabled = !e.target.checked; if (!e.target.checked) $('#tCarry').value = ''; });
   $('#tDelete').addEventListener('click', () => {
     const t = typeById(tEdit); if (!confirm(`Delete "${t.name}"? Leaves tagged with it become untagged.`)) return;
@@ -1893,6 +1933,7 @@
     if (b.dataset.career === 'add') return openRole();
     if (b.dataset.career === 'edit') return openRole(b.dataset.id);
     if (b.dataset.editType) return openType(b.dataset.editType);
+    if (b.dataset.carryOpen) return openCarry(b.dataset.carryOpen);
     switch (b.id){
       case 'prev': move(-1); break;
       case 'next': move(1); break;
