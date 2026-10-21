@@ -173,6 +173,18 @@
   .ctx .k{margin-left:auto;font-size:11px;color:var(--muted)}
   .ctx hr{border:0;border-top:1px solid #eee;margin:4px 0}
   .pop{width:280px;padding:10px}
+  .dayinfo{position:fixed;z-index:50;background:#fff;border:1px solid #ccc;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.18);width:300px;max-width:calc(100vw - 16px);padding:12px 14px}
+  .dayinfo h3{margin:0 0 8px;font-size:14px;display:flex;align-items:center;gap:8px}
+  .dayinfo .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .dayinfo .chip{border-radius:99px;padding:3px 10px;font-size:12px;font-weight:600}
+  .dayinfo .cmt{font-family:var(--hand);font-size:16px;background:#fbf8f1;border-radius:8px;padding:6px 10px;margin:0 0 8px;white-space:pre-wrap}
+  .dayinfo ul{list-style:none;margin:0 0 8px;padding:0;display:grid;gap:4px;font-size:13px}
+  .dayinfo li{display:flex;gap:6px;align-items:baseline}
+  .dayinfo li .tm{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+  .dayinfo .lbl{font:700 10px var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:2px 0 4px}
+  .dayinfo .acts{display:flex;gap:12px;border-top:1px solid #eee;padding-top:8px}
+  .dayinfo .x{margin-left:auto;border:0;background:none;font-size:16px;color:#777;width:28px;height:28px;border-radius:6px}
+  .dayinfo .x:hover{background:#f0f0f0}
   .pop label{display:block;font:600 12px var(--ui);color:var(--muted);margin-bottom:6px}
   .pop textarea{width:100%;min-height:72px;border:1px solid #bbb;border-radius:8px;padding:8px;font-family:var(--hand);font-size:16px;resize:vertical}
   .pop .row{display:flex;align-items:center;gap:6px;margin-top:8px}
@@ -604,7 +616,7 @@
         <div class="lg t-leave">Leave</div>
         <div class="lg t-floater">Floater</div>
       </div>
-      <p class="hint"><b>Right-click</b> (or long-press on touch) a date to set its type.<br><b>Double-click</b> (or <kbd>Enter</kbd>) to add a comment.<br><kbd>Delete</kbd> clears a date · arrows move.</p>
+      <p class="hint"><b>Click</b> a date to see its details.<br><b>Right-click</b> (or long-press on touch) a date to set its type.<br><b>Double-click</b> (or <kbd>Enter</kbd>) to add a comment.<br><kbd>Delete</kbd> clears a date · arrows move.</p>
     </section>
 
     <section aria-labelledby="cntHead" id="countBox">
@@ -657,6 +669,7 @@
 </div>
 
 <div class="ktip" id="ktip" hidden></div>
+<div class="dayinfo" id="dayInfo" role="dialog" aria-labelledby="diTitle" hidden></div>
 
 <dialog id="cDlg" aria-labelledby="cDlgT">
   <form method="dialog" id="cForm">
@@ -666,7 +679,7 @@
       <label class="check"><input type="checkbox" id="cHalf"> Half day (counts as 0.5)</label>
       <fieldset class="field" id="cWhich" hidden><legend>Which half?</legend>
         <div class="radios"><label><input type="radio" name="cHalfWhich" value="first" checked> First half (morning)</label><label><input type="radio" name="cHalfWhich" value="second"> Second half (afternoon)</label></div>
-        <div class="field" style="margin:10px 0 0"><label for="cOther">The other half is</label><select id="cOther"></select></div></fieldset>
+        <p class="meta" id="cHint" style="margin:8px 0 0" hidden></p></fieldset>
     </div>
     <label class="sr-only" for="cText">Comment</label>
     <textarea id="cText" placeholder="e.g. trip, festival, doctor visit…"></textarea>
@@ -1202,7 +1215,9 @@
         ? `<span class="lv-split"><i style="background:${typeColor(sp.first)}"></i>${esc(shortType(sp.first))} <small>1st half</small> + <i style="background:${typeColor(sp.second)}"></i>${esc(shortType(sp.second))} <small>2nd half</small></span>`
         : `<span class="lv-type"><i style="background:${typeColor(cur)}" aria-hidden="true"></i><select data-lv-type="${k}" aria-label="Leave type on ${fmtShort(d)}">${cur ? '' : '<option value="" selected>— Untagged —</option>'}${opts.map(([id,n]) => `<option value="${id}" ${id===cur?'selected':''}>${esc(n)}</option>`).join('')}</select></span>`;
       const durCell = sp ? 'Full day' : `<select data-lv-half="${k}" aria-label="Duration on ${fmtShort(d)}"><option value="" ${!data.half[k]?'selected':''}>Full day</option><option value="first" ${data.half[k]==='first'||data.half[k]===true?'selected':''}>First half</option><option value="second" ${data.half[k]==='second'?'selected':''}>Second half</option></select>`;
-      return `<tr class="day-${data.marks[k]}">
+      const tintOf = id => { const t = typeById(id); return t ? tint(t.c ?? 0) : '#ececec'; };
+      const bg = sp ? `linear-gradient(90deg, ${tintOf(sp.first)} 50%, ${tintOf(sp.second)} 50%)` : tintOf(cur);
+      return `<tr class="lv-row-${esc(cur || 'untagged')}" style="background:${bg}">
         <td data-label="Date"><button type="button" class="link" data-goto-cal="${k}">${fmtShort(d)} ${d.getFullYear()}</button></td>
         <td data-label="Day">${DOW_LONG[monIdx(d)]}</td>
         <td data-label="Leave type">${typeCell}</td>
@@ -1302,8 +1317,7 @@
       <div><label for="alTo">To</label><input type="date" id="alTo" value="${dflt}" required></div>
       <div><label for="alType">Leave type</label><select id="alType">${leaveKindsForMenu().map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}<option value="floater">Floater</option></select></div>
       <div><label class="chk" for="alHalf"><input type="checkbox" id="alHalf"> Half day</label>
-        <label class="sr-only" for="alWhich">Which half</label><select id="alWhich" hidden><option value="first">First half</option><option value="second">Second half</option></select>
-        <label class="sr-only" for="alOther">The other half is</label><select id="alOther" hidden style="margin-top:6px"><option value="">Other half: working</option>${leaveKindsForMenu().map(t=>`<option value="${t.id}">Other half: ${esc(t.name)}</option>`).join('')}<option value="floater">Other half: Floater</option></select></div>
+        <label class="sr-only" for="alWhich">Which half</label><select id="alWhich" hidden><option value="first">First half</option><option value="second">Second half</option></select></div>
       <div><label for="alNote">Comment</label><input id="alNote" placeholder="Optional — e.g. family trip"></div>
       <div><button type="submit" class="btn primary" style="height:36px">Add leave</button></div></form>`;
     const addWfh = `<form class="add-leave add-wfh" id="addWfh" aria-labelledby="awHead"><h3 id="awHead">Add WFH <span class="meta" style="font-size:13px">· ${data.wfhLimit} per month · skips week-offs, holidays and leave days</span></h3>
@@ -1646,21 +1660,18 @@
     let from = $('#alFrom').value, to = $('#alTo').value; if (!from || !to) return;
     if (to < from) [from, to] = [to, from];
     const type = $('#alType').value, half = $('#alHalf').checked && from === to ? $('#alWhich').value : null, note = $('#alNote').value.trim();
-    let n = 0, skipped = 0; const otherSel = half ? $('#alOther').value : '';
+    let n = 0, skipped = 0;
     for (let d = parseKey(from); keyOf(d) <= to; d = addDays(d,1)){
       const k = keyOf(d);
       if (from !== to && (isWeekend(d) || data.marks[k] === 'holiday')){ skipped++; continue; }
-      clearSplit(k);
-      if (type === 'floater'){ data.marks[k] = 'floater'; delete data.kind[k]; } else { data.marks[k] = 'leave'; data.kind[k] = type; }
-      const other = otherSel;
-      if (half && other && other !== type) applySplit(k, half === 'first' ? type : other, half === 'first' ? other : type);
-      else if (half && !other) data.half[k] = half; else delete data.half[k];
+      if (half) addHalfLeave(k, type, half);
+      else setHalves(k, { first:type, second:type });
       if (note && !data.notes[k]) data.notes[k] = note;
       n++;
     }
     save(); render();
-    const isSplit = half && otherSel && otherSel !== type;
-    toast(isSplit ? `Added a full-day leave: ${markLabel(from)} — synced to Calendar & Tasks` : `Added ${num(half ? 0.5 : n)} leave day${n===1&&!half?'':'s'}${skipped?` (skipped ${skipped} week-off/holiday)`:''} — synced to Calendar & Tasks`);
+    const full = half && !data.half[from];
+    toast(full ? `${fmtShort(parseKey(from))} is now a full-day leave: ${markLabel(from)} — synced to Calendar & Tasks` : `Added ${num(half ? 0.5 : n)} leave day${n===1&&!half?'':'s'}${skipped?` (skipped ${skipped} week-off/holiday)`:''} — synced to Calendar & Tasks`);
   });
   function wfhInfo(){
     const el = $('#awInfo'); if (!el) return;
@@ -1688,7 +1699,8 @@
     if (['alHalf','alFrom','alTo'].includes(e.target.id) && $('#alHalf')){
       const single = $('#alFrom').value === $('#alTo').value;
       if (!single) $('#alHalf').checked = false;
-      $('#alHalf').disabled = !single; $('#alWhich').hidden = $('#alOther').hidden = !$('#alHalf').checked;
+      $('#alHalf').disabled = !single; $('#alWhich').hidden = !$('#alHalf').checked;
+      if (single && e.target.id !== 'alHalf'){ const fh = freeHalf(halvesOf($('#alFrom').value)); if (fh){ $('#alHalf').checked = true; $('#alWhich').hidden = false; $('#alWhich').value = fh; } }
     }
   });
   document.addEventListener('change', e => { if (e.target.id === 'nStatus') e.target.className = 'st st-' + e.target.value; });
@@ -1915,9 +1927,9 @@
     save(); render();
     toast(`Added ${added.length} WFH day${added.length===1?'':'s'}${skipped?` (skipped ${skipped})`:''} — synced to Calendar & Tasks${wfhOverMsg(added)}`);
   }
-  let prevSplit = null;
+  let prevHalves = null;
   function setType(k, t, kind){
-    prevSplit = splitOf(k) ? { k, ...splitOf(k) } : null; clearSplit(k);
+    prevHalves = { k, h: halvesOf(k) }; clearSplit(k);
     data.marks[k] = t;
     if (t === 'leave' && kind) data.kind[k] = kind; else delete data.kind[k];
     if (t !== 'leave' && t !== 'floater') delete data.half[k];
@@ -1939,7 +1951,7 @@
   const ctx = $('#ctx'); let ctxKey = null;
   const KEYS = { casual:'C', paid:'P', sick:'S', unpaid:'U', wfh:'W', holiday:'H', floater:'F' };
   function openCtx(k, x, y){
-    closePop(false); ctxKey = k;
+    hideInfo(); closePop(false); ctxKey = k;
     const d = parseKey(k), cur = data.marks[k], curKind = data.kind[k];
     const item = (attrs, sw, label, on, key, sub) => `<button type="button" role="menuitemradio" aria-checked="${on}" ${attrs} class="${sub?'sub':''}"><span class="sw ${sw}"></span>${esc(label)}${on?'<span class="chk" aria-hidden="true">✓</span>':(key?`<span class="k">${key}</span>`:'')}</button>`;
     ctx.setAttribute('aria-label', `Set type for ${dayLabel(d)}`);
@@ -2002,34 +2014,73 @@
   function askDetails(k){
     cKey = k; const d = parseKey(k), t = data.marks[k];
     $('#cDlgT').textContent = `${markLabel(k).replace(/ \((first half|second half|half day)\)/,'')} · ${fmtShort(d)} ${d.getFullYear()}`;
-    $('#halfRow').hidden = !(t === 'leave' || t === 'floater'); $('#cHalf').checked = !!data.half[k];
-    const me = t === 'floater' ? 'floater' : data.kind[k];
-    $('#cOther').innerHTML = `<option value="">Working (not on leave)</option>` + leaveKindsForMenu().map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join('') + `<option value="floater">Floater</option>`;
-    let which = data.half[k] === 'second' ? 'second' : 'first', other = '';
-    if (prevSplit && prevSplit.k === k){
-      if (prevSplit.first === me){ which = 'first'; other = prevSplit.second; } else if (prevSplit.second === me){ which = 'second'; other = prevSplit.first; }
-      $('#cHalf').checked = !!other;
-    }
-    $('#cOther').value = other || '';
-    $('#cWhich').hidden = !$('#cHalf').checked;
+    $('#halfRow').hidden = !(t === 'leave' || t === 'floater');
+    // look at what the day had before this pick: a half already on leave -> default to the free half
+    const before = prevHalves && prevHalves.k === k ? prevHalves.h : {};
+    const fh = freeHalf(before);
+    $('#cHalf').checked = !!fh || !!data.half[k];
+    const which = fh || (data.half[k] === 'second' ? 'second' : 'first');
     cDlg.querySelectorAll('[name=cHalfWhich]').forEach(r => r.checked = r.value === which);
+    $('#cWhich').hidden = !$('#cHalf').checked;
+    updateHalfHint();
     $('#cText').value = data.notes[k] || '';
     cDlg.showModal(); $('#cText').focus();
   }
   $('#cForm').addEventListener('submit', () => {
     const v = $('#cText').value.trim();
     if (v) data.notes[cKey] = v; else delete data.notes[cKey];
-    delete data.half[cKey]; clearSplit(cKey);
-    if (!$('#halfRow').hidden && $('#cHalf').checked){
-      const which = cDlg.querySelector('[name=cHalfWhich]:checked')?.value || 'first', other = $('#cOther').value;
-      const me = data.marks[cKey] === 'floater' ? 'floater' : data.kind[cKey];
-      if (other && other !== me) applySplit(cKey, which === 'first' ? me : other, which === 'first' ? other : me);
-      else if (!other) data.half[cKey] = which;          // other half: working
-    }
+    applyHalfChoice();
     save(); focusKey = cKey; render(true);
+    if (splitOf(cKey) || (prevHalves && freeHalf(prevHalves.h) && !data.half[cKey])) toast(`${fmtShort(parseKey(cKey))} is now a full-day leave: ${markLabel(cKey)}`);
   });
-  $('#cSkip').addEventListener('click', () => { cDlg.close(); focusDay(cKey); });
-  $('#cHalf').addEventListener('change', e => { $('#cWhich').hidden = !e.target.checked; });
+  // skipping the comment still applies the half-day choice shown in the dialog
+  $('#cSkip').addEventListener('click', () => { cDlg.close(); applyHalfChoice(); save(); focusKey = cKey; render(true); if (splitOf(cKey)) toast(`${fmtShort(parseKey(cKey))} is now a full-day leave: ${markLabel(cKey)}`); });
+  $('#cHalf').addEventListener('change', e => { $('#cWhich').hidden = !e.target.checked; updateHalfHint(); });
+  cDlg.addEventListener('change', e => { if (e.target.name === 'cHalfWhich') updateHalfHint(); });
+  cDlg.addEventListener('cancel', () => setTimeout(() => { applyHalfChoice(); save(); focusKey = cKey; render(true); }));
+  function applyHalfChoice(){
+    const t = data.marks[cKey]; if (t !== 'leave' && t !== 'floater') return;
+    const me = t === 'floater' ? 'floater' : (validType(data.kind[cKey]) || null);
+    const before = prevHalves && prevHalves.k === cKey ? { ...prevHalves.h } : {};
+    if ($('#cHalf').checked){
+      const which = cDlg.querySelector('[name=cHalfWhich]:checked')?.value || 'first';
+      before[which] = me; setHalves(cKey, before);                 // keeps a leave already on the other half
+    } else setHalves(cKey, { first:me, second:me });
+  }
+  function updateHalfHint(){
+    const el = $('#cHint'); if (!el) return;
+    const before = prevHalves && prevHalves.k === cKey ? prevHalves.h : {};
+    const which = cDlg.querySelector('[name=cHalfWhich]:checked')?.value || 'first', other = which === 'first' ? 'second' : 'first';
+    const ot = before[other];
+    el.hidden = !$('#cHalf').checked;
+    el.textContent = other in before ? `The ${other} half is already ${ot === 'floater' ? 'Floater' : ot ? typeById(ot).name : 'leave'} — this makes ${fmtShort(parseKey(cKey))} a full-day leave.` : `The ${other} half stays a working half.`;
+  }
+  // what each half of a day currently holds: undefined = working, null = untagged leave, else a type id
+  function halvesOf(k){
+    const sp = splitOf(k); if (sp) return { first: sp.first, second: sp.second };
+    const m = data.marks[k]; if (m !== 'leave' && m !== 'floater') return {};
+    const cur = m === 'floater' ? 'floater' : (validType(data.kind[k]) || null);
+    if (data.half[k]) return { [data.half[k] === 'second' ? 'second' : 'first']: cur };
+    return { first: cur, second: cur };
+  }
+  function setHalves(k, h){
+    clearSplit(k); delete data.half[k];
+    const has = x => x in h;
+    if (has('first') && has('second')){
+      if (h.first === h.second){ setLeaveType(k, h.first); return; }       // same type both halves = full day
+      applySplit(k, h.first, h.second); return;
+    }
+    const which = has('first') ? 'first' : has('second') ? 'second' : null;
+    if (!which){ delete data.marks[k]; delete data.kind[k]; return; }
+    setLeaveType(k, h[which]); data.half[k] = which;
+  }
+  function setLeaveType(k, id){
+    if (id === 'floater'){ data.marks[k] = 'floater'; delete data.kind[k]; }
+    else { data.marks[k] = 'leave'; if (id) data.kind[k] = id; else delete data.kind[k]; }
+  }
+  // add a half-day leave; if the other half already has leave, the day becomes a full-day leave
+  function addHalfLeave(k, id, which){ const h = halvesOf(k); h[which] = id; setHalves(k, h); }
+  const freeHalf = h => ('first' in h) && !('second' in h) ? 'second' : ('second' in h) && !('first' in h) ? 'first' : null;
   function applySplit(k, first, second){
     data.marks[k] = 'leave'; delete data.half[k];
     data.split[k] = { first: first || null, second: second || null };
@@ -2039,8 +2090,47 @@
 
   /* quick comment popover */
   const pop = $('#pop'); let popKey = null;
+  /* ----- single click: show what's on a day (nothing on it = nothing happens) ----- */
+  const info = $('#dayInfo'); let infoT = null, infoKey = null;
+  function dayHasInfo(k){
+    return !!(data.marks[k] || (data.notes[k]||'').trim() || data.tasks.some(t => t.date === k) || data.weekoff[k] !== undefined);
+  }
+  function showInfo(k, anchor){
+    const d = parseKey(k), t = data.marks[k], tasks = data.tasks.filter(x => x.date === k).sort((a,b) => a.created - b.created);
+    const chips = [];
+    if (t) chips.push(`<span class="chip t-${t}">${esc(markLabel(k))}</span>`);
+    if (data.weekoff[k] === true) chips.push(`<span class="chip t-weekoff">Marked as week off</span>`);
+    if (data.weekoff[k] === false) chips.push(`<span class="chip t-weekoff">Working day (week off swapped)</span>`);
+    if (k === todayKey()) chips.push(`<span class="chip" style="background:#fde6cf;color:#8a4b00">Today</span>`);
+    const mins = tasks.reduce((a,x) => a + (x.mins||0), 0);
+    info.innerHTML = `<h3 id="diTitle">${DOW_LONG[monIdx(d)]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}<button type="button" class="x" data-info-act="close" aria-label="Close">✕</button></h3>
+      ${chips.length ? `<div class="chips">${chips.join('')}</div>` : ''}
+      ${(data.notes[k]||'').trim() ? `<div class="lbl">Comment</div><p class="cmt">${esc(data.notes[k])}</p>` : ''}
+      ${tasks.length ? `<div class="lbl">Tasks · ${tasks.length}${mins ? ' · ' + fmtTime(mins) : ''}</div><ul>${tasks.slice(0,6).map(x => `<li><span title="${TSTAT[x.status].label}">${TSTAT[x.status].emo}</span><span>${esc(x.title || 'Untitled task')}</span>${x.mins ? `<span class="tm">${fmtTime(x.mins)}</span>` : ''}</li>`).join('')}${tasks.length > 6 ? `<li class="meta">+${tasks.length-6} more</li>` : ''}</ul>` : ''}
+      <div class="acts"><button type="button" class="link" data-info-act="comment" data-k="${k}">${(data.notes[k]||'').trim() ? 'Edit comment' : 'Add comment'}</button>
+        <button type="button" class="link" data-info-act="tasks" data-k="${k}">Open in Tasks</button></div>`;
+    infoKey = k; info.hidden = false;
+    const r = anchor.getBoundingClientRect(), ir = info.getBoundingClientRect();
+    // beside the cell when there's room (so the dates below stay clickable), otherwise below/above it
+    let left, top;
+    if (r.right + 8 + ir.width <= innerWidth - 8){ left = r.right + 8; top = r.top; }
+    else if (r.left - 8 - ir.width >= 8){ left = r.left - 8 - ir.width; top = r.top; }
+    else { left = Math.max(8, Math.min(r.left, innerWidth - ir.width - 8)); top = r.bottom + 6 + ir.height > innerHeight ? r.top - ir.height - 6 : r.bottom + 6; }
+    info.style.left = left + 'px'; info.style.top = Math.max(8, Math.min(top, innerHeight - ir.height - 8)) + 'px';
+  }
+  function hideInfo(restore){ clearTimeout(infoT); infoT = null; if (info.hidden) return; const k = infoKey; info.hidden = true; infoKey = null; if (restore) focusDay(k); }
+  info.addEventListener('click', e => {
+    const b = e.target.closest('[data-info-act]'); if (!b) return;
+    const a = b.dataset.infoAct, k = b.dataset.k || infoKey;
+    if (a === 'close') return hideInfo(true);
+    hideInfo();
+    if (a === 'comment') openPop(k);
+    if (a === 'tasks'){ cursor = parseKey(k); section = 'tasks'; taskView = 'day'; render(); }
+  });
+  info.addEventListener('keydown', e => { if (e.key === 'Escape'){ e.preventDefault(); hideInfo(true); } });
+
   function openPop(k){
-    closeCtx(false); popKey = k; focusKey = k;
+    hideInfo(); closeCtx(false); popKey = k; focusKey = k;
     const b = viewEl.querySelector(`[data-date="${k}"]`), d = parseKey(k);
     $('#popLbl').textContent = `Comment · ${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)} ${d.getFullYear()}`;
     $('#popText').value = data.notes[k] || '';
@@ -2064,12 +2154,13 @@
     if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); savePop(); }
     if (e.key === 'Escape'){ e.preventDefault(); closePop(); }
   });
-  document.addEventListener('dblclick', e => { const b = e.target.closest('.day[data-date]'); if (b) openPop(b.dataset.date); });
+  document.addEventListener('dblclick', e => { const b = e.target.closest('.day[data-date]'); if (b){ hideInfo(); openPop(b.dataset.date); } });
   document.addEventListener('pointerdown', e => {
     if (!ctx.hidden && !ctx.contains(e.target)) closeCtx(false);
     if (!pop.hidden && !pop.contains(e.target) && !e.target.closest(`[data-date="${popKey}"]`)) savePop();
+    if (!info.hidden && !info.contains(e.target)) hideInfo();
   });
-  addEventListener('scroll', () => closeCtx(false), true);
+  addEventListener('scroll', e => { closeCtx(false); if (!info.hidden && !info.contains(e.target)) hideInfo(); }, true);
   addEventListener('resize', () => { closeCtx(false); closePop(false); });
 
   /* chart tooltips */
@@ -2095,8 +2186,10 @@
   /* ---------- events ---------- */
   document.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || ctx.contains(b) || pop.contains(b)) return;
-    if (b.dataset.date){ // left-click only selects
+    if (b.dataset.date){ // left-click: select, and show the day's details if it has any
       focusKey = b.dataset.date;
+      clearTimeout(infoT); infoT = null;
+      if (e.detail < 2 && ctx.hidden && dayHasInfo(b.dataset.date)){ const k = b.dataset.date; infoT = setTimeout(() => { const el = viewEl.querySelector(`[data-date="${k}"]`); if (el) showInfo(k, el); }, e.detail === 0 ? 0 : 280); }
       viewEl.querySelectorAll('.day[data-date]').forEach(x => x.tabIndex = -1); b.tabIndex = 0;
       if (view === 'month' && section === 'calendar' && e.detail < 2){
         viewEl.querySelectorAll('.day.sel').forEach(x => x.classList.remove('sel')); b.classList.add('sel');
@@ -2175,6 +2268,7 @@
     const k = day.dataset.date;
     if (e.key === 'Delete' || e.key === 'Backspace'){ e.preventDefault(); clearDay(k); return; }
     if (e.key === 'Enter'){ e.preventDefault(); openPop(k); return; }
+    if (e.key === 'Escape' && !info.hidden){ e.preventDefault(); hideInfo(true); return; }
     const step = {ArrowLeft:-1, ArrowRight:1, ArrowUp:-7, ArrowDown:7}[e.key];
     if (step){
       e.preventDefault();
