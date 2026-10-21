@@ -117,6 +117,9 @@
   .day.leave.half{background:linear-gradient(135deg,var(--leave-bg) 50%,#fff 50%)}
   .day.floater.half{background:linear-gradient(135deg,var(--floater-bg) 50%,#fff 50%)}
   .day.we.half.leave{background:linear-gradient(135deg,var(--leave-bg) 50%,var(--weekoff-bg) 50%)}
+  .day.leave.split{background:linear-gradient(135deg,var(--leave-bg) 48.5%,rgba(176,0,0,.45) 49.5%,rgba(176,0,0,.45) 50.5%,var(--leave-bg) 51.5%)}
+  .day.leave.split.split-f1{background:linear-gradient(135deg,var(--floater-bg) 50%,var(--leave-bg) 50%)}
+  .day.leave.split.split-f2{background:linear-gradient(135deg,var(--leave-bg) 50%,var(--floater-bg) 50%)}
   .day.leave.half.half-second{background:linear-gradient(135deg,#fff 50%,var(--leave-bg) 50%)}
   .day.floater.half.half-second{background:linear-gradient(135deg,#fff 50%,var(--floater-bg) 50%)}
   .day[data-date]:hover{filter:brightness(.95)}
@@ -648,7 +651,8 @@
     <div id="halfRow">
       <label class="check"><input type="checkbox" id="cHalf"> Half day (counts as 0.5)</label>
       <fieldset class="field" id="cWhich" hidden><legend>Which half?</legend>
-        <div class="radios"><label><input type="radio" name="cHalfWhich" value="first" checked> First half (morning)</label><label><input type="radio" name="cHalfWhich" value="second"> Second half (afternoon)</label></div></fieldset>
+        <div class="radios"><label><input type="radio" name="cHalfWhich" value="first" checked> First half (morning)</label><label><input type="radio" name="cHalfWhich" value="second"> Second half (afternoon)</label></div>
+        <div class="field" style="margin:10px 0 0"><label for="cOther">The other half is</label><select id="cOther"></select></div></fieldset>
     </div>
     <label class="sr-only" for="cText">Comment</label>
     <textarea id="cText" placeholder="e.g. trip, festival, doctor visit…"></textarea>
@@ -837,7 +841,7 @@
   function normalize(d){
     d = d && typeof d === 'object' ? d : {};
     d.marks ||= {}; d.notes ||= {}; d.career ||= []; d.ui ||= {};
-    d.kind ||= {}; d.half ||= {}; d.policy ||= {}; d.tasks ||= []; d.weekoff ||= {}; d.objectives ||= []; d.reviews ||= {};
+    d.kind ||= {}; d.half ||= {}; d.policy ||= {}; d.tasks ||= []; d.weekoff ||= {}; d.split ||= {}; d.objectives ||= []; d.reviews ||= {};
     if (typeof d.wfhLimit !== 'number') d.wfhLimit = 5;   // WFH days allowed per month
     d.leaveTypes ||= DEFAULT_TYPES.map(t => ({...t}));
     d.seeded ||= {};
@@ -893,6 +897,17 @@
   const dayWeight = k => data.half[k] ? 0.5 : 1;
   // which leave-type a marked day counts against (null = untagged leave)
   const leaveTypeOf = k => data.marks[k] === 'floater' ? 'floater' : data.marks[k] === 'leave' ? (data.kind[k] && typeById(data.kind[k]) ? data.kind[k] : null) : undefined;
+  // a full-day leave made of two different halves, e.g. first half Sick + second half Casual
+  const splitOf = k => (data.marks[k] === 'leave' && data.split && data.split[k]) || null;
+  const validType = id => id && typeById(id) ? id : null;
+  function leaveParts(k){            // [[typeId|null, days]] for every leave portion on a day
+    const sp = splitOf(k);
+    if (sp) return [[validType(sp.first), 0.5], [validType(sp.second), 0.5]];
+    const t = leaveTypeOf(k);
+    return t === undefined ? [] : [[t, dayWeight(k)]];
+  }
+  const shortType = id => { const t = typeById(id); return t ? t.name.replace(/ Leave$/,'') : 'Leave'; };
+  function clearSplit(k){ if (data.split) delete data.split[k]; }
 
   function policyFor(y, id){
     const own = (data.policy[y]||{})[id] || {};
@@ -926,11 +941,12 @@
     let untagged = 0, untaggedKeys = [];
     for (const k of Object.keys(data.marks)){
       if (!k.startsWith(y+'-')) continue;
-      const t = leaveTypeOf(k); if (t === undefined) continue;
-      const w = dayWeight(k), d = parseKey(k);
-      weekday[monIdx(d)] += w; month[d.getMonth()] += w;
-      if (t === null){ untagged += w; untaggedKeys.push(k); continue; }
-      byType[t] = (byType[t]||0) + w; (list[t] ||= []).push(k);
+      const d = parseKey(k);
+      for (const [t, w] of leaveParts(k)){
+        weekday[monIdx(d)] += w; month[d.getMonth()] += w;
+        if (t === null){ untagged += w; if (!untaggedKeys.includes(k)) untaggedKeys.push(k); continue; }
+        byType[t] = (byType[t]||0) + w; ((list[t] ||= []).includes(k)) || list[t].push(k);
+      }
     }
     return { byType, weekday, month, untagged, untaggedKeys, list };
   }
@@ -1058,6 +1074,7 @@
   const halfText = k => data.half[k] === 'second' ? 'second half' : data.half[k] === 'first' ? 'first half' : 'half day';
   function markLabel(k){
     const t = data.marks[k]; if (!t) return '';
+    const sp = splitOf(k); if (sp) return `${shortType(sp.first)} (1st half) + ${shortType(sp.second)} (2nd half)`;
     if (t === 'leave'){ const lt = typeById(data.kind[k]); return `${lt ? lt.name : 'Leave'}${data.half[k]?` (${halfText(k)})`:''}`; }
     if (t === 'floater') return `Floater${data.half[k]?` (${halfText(k)})`:''}`;
     return TYPES[t];
@@ -1073,6 +1090,7 @@
   function dayCls(d, extra=''){
     const k = keyOf(d), t = data.marks[k], c = ['day'];
     if (isWeekend(d)) c.push('we'); if (t) c.push(t); if (data.half[k] && t){ c.push('half'); if (data.half[k] === 'second') c.push('half-second'); }
+    const sp = splitOf(k); if (sp){ c.push('split'); if (sp.first === 'floater') c.push('split-f1'); if (sp.second === 'floater') c.push('split-f2'); }
     if (k === todayKey()) c.push('is-today'); if (extra) c.push(extra);
     return c.join(' ');
   }
@@ -1229,7 +1247,7 @@
         <div class="ring"><div class="donut-wrap">${ring}<div class="ctr">${ctr}</div></div></div>
         <dl class="kgrid" style="grid-template-columns:1fr 1fr">${row1}</dl>
         ${r2.length?`<dl class="kgrid r2" style="grid-template-columns:repeat(${r2.length},1fr)">${r2.join('')}</dl>`:''}
-        <details><summary>View dates (${list.length})</summary>${list.length?`<ul>${list.map(k=>{const d=parseKey(k);return `<li><span>${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)}${data.half[k]?' · '+halfText(k):''}</span><span>${esc(data.notes[k]||'')}</span><button type="button" class="x" data-rm-leave="${k}" aria-label="Remove leave on ${fmtShort(d)}">✕</button></li>`;}).join('')}</ul>`:'<p class="meta">No dates yet.</p>'}</details>
+        <details><summary>View dates (${list.length})</summary>${list.length?`<ul>${list.map(k=>{const d=parseKey(k);return `<li><span>${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)}${(sp => sp ? ' · ' + (sp.first === t.id && sp.second === t.id ? 'both halves' : sp.first === t.id ? 'first half' : 'second half') : '')(splitOf(k))}${!splitOf(k) && data.half[k]?' · '+halfText(k):''}</span><span>${esc(data.notes[k]||'')}</span><button type="button" class="x" data-rm-leave="${k}" data-rm-type="${t.id}" aria-label="Remove ${esc(t.name)} on ${fmtShort(d)}">✕</button></li>`;}).join('')}</ul>`:'<p class="meta">No dates yet.</p>'}</details>
       </article>`;
     }).join('') + `<button type="button" class="kcard add" data-edit-type="__new">+ Add leave type</button>`;
 
@@ -1239,7 +1257,8 @@
       <div><label for="alTo">To</label><input type="date" id="alTo" value="${dflt}" required></div>
       <div><label for="alType">Leave type</label><select id="alType">${leaveKindsForMenu().map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}<option value="floater">Floater</option></select></div>
       <div><label class="chk" for="alHalf"><input type="checkbox" id="alHalf"> Half day</label>
-        <label class="sr-only" for="alWhich">Which half</label><select id="alWhich" hidden><option value="first">First half</option><option value="second">Second half</option></select></div>
+        <label class="sr-only" for="alWhich">Which half</label><select id="alWhich" hidden><option value="first">First half</option><option value="second">Second half</option></select>
+        <label class="sr-only" for="alOther">The other half is</label><select id="alOther" hidden style="margin-top:6px"><option value="">Other half: working</option>${leaveKindsForMenu().map(t=>`<option value="${t.id}">Other half: ${esc(t.name)}</option>`).join('')}<option value="floater">Other half: Floater</option></select></div>
       <div><label for="alNote">Comment</label><input id="alNote" placeholder="Optional — e.g. family trip"></div>
       <div><button type="submit" class="btn primary" style="height:36px">Add leave</button></div></form>`;
     const addWfh = `<form class="add-leave add-wfh" id="addWfh" aria-labelledby="awHead"><h3 id="awHead">Add WFH <span class="meta" style="font-size:13px">· ${data.wfhLimit} per month · skips week-offs, holidays and leave days</span></h3>
@@ -1447,7 +1466,7 @@
   const autoKeys = (sk, ek) => [...new Set([...Object.keys(data.marks), ...Object.keys(data.notes)])].filter(k => k >= sk && k <= ek && k <= maxTaskKey() && (data.marks[k] in AUTO_TYPES || (data.notes[k]||'').trim())).sort();
   function dayRowCls(k){ const t = data.marks[k]; return t ? 'day-' + t : (isWeekend(parseKey(k)) ? 'day-off' : ''); }
   const autoLabel = k => data.marks[k] in AUTO_TYPES ? `${AUTO_TYPES[data.marks[k]]} ${markLabel(k)}` : '📝 Day comment';
-  const autoLen = k => !(data.marks[k] in AUTO_TYPES) || data.marks[k] === 'holiday' ? '—' : (data.half[k] ? (data.half[k] === 'second' ? 'Second half' : data.half[k] === 'first' ? 'First half' : 'Half day') : 'Full day');
+  const autoLen = k => !(data.marks[k] in AUTO_TYPES) || data.marks[k] === 'holiday' ? '—' : (splitOf(k) ? 'Full day (split)' : data.half[k] ? (data.half[k] === 'second' ? 'Second half' : data.half[k] === 'first' ? 'First half' : 'Half day') : 'Full day');
   function autoRow(k){
     const d = parseKey(k);
     return `<tr class="tk-auto ${dayRowCls(k)}"><td class="c-date" data-label="Date"><span class="auto-date">${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)} ${d.getFullYear()}</span></td>
@@ -1582,17 +1601,21 @@
     let from = $('#alFrom').value, to = $('#alTo').value; if (!from || !to) return;
     if (to < from) [from, to] = [to, from];
     const type = $('#alType').value, half = $('#alHalf').checked && from === to ? $('#alWhich').value : null, note = $('#alNote').value.trim();
-    let n = 0, skipped = 0;
+    let n = 0, skipped = 0; const otherSel = half ? $('#alOther').value : '';
     for (let d = parseKey(from); keyOf(d) <= to; d = addDays(d,1)){
       const k = keyOf(d);
       if (from !== to && (isWeekend(d) || data.marks[k] === 'holiday')){ skipped++; continue; }
+      clearSplit(k);
       if (type === 'floater'){ data.marks[k] = 'floater'; delete data.kind[k]; } else { data.marks[k] = 'leave'; data.kind[k] = type; }
-      if (half) data.half[k] = half; else delete data.half[k];
+      const other = otherSel;
+      if (half && other && other !== type) applySplit(k, half === 'first' ? type : other, half === 'first' ? other : type);
+      else if (half && !other) data.half[k] = half; else delete data.half[k];
       if (note && !data.notes[k]) data.notes[k] = note;
       n++;
     }
     save(); render();
-    toast(`Added ${num(half ? 0.5 : n)} leave day${n===1&&!half?'':'s'}${skipped?` (skipped ${skipped} week-off/holiday)`:''} — synced to Calendar & Tasks`);
+    const isSplit = half && otherSel && otherSel !== type;
+    toast(isSplit ? `Added a full-day leave: ${markLabel(from)} — synced to Calendar & Tasks` : `Added ${num(half ? 0.5 : n)} leave day${n===1&&!half?'':'s'}${skipped?` (skipped ${skipped} week-off/holiday)`:''} — synced to Calendar & Tasks`);
   });
   function wfhInfo(){
     const el = $('#awInfo'); if (!el) return;
@@ -1608,7 +1631,7 @@
     if (['alHalf','alFrom','alTo'].includes(e.target.id) && $('#alHalf')){
       const single = $('#alFrom').value === $('#alTo').value;
       if (!single) $('#alHalf').checked = false;
-      $('#alHalf').disabled = !single; $('#alWhich').hidden = !$('#alHalf').checked;
+      $('#alHalf').disabled = !single; $('#alWhich').hidden = $('#alOther').hidden = !$('#alHalf').checked;
     }
   });
   document.addEventListener('change', e => { if (e.target.id === 'nStatus') e.target.className = 'st st-' + e.target.value; });
@@ -1826,7 +1849,7 @@
     for (let d = parseKey(from); keyOf(d) <= to; d = addDays(d,1)){
       const k = keyOf(d), t = data.marks[k];
       if (isWeekend(d) || t === 'holiday' || t === 'leave' || t === 'floater'){ skipped++; continue; }
-      data.marks[k] = 'wfh'; delete data.kind[k]; delete data.half[k];
+      data.marks[k] = 'wfh'; delete data.kind[k]; delete data.half[k]; clearSplit(k);
       if (note && !data.notes[k]) data.notes[k] = note;
       added.push(k);
     }
@@ -1835,7 +1858,9 @@
     save(); render();
     toast(`Added ${added.length} WFH day${added.length===1?'':'s'}${skipped?` (skipped ${skipped})`:''} — synced to Calendar & Tasks${wfhOverMsg(added)}`);
   }
+  let prevSplit = null;
   function setType(k, t, kind){
+    prevSplit = splitOf(k) ? { k, ...splitOf(k) } : null; clearSplit(k);
     data.marks[k] = t;
     if (t === 'leave' && kind) data.kind[k] = kind; else delete data.kind[k];
     if (t !== 'leave' && t !== 'floater') delete data.half[k];
@@ -1848,8 +1873,8 @@
   function clearDay(k){
     if (!data.marks[k] && !data.notes[k]) return;
     lastTask = null;
-    lastCleared = { k, mark:data.marks[k], note:data.notes[k], kind:data.kind[k], half:data.half[k] };
-    delete data.marks[k]; delete data.notes[k]; delete data.kind[k]; delete data.half[k];
+    lastCleared = { k, mark:data.marks[k], note:data.notes[k], kind:data.kind[k], half:data.half[k], split: splitOf(k) ? {...splitOf(k)} : null };
+    delete data.marks[k]; delete data.notes[k]; delete data.kind[k]; delete data.half[k]; clearSplit(k);
     save(); focusKey = k; render(true); toast(`Cleared ${fmtShort(parseKey(k))}`, true);
   }
 
@@ -1921,19 +1946,39 @@
     cKey = k; const d = parseKey(k), t = data.marks[k];
     $('#cDlgT').textContent = `${markLabel(k).replace(/ \((first half|second half|half day)\)/,'')} · ${fmtShort(d)} ${d.getFullYear()}`;
     $('#halfRow').hidden = !(t === 'leave' || t === 'floater'); $('#cHalf').checked = !!data.half[k];
-    $('#cWhich').hidden = !data.half[k];
-    cDlg.querySelectorAll('[name=cHalfWhich]').forEach(r => r.checked = r.value === (data.half[k] === 'second' ? 'second' : 'first'));
+    const me = t === 'floater' ? 'floater' : data.kind[k];
+    $('#cOther').innerHTML = `<option value="">Working (not on leave)</option>` + leaveKindsForMenu().map(x => `<option value="${x.id}">${esc(x.name)}</option>`).join('') + `<option value="floater">Floater</option>`;
+    let which = data.half[k] === 'second' ? 'second' : 'first', other = '';
+    if (prevSplit && prevSplit.k === k){
+      if (prevSplit.first === me){ which = 'first'; other = prevSplit.second; } else if (prevSplit.second === me){ which = 'second'; other = prevSplit.first; }
+      $('#cHalf').checked = !!other;
+    }
+    $('#cOther').value = other || '';
+    $('#cWhich').hidden = !$('#cHalf').checked;
+    cDlg.querySelectorAll('[name=cHalfWhich]').forEach(r => r.checked = r.value === which);
     $('#cText').value = data.notes[k] || '';
     cDlg.showModal(); $('#cText').focus();
   }
   $('#cForm').addEventListener('submit', () => {
     const v = $('#cText').value.trim();
     if (v) data.notes[cKey] = v; else delete data.notes[cKey];
-    if (!$('#halfRow').hidden && $('#cHalf').checked) data.half[cKey] = cDlg.querySelector('[name=cHalfWhich]:checked')?.value || 'first'; else delete data.half[cKey];
+    delete data.half[cKey]; clearSplit(cKey);
+    if (!$('#halfRow').hidden && $('#cHalf').checked){
+      const which = cDlg.querySelector('[name=cHalfWhich]:checked')?.value || 'first', other = $('#cOther').value;
+      const me = data.marks[cKey] === 'floater' ? 'floater' : data.kind[cKey];
+      if (other && other !== me) applySplit(cKey, which === 'first' ? me : other, which === 'first' ? other : me);
+      else if (!other) data.half[cKey] = which;          // other half: working
+    }
     save(); focusKey = cKey; render(true);
   });
   $('#cSkip').addEventListener('click', () => { cDlg.close(); focusDay(cKey); });
   $('#cHalf').addEventListener('change', e => { $('#cWhich').hidden = !e.target.checked; });
+  function applySplit(k, first, second){
+    data.marks[k] = 'leave'; delete data.half[k];
+    data.split[k] = { first: first || null, second: second || null };
+    const real = [first, second].find(x => x && x !== 'floater');
+    if (real) data.kind[k] = real; else delete data.kind[k];
+  }
 
   /* quick comment popover */
   const pop = $('#pop'); let popKey = null;
@@ -1984,8 +2029,9 @@
   function toast(msg, undo){ $('#toastMsg').textContent = msg; $('#toastUndo').hidden = !undo; $('#toast').classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => $('#toast').classList.remove('show'), undo ? 5000 : 2200); }
   $('#toastUndo').addEventListener('click', () => {
     if (lastTask){ data.tasks.push(lastTask); lastTask = null; save(); render(); $('#toast').classList.remove('show'); return; }
-    if (!lastCleared) return; const {k,mark,note,kind,half} = lastCleared;
-    if (mark) data.marks[k] = mark; if (note) data.notes[k] = note; if (kind) data.kind[k] = kind; if (half) data.half[k] = half;
+    if (!lastCleared) return; const {k,mark,note,kind,half,split} = lastCleared;
+    if (mark) data.marks[k] = mark; if (note) data.notes[k] = note; if (kind) data.kind[k] = kind; else delete data.kind[k];
+    if (half) data.half[k] = half; else delete data.half[k]; if (split) data.split[k] = split; else clearSplit(k);
     lastCleared = null; save(); focusKey = k; render(true); $('#toast').classList.remove('show');
   });
 
@@ -2008,7 +2054,18 @@
     if (b.dataset.gotoTaskMonth !== undefined){ cursor = new Date(cursor.getFullYear(), +b.dataset.gotoTaskMonth, 1); taskView = 'month'; render(); return; }
     if (b.dataset.tfilter){ const s = b.dataset.tfilter; taskFilter.has(s) ? taskFilter.delete(s) : taskFilter.add(s); renderKeep(); return; }
     if (b.dataset.delTask) return deleteTask(b.dataset.delTask);
-    if (b.dataset.rmLeave){ const k = b.dataset.rmLeave, what = data.marks[k] === 'wfh' ? 'WFH' : 'leave'; lastTask = null; lastCleared = { k, mark:data.marks[k], kind:data.kind[k], half:data.half[k] }; delete data.marks[k]; delete data.kind[k]; delete data.half[k]; save(); render(); toast(`Removed ${what} on ${fmtShort(parseKey(k))}`, true); return; }
+    if (b.dataset.rmLeave){
+      const k = b.dataset.rmLeave, what = data.marks[k] === 'wfh' ? 'WFH' : 'leave', sp = splitOf(k), rt = b.dataset.rmType;
+      lastTask = null; lastCleared = { k, mark:data.marks[k], kind:data.kind[k], half:data.half[k], split: sp ? {...sp} : null };
+      if (sp && rt && sp.first !== sp.second){
+        const keepHalf = sp.first === rt ? 'second' : 'first', keep = sp[keepHalf];
+        clearSplit(k);
+        if (keep === 'floater'){ data.marks[k] = 'floater'; delete data.kind[k]; } else { data.marks[k] = 'leave'; if (keep) data.kind[k] = keep; else delete data.kind[k]; }
+        data.half[k] = keepHalf;
+        save(); render(); toast(`Removed ${shortType(rt)} half on ${fmtShort(parseKey(k))} — ${shortType(keep)} ${keepHalf} half kept`, true); return;
+      }
+      delete data.marks[k]; delete data.kind[k]; delete data.half[k]; clearSplit(k); save(); render(); toast(`Removed ${what} on ${fmtShort(parseKey(k))}`, true); return;
+    }
     if (b.dataset.wfhMonth !== undefined){ cursor = new Date(cursor.getFullYear(), +b.dataset.wfhMonth, 1); renderKeep(); return; }
     if (b.dataset.obj) return openObjective(b.dataset.obj);
     if (b.dataset.rv) return reviewAction(b.dataset.rv);
