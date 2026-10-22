@@ -419,27 +419,6 @@
   .add-leave h3{grid-column:1/-1;margin:0;font-size:16px;font-weight:500}
   .kcard details li .x{margin-left:auto;border:0;background:none;color:#999;font-size:13px}
   .kcard details li .x:hover{color:#b00000}
-  /* review */
-  .rv{max-width:980px}
-  .rv-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px}
-  .rv-card h3{margin:0;font-size:17px}
-  .rv-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
-  .obj{border-top:1px solid #eee;padding:12px 0}
-  .obj:first-of-type{border-top:0}
-  .obj-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-  .obj-top b{font-size:15px}
-  .obj .bar{height:8px;border-radius:99px;background:#eee;overflow:hidden;margin:8px 0 6px;max-width:420px}
-  .obj .bar span{display:block;height:100%;background:#45818e}
-  .obj p{margin:4px 0;font-size:13px;white-space:pre-wrap}
-  .ost{border-radius:99px;padding:2px 9px;font-size:12px;font-weight:600}
-  .ost-notstarted{background:#eee;color:#444}.ost-ontrack{background:#d4e8cd;color:#2d6a2f}.ost-atrisk{background:#fce8b2;color:#6b4400}.ost-done{background:#cfe2f3;color:#073763}
-  .rv textarea{width:100%;border:1px solid #bbb;border-radius:8px;padding:10px 12px;font:14px/1.55 var(--ui)}
-  #rvGuide{min-height:170px}
-  #rvText{min-height:420px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
-  .rv-actions{display:flex;flex-wrap:wrap;gap:8px}
-  .rv details summary{cursor:pointer;font-weight:600}
-  .rv .meta{margin:6px 0 10px}
-
   /* ---------- career ---------- */
   .career{max-width:820px}
   .li-card{background:#fff;border:1px solid #e0dfdc;border-radius:10px;padding:20px 24px;margin-bottom:14px}
@@ -604,7 +583,6 @@
     .tk-tiles{display:none !important}
     .print-report{margin-bottom:14px}
     body.sec-tasks #title{display:none}
-    body.sec-review #title{display:none}
     .rv-screen{display:none !important}
     .print-report .rv-print{white-space:pre-wrap;font:13px/1.6 var(--ui)}
   }
@@ -663,7 +641,6 @@
       <button type="button" data-section="leaves"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 8 8h-8z" fill="currentColor"/></svg>Leaves</button>
       <button type="button" data-section="wfh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>WFH</button>
       <button type="button" data-section="career"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>Career</button>
-      <button type="button" data-section="review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>Self review</button>
     </nav>
 
     <section aria-labelledby="legHead" id="legendBox">
@@ -859,26 +836,6 @@
   </form>
 </dialog>
 
-<dialog id="oDlg" aria-labelledby="oDlgT">
-  <form method="dialog" id="oForm">
-    <h3 id="oDlgT">Add objective</h3>
-    <p class="sub" id="oDlgSub"></p>
-    <div class="field"><label for="oTitle">Objective <span class="req">*</span></label><input id="oTitle" required placeholder="e.g. Automate regression for SmartCoupon"></div>
-    <div class="field"><label for="oDesc">Key results / how it's measured</label><textarea id="oDesc" style="font-family:var(--ui);font-size:14px;min-height:70px" placeholder="e.g. 80% of smoke suite automated in Playwright; run in CI"></textarea></div>
-    <div class="field"><label for="oKeys">Keywords to match your tasks <span class="meta">(comma separated)</span></label><input id="oKeys" placeholder="e.g. automation, playwright, smartcoupon"></div>
-    <div class="grid2">
-      <div class="field"><label for="oProg">Progress: <output id="oProgOut">0%</output></label><input id="oProg" type="range" min="0" max="100" step="5" value="0"></div>
-      <div class="field"><label for="oStatus">Status</label><select id="oStatus"><option value="notstarted">Not started</option><option value="ontrack">On track</option><option value="atrisk">At risk</option><option value="done">Completed</option></select></div>
-    </div>
-    <div class="field"><label for="oNotes">Progress notes</label><textarea id="oNotes" style="font-family:var(--ui);font-size:14px;min-height:70px" placeholder="What's done, what's blocked…"></textarea></div>
-    <div class="actions">
-      <button type="button" class="btn danger left" id="oDelete" hidden>Delete</button>
-      <button type="button" class="btn" id="oCancel">Cancel</button>
-      <button type="submit" class="btn primary">Save</button>
-    </div>
-  </form>
-</dialog>
-
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastUndo" hidden>Undo</button></div>
 
 <script>
@@ -1006,7 +963,7 @@
   }
 
   /* ---------- state ---------- */
-  let section = data.ui.section || 'calendar';
+  let section = data.ui.section && data.ui.section !== 'review' ? data.ui.section : 'calendar';
   let view = data.ui.view || 'year';
   let taskView = data.ui.taskView || 'day';
   let taskFilter = new Set(), taskQuery = '';
@@ -1189,17 +1146,6 @@
         + `<div class="t-weekoff wide"><span>Time logged this week</span><strong>${fmtTime(st.mins)||'0m'}</strong></div>`;
       return;
     }
-    if (section === 'review'){
-      const q = Math.floor(cursor.getMonth()/3), qk = `${y}-Q${q+1}`, objs = data.objectives.filter(o => o.q === qk);
-      const [qs, qe] = [keyOf(new Date(y,q*3,1)), keyOf(new Date(y,q*3+3,0))];
-      const st = taskStats(data.tasks.filter(t => t.date >= qs && t.date <= qe));
-      const avg = objs.length ? Math.round(objs.reduce((a,o)=>a+(+o.progress||0),0)/objs.length) : 0;
-      $('#cntHead').textContent = `Q${q+1} ${y} at a glance`;
-      $('#counts').innerHTML = `<div class="t-floater"><span>Objectives</span><strong>${objs.length}</strong></div><div class="t-floater"><span>Avg progress</span><strong>${avg}%</strong></div>`
-        + `<div class="st-done"><span>✅ Completed</span><strong>${st.by.done}</strong></div><div class="st-progress"><span>📈 In progress</span><strong>${st.by.progress}</strong></div>`
-        + `<div class="t-weekoff wide"><span>Time logged</span><strong>${fmtTime(st.mins)||'0m'}</strong></div>`;
-      return;
-    }
     const c = {leave:0,wfh:0,holiday:0,floater:0};
     for (const [k,t] of Object.entries(data.marks)) if (k.startsWith(y+'-') && t in c) c[t] += (t==='leave'||t==='floater') ? dayWeight(k) : 1;
     $('#counts').innerHTML = Object.keys(TYPES).map(t => `<div class="t-${t}"><span>${TYPES[t]}</span><strong>${num(c[t])}</strong></div>`).join('')
@@ -1214,7 +1160,7 @@
   }
 
   /* ---------- toolbar ---------- */
-  const curView = () => section === 'tasks' ? taskView : section === 'calendar' ? view : section === 'review' ? 'quarter' : 'year';
+  const curView = () => section === 'tasks' ? taskView : section === 'calendar' ? view : 'year';
   function periodStart(dir){
     const v = curView();
     const c = new Date(cursor.getFullYear(), cursor.getMonth(), (v==='week'||v==='day')?cursor.getDate():1);
@@ -1234,7 +1180,7 @@
     if (section === 'career'){ $('#pickers').innerHTML = ''; return; }
     let html = `<label class="sr-only" for="pYear">Year</label><select id="pYear">${range(min,max).map(v=>`<option ${v===y?'selected':''}>${v}</option>`).join('')}</select>`;
     const view = v0;
-    if ((cal && view !== 'year') || section === 'review') html += `<label class="sr-only" for="pQuarter">Quarter</label><select id="pQuarter">${[0,1,2,3].map(q=>`<option value="${q}" ${Math.floor(m/3)===q?'selected':''}>Q${q+1} · ${MONTHS[q*3].slice(0,3)}–${MONTHS[q*3+2].slice(0,3)}</option>`).join('')}</select>`;
+    if (cal && view !== 'year') html += `<label class="sr-only" for="pQuarter">Quarter</label><select id="pQuarter">${[0,1,2,3].map(q=>`<option value="${q}" ${Math.floor(m/3)===q?'selected':''}>Q${q+1} · ${MONTHS[q*3].slice(0,3)}–${MONTHS[q*3+2].slice(0,3)}</option>`).join('')}</select>`;
     if (cal && (view === 'month' || view === 'week' || view === 'day')) html += `<label class="sr-only" for="pMonth">Month</label><select id="pMonth">${MONTHS.map((n,i)=>`<option value="${i}" ${i===m?'selected':''}>${n}</option>`).join('')}</select>`;
     if (cal && view === 'week'){
       const cur = keyOf(startOfWeek(cursor)), last = new Date(y,11,31); let s = startOfWeek(new Date(y,0,1)), opts = '';
@@ -1976,159 +1922,6 @@
     save(); render(); toast(`Copied ${copy.length} unfinished task${copy.length===1?'':'s'} from ${fmtShort(parseKey(prev))}`);
   }
 
-  /* ---------- Self review ---------- */
-  const OSTAT = { notstarted:'Not started', ontrack:'On track', atrisk:'At risk', done:'Completed' };
-  const DEFAULT_GUIDE = `• Start with a 2–3 line summary of the quarter: what you owned and the overall outcome.
-• For each planned objective: the goal, what you delivered, and the measurable result (numbers, % done, releases, bugs found).
-• Highlight 3–5 key accomplishments and their impact on the product, team or customers.
-• Show collaboration: who you supported, reviews, knowledge sharing, mentoring.
-• Be honest about challenges or misses — what caused them and what you changed.
-• Note what you learned (skills, tools, domain) and how you applied it.
-• Close with clear goals for next quarter and any support you need.
-• Keep it factual, specific and in first person; use bullet points.`;
-  const qInfo = () => { const y = cursor.getFullYear(), q = Math.floor(cursor.getMonth()/3); return { y, q, key:`${y}-Q${q+1}`, s:new Date(y,q*3,1), e:new Date(y,q*3+3,0), label:`Q${q+1} ${y}`, months:`${MONTHS[q*3].slice(0,3)}–${MONTHS[q*3+2].slice(0,3)} ${y}` }; };
-  const STOP = new Set('with from that this have will into your about their there what when which for and the are was were been task tasks work'.split(' '));
-  function objKeywords(o){
-    const raw = (o.keywords||'').trim();
-    if (raw) return raw.split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
-    return [...new Set((o.title||'').toLowerCase().split(/[^a-z0-9.]+/).filter(w => w.length > 3 && !STOP.has(w)))];
-  }
-  const tasksForObj = (o, list) => { const kw = objKeywords(o); return kw.length ? list.filter(t => kw.some(w => (t.title+' '+(t.comment||'')).toLowerCase().includes(w))) : []; };
-  function groupTasks(list){
-    const g = new Map();
-    for (const t of [...list].sort((a,b)=>a.date.localeCompare(b.date) || a.created-b.created)){
-      const key = t.title.trim().toLowerCase(); if (!key) continue;
-      const x = g.get(key) || { title:t.title.trim(), mins:0, days:new Set(), status:t.status, comments:[] };
-      x.mins += t.mins||0; x.days.add(t.date); x.status = t.status; if (t.comment) x.comments.push({date:t.date, text:t.comment});
-      g.set(key, x);
-    }
-    return [...g.values()];
-  }
-  function buildReview(){
-    const Q = qInfo(), sk = keyOf(Q.s), ek = keyOf(Q.e);
-    const list = data.tasks.filter(t => t.date >= sk && t.date <= ek), st = taskStats(list), groups = groupTasks(list);
-    const objs = data.objectives.filter(o => o.q === Q.key);
-    const cnt = {leave:0, holiday:0, wfh:0};
-    const upto = ek < todayKey() ? ek : todayKey();
-    for (const [k,t] of Object.entries(data.marks)) if (k >= sk && k <= upto){ if (t === 'leave' || t === 'floater') cnt.leave += dayWeight(k); else if (t in cnt) cnt[t]++; }
-    const role = currentRole(), L = [], tm = n => fmtTime(n) || '0m';
-    L.push(`SELF REVIEW — ${Q.label} (${Q.months})`);
-    L.push(`Prepared ${fmtShort(new Date())} ${new Date().getFullYear()}${role ? ` · ${role.title}, ${role.company}${role.team?` (${role.team})`:''}` : ''}`);
-    L.push('');
-    L.push('SUMMARY');
-    if (list.length){
-      L.push(`• Logged ${st.total} tasks (${groups.length} distinct pieces of work) across ${st.days} working days, totalling ${tm(st.mins)}.`);
-      L.push(`• ${st.by.done} completed, ${st.by.progress} in progress, ${st.by.paused} paused, ${st.by.todo} to-do.`);
-    } else L.push('• No tasks logged for this quarter yet.');
-    if (objs.length){ const avg = Math.round(objs.reduce((a,o)=>a+(+o.progress||0),0)/objs.length); L.push(`• ${objs.length} planned objective${objs.length===1?'':'s'}; average progress ${avg}% (${objs.filter(o=>o.status==='done').length} completed).`); }
-    L.push(`• Attendance${upto < ek ? ' so far' : ''}: ${num(cnt.leave)} leave day${cnt.leave===1?'':'s'}, ${cnt.holiday} holiday${cnt.holiday===1?'':'s'}, ${cnt.wfh} WFH day${cnt.wfh===1?'':'s'}.`);
-    L.push('');
-    L.push('OBJECTIVES & PROGRESS');
-    if (!objs.length) L.push('• No planned objectives recorded for this quarter.');
-    for (const o of objs){
-      const rel = groupTasks(tasksForObj(o, list)), relMins = rel.reduce((a,x)=>a+x.mins,0);
-      L.push(`• ${o.title} — ${+o.progress||0}% · ${OSTAT[o.status]||'Not started'}`);
-      if (o.desc) L.push(`   – Key results: ${o.desc.replace(/\n+/g,'; ')}`);
-      if (rel.length) L.push(`   – Related work: ${rel.slice(0,6).map(x=>x.title).join(', ')}${rel.length>6?` (+${rel.length-6} more)`:''} — ${tm(relMins)} logged.`);
-      if (o.notes) L.push(`   – Progress notes: ${o.notes.replace(/\n+/g,'; ')}`);
-    }
-    L.push('');
-    const done = groups.filter(x => x.status === 'done').sort((a,b)=>b.mins-a.mins);
-    L.push('KEY ACCOMPLISHMENTS');
-    if (!done.length) L.push('• (No completed tasks logged yet.)');
-    done.slice(0,12).forEach(x => L.push(`• ${x.title} — completed${x.mins?` (${tm(x.mins)}${x.days.size>1?` over ${x.days.size} days`:''})`:''}.`));
-    if (done.length > 12) L.push(`• …and ${done.length-12} more completed items.`);
-    L.push('');
-    const open = groups.filter(x => x.status === 'progress' || x.status === 'paused').sort((a,b)=>b.mins-a.mins);
-    L.push('ONGOING / CARRIED FORWARD');
-    if (!open.length) L.push('• Nothing in progress or paused.');
-    open.forEach(x => L.push(`• ${x.title} — ${TSTAT[x.status].label.toLowerCase()}${x.mins?` (${tm(x.mins)} so far)`:''}.`));
-    L.push('');
-    const top = [...groups].sort((a,b)=>b.mins-a.mins).filter(x => x.mins).slice(0,5);
-    if (top.length && st.mins){
-      L.push('WHERE THE TIME WENT');
-      top.forEach(x => L.push(`• ${x.title} — ${tm(x.mins)} (${Math.round(x.mins/st.mins*100)}%)`));
-      L.push('');
-    }
-    const notes = groups.flatMap(x => x.comments.map(c => ({...c, title:x.title}))).concat(Object.entries(data.notes).filter(([k,v]) => k >= sk && k <= ek && v.trim() && !(data.marks[k] in AUTO_TYPES)).map(([k,v]) => ({date:k, title:'Day note', text:v})));
-    notes.sort((a,b)=>a.date.localeCompare(b.date));
-    L.push('CHALLENGES, BLOCKERS & LEARNINGS (from your comments)');
-    if (!notes.length) L.push('• (Add comments to tasks or days to capture these.)');
-    notes.slice(0,12).forEach(c => L.push(`• ${fmtShort(parseKey(c.date))} · ${c.title}: ${c.text}`));
-    L.push('');
-    L.push('FOCUS FOR NEXT QUARTER');
-    const nextObj = objs.filter(o => o.status !== 'done');
-    nextObj.forEach(o => L.push(`• Finish "${o.title}" (currently ${+o.progress||0}%).`));
-    open.slice(0,5).forEach(x => L.push(`• Close out: ${x.title}.`));
-    if (!nextObj.length && !open.length) L.push('• (Add your goals for next quarter.)');
-    return L.join('\n');
-  }
-  function reviewView(){
-    const Q = qInfo(), objs = data.objectives.filter(o => o.q === Q.key);
-    const sk = keyOf(Q.s), ek = keyOf(Q.e), list = data.tasks.filter(t => t.date >= sk && t.date <= ek);
-    const objHtml = objs.length ? objs.map(o => {
-      const rel = tasksForObj(o, list);
-      return `<div class="obj"><div class="obj-top"><b>${esc(o.title)}</b><span class="ost ost-${o.status}">${OSTAT[o.status]}</span>
-        <button type="button" class="link" data-obj="${o.id}" style="margin-left:auto" aria-label="Edit objective ${esc(o.title)}">Edit</button></div>
-        <div class="bar" role="img" aria-label="Progress ${+o.progress||0}%"><span style="width:${+o.progress||0}%"></span></div>
-        <p class="meta" style="margin:0">${+o.progress||0}% · ${rel.length} matching task${rel.length===1?'':'s'}${objKeywords(o).length?` · keywords: ${esc(objKeywords(o).join(', '))}`:''}</p>
-        ${o.desc?`<p><b>Key results:</b> ${esc(o.desc)}</p>`:''}${o.notes?`<p><b>Notes:</b> ${esc(o.notes)}</p>`:''}</div>`;
-    }).join('') : `<p class="meta">No objectives planned for ${Q.label} yet.</p>`;
-    const text = data.reviews[Q.key] || '';
-    return [`Self review · ${Q.label}`, '#a64d79', `<div class="rv">
-      <div class="print-only print-report"><h1>Lee's Planner — Self review ${Q.label}</h1><div class="rv-print">${esc(text || buildReview())}</div></div>
-      <section class="rv-card rv-screen" aria-labelledby="objH"><div class="rv-head"><h3 id="objH">Planned objectives · ${Q.label}</h3><button type="button" class="btn primary" data-obj="__new">+ Add objective</button></div>${objHtml}</section>
-      <section class="rv-card rv-screen"><details><summary>Self-review guidelines</summary>
-        <p class="meta">These shape the sections of the generated review. Edit them to match your company's format.</p>
-        <label class="sr-only" for="rvGuide">Guidelines</label><textarea id="rvGuide">${esc(data.reviewGuide ?? DEFAULT_GUIDE)}</textarea>
-        <div class="rv-actions" style="margin-top:8px"><button type="button" class="btn" data-rv="resetGuide">Reset to default</button></div></details></section>
-      <section class="rv-card rv-screen" aria-labelledby="rvH"><div class="rv-head"><h3 id="rvH">Self review · ${Q.label}</h3>
-        <div class="rv-actions"><button type="button" class="btn primary" data-rv="generate">${text?'Regenerate':'Generate'} from my data</button>
-        <button type="button" class="btn" data-rv="copy">Copy</button><button type="button" class="btn" data-rv="prompt">Copy as prompt for Claude</button><button type="button" class="btn" data-print="1">⬇ Export PDF</button></div></div>
-        <p class="meta">Built on this device from your objectives, tasks, comments, leaves and calendar — no internet or AI needed. Edit it freely; it's saved per quarter. For polished wording, use “Copy as prompt for Claude”.</p>
-        <label class="sr-only" for="rvText">Self review text</label><textarea id="rvText" placeholder="Click “Generate from my data” to create a draft in points.">${esc(text)}</textarea></section></div>`];
-  }
-  function copyText(t){
-    const done = () => toast('Copied to clipboard');
-    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(t).then(done, () => fallback());
-    else fallback();
-    function fallback(){ const ta = document.createElement('textarea'); ta.value = t; document.body.append(ta); ta.select(); try { document.execCommand('copy'); done(); } catch(_) { toast('Copy failed — select the text and copy'); } ta.remove(); }
-  }
-  function reviewAction(a){
-    const Q = qInfo();
-    if (a === 'generate'){
-      if (data.reviews[Q.key] && !confirm('Replace the current review text with a freshly generated draft?')) return;
-      data.reviews[Q.key] = buildReview(); save(); render(); $('#rvText')?.focus(); toast('Draft created from your data');
-    }
-    if (a === 'copy') copyText($('#rvText').value || buildReview());
-    if (a === 'prompt') copyText(`Write my quarterly self review for ${Q.label} in first person, as concise bullet points under clear headings.\nFollow these guidelines:\n${data.reviewGuide ?? DEFAULT_GUIDE}\n\nUse only the facts below (don't invent numbers):\n\n${$('#rvText').value || buildReview()}`);
-    if (a === 'resetGuide'){ delete data.reviewGuide; save(); render(); toast('Guidelines reset'); }
-  }
-  document.addEventListener('input', e => {
-    if (e.target.id === 'rvText'){ const Q = qInfo(); if (e.target.value.trim()) data.reviews[Q.key] = e.target.value; else delete data.reviews[Q.key]; save(); }
-    if (e.target.id === 'rvGuide'){ data.reviewGuide = e.target.value; save(); }
-    if (e.target.id === 'oProg') $('#oProgOut').textContent = e.target.value + '%';
-  });
-  const oDlg = $('#oDlg'); let oEdit = null;
-  function openObjective(id){
-    const Q = qInfo(), o = id === '__new' ? null : data.objectives.find(x => x.id === id);
-    oEdit = o ? o.id : null;
-    $('#oDlgT').textContent = o ? 'Edit objective' : 'Add objective';
-    $('#oDlgSub').textContent = `For ${o ? o.q.replace('-',' ').replace(/(\d+) (Q\d)/,'$2 $1') : Q.label}. Keywords link it to matching tasks in your work log.`;
-    $('#oTitle').value = o?.title || ''; $('#oDesc').value = o?.desc || ''; $('#oKeys').value = o?.keywords || '';
-    $('#oProg').value = o?.progress || 0; $('#oProgOut').textContent = (o?.progress || 0) + '%';
-    $('#oStatus').value = o?.status || 'notstarted'; $('#oNotes').value = o?.notes || ''; $('#oDelete').hidden = !o;
-    oDlg.showModal(); $('#oTitle').focus();
-  }
-  $('#oForm').addEventListener('submit', () => {
-    const Q = qInfo();
-    const rec = { title:$('#oTitle').value.trim(), desc:$('#oDesc').value.trim(), keywords:$('#oKeys').value.trim(), progress:+$('#oProg').value, status:$('#oStatus').value, notes:$('#oNotes').value.trim() };
-    if (rec.progress === 100 && rec.status !== 'done') rec.status = 'done';
-    if (oEdit) Object.assign(data.objectives.find(x => x.id === oEdit), rec); else data.objectives.push({ id:'o'+Date.now(), q:Q.key, ...rec });
-    save(); render(); toast('Objective saved');
-  });
-  $('#oCancel').addEventListener('click', () => oDlg.close());
-  $('#oDelete').addEventListener('click', () => { if (!confirm('Delete this objective?')) return; data.objectives = data.objectives.filter(x => x.id !== oEdit); save(); oDlg.close(); render(); toast('Objective deleted'); });
 
   /* ---------- add leave / add holiday drawers ---------- */
   const alDlg = $('#alDlg'), ahDlg = $('#ahDlg');
@@ -2174,7 +1967,6 @@
     let title, color, html;
     if (section === 'calendar') [title, color, html] = calendarView();
     else if (section === 'tasks') [title, color, html] = tasksView();
-    else if (section === 'review') [title, color, html] = reviewView();
     else if (section === 'wfh'){ title = `WFH · ${cursor.getFullYear()}`; color = '#6a55a8'; html = wfhView(); }
     else if (section === 'leaves'){ title = `Leaves · ${cursor.getFullYear()}`; color = '#5a48a8'; html = leavesView(); }
     else { title = 'Career'; color = '#0a66c2'; html = careerView(); }
@@ -2541,8 +2333,6 @@
     }
     if (b.dataset.lvPage){ leavePage = +b.dataset.lvPage; render(); const t = viewEl.querySelector('.lv-table'); t && t.scrollIntoView({block:'nearest'}); viewEl.querySelector('.pager [aria-current]')?.focus(); return; }
     if (b.dataset.wfhMonth !== undefined){ cursor = new Date(cursor.getFullYear(), +b.dataset.wfhMonth, 1); renderKeep(); return; }
-    if (b.dataset.obj) return openObjective(b.dataset.obj);
-    if (b.dataset.rv) return reviewAction(b.dataset.rv);
     if (b.dataset.print) return printNow();
     if (b.dataset.weekoff) return toggleWeekoff(b.dataset.weekoff);
     if (b.id === 'copyUnfinished') return copyUnfinished(b.dataset.day);
@@ -2618,7 +2408,7 @@
 
   /* =====================================================================
      Firebase: login + cloud sync
-     Data lives at users/{uid}/planner/main (calendar, leaves, career, review…)
+     Data lives at users/{uid}/planner/main (calendar, leaves, career…)
      and users/{uid}/tasks/{year} (that year's work log), so no single
      document gets near Firestore's 1 MB limit as years of tasks pile up.
      ===================================================================== */
@@ -2823,7 +2613,7 @@
     try {
       const base = location.href.split('#')[0].split('?')[0];
       const manifest = {
-        name: "Lee's Planner", short_name: "Planner", description: "Calendar, leaves, work log, career and self review",
+        name: "Lee's Planner", short_name: "Planner", description: "Calendar, leaves, work log, and career",
         start_url: base, scope: base.replace(/[^/]*$/, ''), display: 'standalone', orientation: 'any',
         background_color: '#f7f6f3', theme_color: '#990000',
         icons: [ { src: $('#icon192').href, sizes: '192x192', type: 'image/png', purpose: 'any' },
