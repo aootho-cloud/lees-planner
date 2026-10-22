@@ -922,7 +922,7 @@
   function normalize(d){
     d = d && typeof d === 'object' ? d : {};
     d.marks ||= {}; d.notes ||= {}; d.career ||= []; d.ui ||= {};
-    d.kind ||= {}; d.half ||= {}; d.policy ||= {}; d.tasks ||= []; d.weekoff ||= {}; d.split ||= {}; d.objectives ||= []; d.reviews ||= {};
+    d.kind ||= {}; d.half ||= {}; d.policy ||= {}; d.tasks ||= []; d.weekoff ||= {}; d.split ||= {}; d.objectives ||= []; d.reviews ||= {}; d.wfhReq ||= [];
     if (typeof d.wfhLimit !== 'number') d.wfhLimit = 5;   // WFH days allowed per month
     d.leaveTypes ||= DEFAULT_TYPES.map(t => ({...t}));
     d.seeded ||= {};
@@ -1148,6 +1148,7 @@
     }
     const c = {leave:0,wfh:0,holiday:0,floater:0};
     for (const [k,t] of Object.entries(data.marks)) if (k.startsWith(y+'-') && t in c) c[t] += (t==='leave'||t==='floater') ? dayWeight(k) : 1;
+    c.wfh = wfhUsedKeys(y+'-').size;
     $('#counts').innerHTML = Object.keys(TYPES).map(t => `<div class="t-${t}"><span>${TYPES[t]}</span><strong>${num(c[t])}</strong></div>`).join('')
       + `<div class="t-weekoff" style="grid-column:1/-1"><span>Working days left</span><strong>${workingDaysLeft(y)}</strong></div>`;
   }
@@ -1320,6 +1321,29 @@
     const dates = a.getMonth() === b.getMonth() ? `${a.getDate()} – ${b.getDate()} ${MONTHS[a.getMonth()].slice(0,3)} ${b.getFullYear()}` : `${fmtShort(a)} – ${fmtShort(b)} ${b.getFullYear()}`;
     return [dates, `${DOW_LONG[monIdx(a)].slice(0,3)} – ${DOW_LONG[monIdx(b)].slice(0,3)}`];
   }
+  /* WFH requests: a range added in one go counts every working day in it (only week-offs are skipped),
+     even if a day inside is — or later becomes — a holiday or leave, like Keka. Days added one by one count only themselves. */
+  function reqDays(r){ const out = []; for (let d = parseKey(r.from); keyOf(d) <= r.to; d = addDays(d,1)) if (!isWeekend(d)) out.push(keyOf(d)); return out; }
+  function wfhUsedKeys(prefix){
+    const set = new Set();
+    for (const [k,t] of Object.entries(data.marks)) if (t === 'wfh' && k.startsWith(prefix)) set.add(k);
+    for (const r of data.wfhReq) for (const k of reqDays(r)) if (k.startsWith(prefix) && data.marks[k]) set.add(k);   // a cleared day = cancelled
+    return set;
+  }
+  function trimReq(ks){
+    const kill = new Set(ks);
+    data.wfhReq = data.wfhReq.flatMap(r => {
+      if (!reqDays(r).some(k => kill.has(k))) return [r];
+      const out = []; let cur = null;
+      for (let d = parseKey(r.from); keyOf(d) <= r.to; d = addDays(d,1)){
+        const k = keyOf(d);
+        if (kill.has(k)){ if (cur) out.push(cur); cur = null; }
+        else if (!cur) cur = { id:r.id+'.'+k, from:k, to:k }; else cur.to = k;
+      }
+      if (cur) out.push(cur);
+      return out.filter(x => reqDays(x).length);
+    });
+  }
   const runNote = run => [...new Set(run.map(k => (data.notes[k]||'').trim()).filter(Boolean))].join('; ');
   function leaveRuns(y){
     const keys = Object.keys(data.marks).filter(k => k.startsWith(y+'-') && data.marks[k] === 'leave');   // floaters live in Holidays & floaters
@@ -1392,15 +1416,20 @@
   }
   // WFH table (continuous WFH days in one row)
   function wfhTable(y){
-    const runs = runsOf(Object.keys(data.marks).filter(k => k.startsWith(y+'-') && data.marks[k] === 'wfh'), () => 'wfh', () => true).reverse();
+    const reqs = data.wfhReq.filter(r => r.from.slice(0,4) <= String(y) && r.to.slice(0,4) >= String(y));
+    const covered = new Set(reqs.flatMap(reqDays));
+    const loose = Object.keys(data.marks).filter(k => k.startsWith(y+'-') && data.marks[k] === 'wfh' && !covered.has(k));
+    const runs = [...reqs.map(r => reqDays(r).filter(k => k.startsWith(y+'-') && data.marks[k])), ...runsOf(loose, () => 'wfh', () => true)]
+      .filter(r => r.length).sort((a,b) => a[0] < b[0] ? 1 : -1);
     if (wfhPageKey !== String(y)){ wfhPageKey = String(y); wfhPage = 1; }
     const pages = Math.max(1, Math.ceil(runs.length / LEAVE_PAGE_SIZE));
     wfhPage = Math.min(Math.max(1, wfhPage), pages);
     const from = (wfhPage - 1) * LEAVE_PAGE_SIZE, pr = runs.slice(from, from + LEAVE_PAGE_SIZE), total = runs.reduce((a,r) => a + r.length, 0);
     const rows = pr.map(run => { const [dt, dy] = rangeLabel(run), ks = run.join(',');
-      return `<tr style="background:var(--wfh-bg)"><td data-label="Date"><button type="button" class="link" data-goto-cal="${run[0]}">${dt}</button></td><td data-label="Day">${dy}</td><td data-label="Days">${run.length}</td>
-        <td data-label="Comment"><input data-run-note="${ks}" id="wfn-${run[0]}" value="${esc(runNote(run))}" placeholder="—" aria-label="Comment for ${esc(dt)}"></td>
-        <td class="c-del"><button type="button" class="icon-btn" data-rm-run="${ks}" aria-label="Remove WFH ${esc(dt)}">✕</button></td></tr>`; }).join('');
+      const wk = run.filter(k => data.marks[k] === 'wfh'), other = run.length - wk.length;
+      return `<tr style="background:var(--wfh-bg)"><td data-label="Date"><button type="button" class="link" data-goto-cal="${run[0]}">${dt}</button></td><td data-label="Day">${dy}</td><td data-label="Days">${run.length}${other ? `<span class="meta" style="display:block;font-size:12px">incl. ${other} holiday/leave</span>` : ''}</td>
+        <td data-label="Comment"><input data-run-note="${wk.join(',')}" id="wfn-${run[0]}" value="${esc(runNote(wk))}" placeholder="—" aria-label="Comment for ${esc(dt)}"${wk.length ? '' : ' disabled'}></td>
+        <td class="c-del"><button type="button" class="icon-btn" data-rm-run="${ks}" data-rm-kind="wfh" aria-label="Remove WFH ${esc(dt)}">✕</button></td></tr>`; }).join('');
     return `<div class="lv-row"><h2>All WFH · ${y}</h2><span class="meta">${runs.length} entr${runs.length===1?'y':'ies'} · ${days(total)}</span></div>
       <div class="tk-wrap"><table class="tk-table lv-table"><caption class="sr-only">All WFH days in ${y}</caption>
         <thead><tr><th scope="col">Date</th><th scope="col">Day</th><th scope="col">Days</th><th scope="col">Comment</th><th scope="col"><span class="sr-only">Remove</span></th></tr></thead>
@@ -1425,7 +1454,7 @@
   }
   function wfhByMonth(y){
     const m = Array(12).fill(0), keys = Array.from({length:12}, () => []);
-    for (const [k,t] of Object.entries(data.marks)) if (t === 'wfh' && k.startsWith(y+'-')){ const i = +k.slice(5,7)-1; m[i]++; keys[i].push(k); }
+    for (const k of wfhUsedKeys(y+'-')){ const i = +k.slice(5,7)-1; m[i]++; keys[i].push(k); }
     keys.forEach(a => a.sort());
     return { m, keys };
   }
@@ -1442,7 +1471,7 @@
         <div><dt>Used</dt><dd>${days(used)}</dd></div>
         <div><dt><label for="wfhLimit">Monthly limit</label></dt><dd><input id="wfhLimit" type="number" min="0" max="31" step="1" value="${lim}" style="width:64px;border:1px solid #bbb;border-radius:6px;padding:3px 6px"></dd></div>
       </dl>
-      <details><summary>View dates (${keys[mi].length})</summary>${keys[mi].length?`<ul>${keys[mi].map(k=>{const d=parseKey(k);return `<li><span>${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)}</span><span>${esc(data.notes[k]||'')}</span><button type="button" class="x" data-rm-leave="${k}" aria-label="Remove WFH on ${fmtShort(d)}">✕</button></li>`;}).join('')}</ul>`:'<p class="meta">No WFH days this month.</p>'}</details>
+      <details><summary>View dates (${keys[mi].length})</summary>${keys[mi].length?`<ul>${keys[mi].map(k=>{const d=parseKey(k), w=data.marks[k]==='wfh';return `<li><span>${DOW_LONG[monIdx(d)].slice(0,3)}, ${fmtShort(d)}</span><span>${w ? esc(data.notes[k]||'') : `${esc(markLabel(k))} — counted (inside a WFH range)`}</span>${w ? `<button type="button" class="x" data-rm-leave="${k}" aria-label="Remove WFH on ${fmtShort(d)}">✕</button>` : `<button type="button" class="x" data-rm-wfhday="${k}" aria-label="Stop counting ${fmtShort(d)} as WFH">✕</button>`}</li>`;}).join('')}</ul>`:'<p class="meta">No WFH days this month.</p>'}</details>
     </article>`;
     const months = `<div class="wfh-months" role="group" aria-label="WFH used per month in ${y}">${MONTHS.map((n,i) => {
       const o = m[i] > lim, pct = lim ? Math.min(100, m[i]/lim*100) : 0;
@@ -1507,7 +1536,7 @@
   }
   function wfhView(){
     const y = cursor.getFullYear(), today = todayKey(), dflt = today.startsWith(y+'-') ? today : `${y}-01-01`;
-    const addWfh = `<form class="add-leave add-wfh" id="addWfh" aria-labelledby="awHead"><h3 id="awHead">Add WFH <span class="meta" style="font-size:13px">· ${data.wfhLimit} per month · skips week-offs, holidays and leave days</span></h3>
+    const addWfh = `<form class="add-leave add-wfh" id="addWfh" aria-labelledby="awHead"><h3 id="awHead">Add WFH <span class="meta" style="font-size:13px">· ${data.wfhLimit} per month · skips week-offs only — a holiday or leave inside the range still counts</span></h3>
       <div><label for="awFrom">From</label><input type="date" id="awFrom" value="${dflt}" required></div>
       <div><label for="awTo">To</label><input type="date" id="awTo" value="${dflt}" required></div>
       <div class="aw-left"><span class="meta" id="awInfo"></span></div>
@@ -1868,7 +1897,7 @@
   function wfhInfo(){
     const el = $('#awInfo'); if (!el) return;
     const f = $('#awFrom').value; if (!f) return;
-    const n = Object.entries(data.marks).filter(([k,t]) => t === 'wfh' && k.startsWith(f.slice(0,7))).length;
+    const n = wfhUsedKeys(f.slice(0,7)).size;
     el.textContent = `${MONTHS[+f.slice(5,7)-1]}: ${n}/${data.wfhLimit} used`;
   }
   document.addEventListener('change', e => {
@@ -1988,7 +2017,7 @@
   function wfhOverMsg(keys){
     const lim = data.wfhLimit, seen = new Set(), msgs = [];
     for (const k of keys){ const ym = k.slice(0,7); if (seen.has(ym)) continue; seen.add(ym);
-      const n = Object.entries(data.marks).filter(([kk,t]) => t === 'wfh' && kk.startsWith(ym)).length;
+      const n = wfhUsedKeys(ym).size;
       if (n > lim) msgs.push(`${MONTHS[+ym.slice(5)-1].slice(0,3)} (${n}/${lim})`); }
     return msgs.length ? ` — over the WFH limit in ${msgs.join(', ')}` : '';
   }
@@ -2014,18 +2043,21 @@
   function addWfhRange(){
     let from = $('#awFrom').value, to = $('#awTo').value; if (!from || !to) return;
     if (to < from) [from, to] = [to, from];
-    const note = $('#awNote').value.trim(), added = []; let skipped = 0;
+    const note = $('#awNote').value.trim(), counted = []; let skipped = 0, other = 0;
     for (let d = parseKey(from); keyOf(d) <= to; d = addDays(d,1)){
       const k = keyOf(d), t = data.marks[k];
-      if (isWeekend(d) || t === 'holiday' || t === 'leave' || t === 'floater'){ skipped++; continue; }
+      if (isWeekend(d)){ skipped++; continue; }
+      counted.push(k);
+      if (t && t !== 'wfh'){ other++; continue; }            // holiday / leave stays as it is, but the day still counts as WFH used
       data.marks[k] = 'wfh'; delete data.kind[k]; delete data.half[k]; clearSplit(k);
       if (note && !data.notes[k]) data.notes[k] = note;
-      added.push(k);
     }
-    if (!added.length){ toast('Nothing added — those dates are week-offs, holidays or leave'); return; }
-    cursor = new Date(cursor.getFullYear(), +added[0].slice(5,7)-1, 1);
+    if (!counted.length){ toast('Nothing added — those dates are all week-offs'); return; }
+    trimReq(counted);
+    data.wfhReq.push({ id:'w'+Date.now().toString(36), from:counted[0], to:counted.at(-1) });
+    cursor = new Date(cursor.getFullYear(), +counted[0].slice(5,7)-1, 1);
     save(); render();
-    toast(`Added ${added.length} WFH day${added.length===1?'':'s'}${skipped?` (skipped ${skipped})`:''} — synced to Calendar & Tasks${wfhOverMsg(added)}`);
+    toast(`Added WFH — ${counted.length} day${counted.length===1?'':'s'} used${other?` (incl. ${other} holiday/leave day${other===1?'':'s'} inside the range)`:''}${skipped?`, skipped ${skipped} week-off${skipped===1?'':'s'}`:''}${wfhOverMsg(counted)}`);
   }
   let prevHalves = null;
   function setType(k, t, kind){
@@ -2277,7 +2309,7 @@
   function toast(msg, undo){ $('#toastMsg').textContent = msg; $('#toastUndo').hidden = !undo; $('#toast').classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => $('#toast').classList.remove('show'), undo ? 5000 : 2200); }
   $('#toastUndo').addEventListener('click', () => {
     if (lastTask){ data.tasks.push(lastTask); lastTask = null; save(); render(); $('#toast').classList.remove('show'); return; }
-    if (lastMany){ lastMany.forEach(({k,mark,kind,half,split}) => { if (mark) data.marks[k] = mark; if (kind) data.kind[k] = kind; if (half) data.half[k] = half; if (split) data.split[k] = split; }); lastMany = null; save(); render(); $('#toast').classList.remove('show'); return; }
+    if (lastMany){ if (lastMany.req) data.wfhReq = lastMany.req; lastMany.forEach(({k,mark,kind,half,split}) => { if (mark) data.marks[k] = mark; if (kind) data.kind[k] = kind; if (half) data.half[k] = half; if (split) data.split[k] = split; }); lastMany = null; save(); render(); $('#toast').classList.remove('show'); return; }
     if (!lastCleared) return; const {k,mark,note,kind,half,split} = lastCleared;
     if (mark) data.marks[k] = mark; if (note) data.notes[k] = note; if (kind) data.kind[k] = kind; else delete data.kind[k];
     if (half) data.half[k] = half; else delete data.half[k]; if (split) data.split[k] = split; else clearSplit(k);
@@ -2323,13 +2355,15 @@
       if (!confirm('Set every planned leave to its suggested type? You can still change any of them afterwards.')) return;
       const n = applySuggestions(y); save(); render(); toast(`Set ${n} planned leave${n===1?'':'s'} to the suggested type`); return;
     }
+    if (b.dataset.rmWfhday){ const k = b.dataset.rmWfhday; trimReq([k]); save(); render(); toast(`${fmtShort(parseKey(k))} no longer counts as WFH`); return; }
     if (b.dataset.wfhPage){ wfhPage = +b.dataset.wfhPage; render(); viewEl.querySelector('.pager [aria-current]')?.focus(); return; }
     if (b.dataset.rmRun){
-      const ks = b.dataset.rmRun.split(','), what = data.marks[ks[0]] === 'wfh' ? 'WFH' : 'leave';
+      const isW = b.dataset.rmKind === 'wfh', ks = b.dataset.rmRun.split(',').filter(k => !isW || data.marks[k] === 'wfh'), all = b.dataset.rmRun.split(','), what = isW ? 'WFH' : 'leave';
       lastTask = null; lastCleared = null;
       lastMany = ks.map(k => ({ k, mark:data.marks[k], kind:data.kind[k], half:data.half[k], split: splitOf(k) ? {...splitOf(k)} : null }));
+      if (isW){ lastMany.req = JSON.parse(JSON.stringify(data.wfhReq)); trimReq(all); }
       ks.forEach(k => { delete data.marks[k]; delete data.kind[k]; delete data.half[k]; clearSplit(k); });
-      save(); render(); toast(`Removed ${ks.length} ${what} day${ks.length===1?'':'s'}`, true); return;
+      save(); render(); toast(`Removed ${all.length} ${what} day${all.length===1?'':'s'}`, true); return;
     }
     if (b.dataset.lvPage){ leavePage = +b.dataset.lvPage; render(); const t = viewEl.querySelector('.lv-table'); t && t.scrollIntoView({block:'nearest'}); viewEl.querySelector('.pager [aria-current]')?.focus(); return; }
     if (b.dataset.wfhMonth !== undefined){ cursor = new Date(cursor.getFullYear(), +b.dataset.wfhMonth, 1); renderKeep(); return; }
