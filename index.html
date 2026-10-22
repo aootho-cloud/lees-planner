@@ -312,15 +312,20 @@
   .dr-half .check{margin:0}
   dialog .dr-half select{width:auto}
   /* holidays grid */
-  .hol-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-  .hol-card{border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;border:1px solid rgba(0,0,0,.06);min-width:0}
-  .hol-card .hc-top{display:flex;align-items:flex-start;gap:12px}
-  .hol-card .hc-date{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;border-radius:8px;min-width:52px;padding:4px 6px;line-height:1.1;color:#222;border:0;font:inherit;cursor:pointer}
-  .hol-card .hc-date b{font-size:22px}
-  .hol-card .hc-date span{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
-  .hol-card .hc-day{flex:1;min-width:0;font-weight:600;padding-top:4px}
-  .hol-card .hc-day small{display:block;font-weight:500;opacity:.8;font-size:12px}
-  .hol-card input,.hol-card select{width:100%;border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:6px 8px;background:#fff;color:#222}
+  .hol-grid{column-width:340px;column-gap:48px;max-width:1100px}
+  .hol-item{display:flex;align-items:center;gap:22px;padding:10px 0;break-inside:avoid}
+  .hol-tile{flex:none;width:96px;border:2px solid var(--hc);border-radius:6px;overflow:hidden;background:#fff;padding:0;font:inherit;cursor:pointer;text-align:center}
+  .hol-tile .m{display:block;background:var(--hc);color:var(--ht,#2b2b2b);font-size:14px;letter-spacing:.06em;padding:5px 0}
+  .hol-tile .d{display:block;font-size:28px;color:#222;padding:6px 0 8px}
+  .hol-tile:hover{box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  .hol-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+  .hol-name{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .hol-wd{color:#555;font-size:15px}
+  .hol-type{border:0;border-radius:4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:4px 30px 4px 10px !important;cursor:pointer;background-color:transparent;color:#8a8a8a;width:auto !important;height:auto !important}
+  .hol-type:hover,.hol-type:focus{background-color:#ecebe6;color:#4a4a4a}
+  .hol-type.is-floater,.hol-type.is-floater:hover{background-color:#e3dccb;color:#4a3f22}
+  .hol-title{font-size:18px;color:#222}
+  .hol-badge{background:#e3dccb;color:#4a3f22;border-radius:4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px}
   .hol-empty{border:1px dashed #ccc;border-radius:8px;padding:18px;text-align:center}
   .banner{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:#fff8e6;border:1px solid #f0d9a0;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:13px}
   .banner select{border:1px solid #ccc;border-radius:6px;padding:4px 6px}
@@ -1460,14 +1465,15 @@
   function holTable(y){
     const keys = Object.keys(data.marks).filter(k => k.startsWith(y+'-') && (data.marks[k] === 'holiday' || data.marks[k] === 'floater')).sort();
     const fl = keys.filter(k => data.marks[k] === 'floater').reduce((a,k) => a + dayWeight(k), 0), flq = policyFor(y, 'floater').quota;
-    const cards = keys.map(k => { const d = parseKey(k), t = data.marks[k];
-      return `<article class="hol-card t-${t}" aria-label="${t === 'floater' ? 'Floater' : 'Holiday'} on ${fmtShort(d)}">
-        <div class="hc-top"><button type="button" class="hc-date" data-goto-cal="${k}" aria-label="Open ${fmtShort(d)} ${d.getFullYear()} in the calendar"><b>${d.getDate()}</b><span>${MONTHS[d.getMonth()].slice(0,3)}</span></button>
-          <div class="hc-day">${DOW_LONG[monIdx(d)]}<small>${t === 'floater' ? 'Floater' + (data.half[k] ? ` · ${halfText(k)}` : '') : 'Holiday'}</small></div>
-          <button type="button" class="icon-btn" data-rm-leave="${k}" aria-label="Remove ${t} on ${fmtShort(d)}">✕</button></div>
-        <label class="sr-only" for="hn-${k}">Name for ${fmtShort(d)}</label><input data-note="${k}" id="hn-${k}" value="${esc(data.notes[k]||'')}" placeholder="Name — e.g. Diwali">
-        <label class="sr-only" for="ht-${k}">Type on ${fmtShort(d)}</label><select data-hol-type="${k}" id="ht-${k}"><option value="holiday" ${t==='holiday'?'selected':''}>Holiday</option><option value="floater" ${t==='floater'?'selected':''}>Floater</option></select>
-      </article>`; }).join('');
+    const MC = ['#bfe0e6','#c9dfc0','#e2ddd0','#b9cde8','#f8e0a6','#cfe3c5','#f3cfb0','#dfc1e0','#bfe0e6','#efc7c7','#d6cfe8','#4a78b0'];
+    const cards = keys.map(k => { const d = parseKey(k), t = data.marks[k], m = d.getMonth();
+      return `<div class="hol-item" style="--hc:${MC[m]}${m === 11 ? ';--ht:#fff' : ''}">
+        <button type="button" class="hol-tile" data-goto-cal="${k}" aria-label="Open ${fmtShort(d)} ${d.getFullYear()} in the calendar"><span class="m" aria-hidden="true">${MONTHS[m].slice(0,3).toUpperCase()}</span><span class="d" aria-hidden="true">${String(d.getDate()).padStart(2,'0')}</span></button>
+        <div class="hol-info">
+          <div class="hol-name"><span class="hol-title">${data.notes[k] ? esc(data.notes[k]) : '<i class="meta">Unnamed</i>'}</span>${t === 'floater' ? `<span class="hol-badge">Floater leave${data.half[k] ? ` · ${halfText(k)}` : ''}</span>` : ''}</div>
+          <span class="hol-wd">${DOW_LONG[monIdx(d)]}</span>
+        </div>
+      </div>`; }).join('');
     return `<div class="lv-row"><h2>Holidays &amp; floaters · ${y}</h2><span class="meta">${keys.filter(k => data.marks[k] === 'holiday').length} holidays · ${num(fl)}${flq != null ? ' of ' + num(flq) : ''} floaters picked</span></div>
       ${cards ? `<div class="hol-grid">${cards}</div>` : `<p class="meta hol-empty">No holidays or floaters added for ${y} yet — use <b>+ Add holiday</b> above.</p>`}`;
   }
