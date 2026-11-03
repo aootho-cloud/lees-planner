@@ -365,6 +365,18 @@
   .tk-table input:focus,.tk-table textarea:focus{border-color:var(--accent);background:#fff;outline:none;box-shadow:0 0 0 2px rgba(69,129,142,.25)}
   .tk-table textarea{resize:none;min-height:34px;font-family:var(--ui);line-height:1.4;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;field-sizing:content}
   .auto-date{white-space:pre-wrap;overflow-wrap:anywhere}
+  /* task sheet: comments = 1/3 of the row, date/title/status/time share the other 2/3; nothing clips, cells wrap */
+  .tk-tasks{table-layout:fixed;min-width:900px}
+  .tk-tasks thead th:nth-child(1){width:15%}
+  .tk-tasks thead th:nth-child(2){width:25%}
+  .tk-tasks thead th:nth-child(3){width:16%}
+  .tk-tasks thead th:nth-child(4){width:11%}
+  .tk-tasks thead th:nth-child(5){width:33%}
+  .tk-tasks thead th:nth-child(6){width:44px}
+  .tk-tasks td,.tk-tasks th{vertical-align:top;white-space:normal;overflow-wrap:anywhere;min-width:0}
+  .tk-tasks td.c-date,.tk-tasks td.c-st,.tk-tasks td.c-time{width:auto}
+  .tk-tasks input,.tk-tasks select{min-width:0;max-width:100%}
+  .tk-tasks .st{width:100%;text-overflow:ellipsis}
   .tk-table td.c-date{width:150px}.tk-table td.c-st{width:160px}.tk-table td.c-time{width:100px}.tk-table td.c-del{width:44px;text-align:center}
   .tk-grp th{background:#f3f1ec;font-size:13px;font-weight:600;padding:8px 10px}
   .tk-grp th .link{font-weight:700;color:var(--ink)}
@@ -1713,7 +1725,7 @@
     const nm = t.title || 'untitled task';
     return `<tr data-row="${t.id}">
       <td class="c-date" data-label="Date"><input type="date" id="td-${t.id}" data-task="${t.id}" data-field="date" value="${t.date}" max="${maxTaskKey()}" aria-label="Date for ${esc(nm)}"></td>
-      <td data-label="Task"><input id="tt-${t.id}" data-task="${t.id}" data-field="title" value="${esc(t.title)}" aria-label="Task title" placeholder="Task title"></td>
+      <td data-label="Task"><textarea id="tt-${t.id}" rows="1" data-task="${t.id}" data-field="title" aria-label="Task title" placeholder="Task title">${esc(t.title)}</textarea></td>
       <td class="c-st" data-label="Status">${statusSelect('ts-'+t.id, t.status, 'Status for '+nm, `data-task="${t.id}" data-field="status"`)}</td>
       <td class="c-time" data-label="Time"><input id="tm-${t.id}" data-task="${t.id}" data-field="time" value="${fmtTime(t.mins)}" aria-label="Time taken for ${esc(nm)}" placeholder="—"></td>
       <td data-label="Comments"><textarea id="tc-${t.id}" rows="1" data-task="${t.id}" data-field="comment" aria-label="Comments for ${esc(nm)}" placeholder="—">${esc(t.comment)}</textarea></td>
@@ -1771,7 +1783,7 @@
       html += future ? '' : `<div class="tk-daynote"><label for="dayNote">Day comment</label><input id="dayNote" data-note="${k}" value="${esc(data.notes[k]||'')}" placeholder="Shared with the calendar"></div>`;
       html += future ? `<div class="tk-note">You can plan up to 7 days ahead (until ${fmtShort(parseKey(maxTaskKey()))}).</div>` : addForm(k, false);
       const body = dayAutos.map(autoRow).join('') + all.map(t => taskRow(t)).join('');
-      html += `<div class="tk-wrap"><table class="tk-table">${head}<tbody>${body || `<tr class="tk-empty ${dayRowCls(k)}"><td colspan="6">${isWeekend(d)?'Week off — nothing to log.':'No tasks logged for this day yet.'}</td></tr>`}</tbody></table></div>`;
+      html += `<div class="tk-wrap"><table class="tk-table tk-tasks">${head}<tbody>${body || `<tr class="tk-empty ${dayRowCls(k)}"><td colspan="6">${isWeekend(d)?'Week off — nothing to log.':'No tasks logged for this day yet.'}</td></tr>`}</tbody></table></div>`;
       html = printReport(title, all, st, dayAutos) + html;
       return [title, '#45818e', html];
     }
@@ -1817,7 +1829,7 @@
       body += rowsFor(k);
     }
     if (!keys.length) body = `<tr class="tk-empty"><td colspan="6">${all.length ? 'No tasks match the filter.' : 'No tasks logged in this period yet.'}</td></tr>`;
-    html += `<div class="tk-wrap"><table class="tk-table">${head}<tbody>${body}</tbody></table></div>`;
+    html += `<div class="tk-wrap"><table class="tk-table tk-tasks">${head}<tbody>${body}</tbody></table></div>`;
     return [title, '#45818e', html];
   }
   function printReport(title, list, st, autos=[]){
@@ -2408,6 +2420,7 @@
   });
   document.addEventListener('input', e => {
     const el = e.target;
+    if (el.dataset.field === 'title' && el.tagName === 'TEXTAREA' && /[\r\n]/.test(el.value)){ const p = el.selectionStart; el.value = el.value.replace(/[\r\n]+/g, ' '); el.setSelectionRange(p, p); }
     if (el.matches('.tk-table textarea')) grow(el);
     if (el.dataset.task && (el.dataset.field === 'title' || el.dataset.field === 'comment')){ const t = data.tasks.find(x => x.id === el.dataset.task); if (t){ t[el.dataset.field] = el.value; save(); } }
     if (el.id === 'tkSearch'){ taskQuery = el.value; renderKeep(); return; }
@@ -2421,6 +2434,7 @@
     }
   });
   document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.dataset?.field === 'title' && e.target.tagName === 'TEXTAREA'){ e.preventDefault(); e.target.blur(); return; }
     const day = e.target.closest?.('.day[data-date]'); if (!day) return;
     const k = day.dataset.date;
     if (e.key === 'Delete' || e.key === 'Backspace'){ e.preventDefault(); clearDay(k); return; }
