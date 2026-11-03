@@ -363,7 +363,8 @@
   .tk-table input,.tk-table textarea{width:100%;border:1px solid transparent;border-radius:6px;padding:6px 7px;background:transparent}
   .tk-table input:hover,.tk-table textarea:hover{border-color:#ddd}
   .tk-table input:focus,.tk-table textarea:focus{border-color:var(--accent);background:#fff;outline:none;box-shadow:0 0 0 2px rgba(69,129,142,.25)}
-  .tk-table textarea{resize:vertical;min-height:34px;font-family:var(--ui);line-height:1.4}
+  .tk-table textarea{resize:none;min-height:34px;font-family:var(--ui);line-height:1.4;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;field-sizing:content}
+  .auto-date{white-space:pre-wrap;overflow-wrap:anywhere}
   .tk-table td.c-date{width:150px}.tk-table td.c-st{width:160px}.tk-table td.c-time{width:100px}.tk-table td.c-del{width:44px;text-align:center}
   .tk-grp th{background:#f3f1ec;font-size:13px;font-weight:600;padding:8px 10px}
   .tk-grp th .link{font-weight:700;color:var(--ink)}
@@ -1837,6 +1838,10 @@
     addEventListener('afterprint', restore);
     print(); setTimeout(restore, 1000);
   }
+  // task comments grow to show the full text (long comments make that row taller)
+  function grow(el){ el.style.height = 'auto'; el.style.height = el.scrollHeight + 2 + 'px'; }
+  function growAll(){ viewEl.querySelectorAll('.tk-table textarea').forEach(grow); }
+  addEventListener('resize', () => { if (section === 'tasks') growAll(); });
   function renderKeep(){
     const a = document.activeElement, id = a && a.id, sel = a && 'selectionStart' in a ? [a.selectionStart, a.selectionEnd] : null;
     render();
@@ -2005,6 +2010,7 @@
     $('#title').textContent = title; $('#title').style.color = color;
     viewEl.innerHTML = html;
     if (section === 'wfh') wfhInfo();
+    growAll();
     const ds = [...viewEl.querySelectorAll('.day[data-date]')];
     if (ds.length){ const t = ds.find(b => b.dataset.date === focusKey) || ds.find(b => b.dataset.date === todayKey()) || ds[0]; t.tabIndex = 0; if (keepFocus) t.focus(); }
     data.ui.view = view; data.ui.taskView = taskView; data.ui.section = section; save();
@@ -2105,7 +2111,7 @@
   ctx.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     const k = ctxKey; closeCtx(false);
-    if (b.dataset.pick){ setType(k, b.dataset.pick, b.dataset.kind); askDetails(k); }
+    if (b.dataset.pick){ setType(k, b.dataset.pick, b.dataset.kind); if (b.dataset.pick !== 'wfh') askDetails(k); }   // WFH needs no comment prompt
     else if (b.dataset.act === 'comment') openPop(k);
     else if (b.dataset.act === 'weekoff') toggleWeekoff(k);
     else if (b.dataset.act === 'clear') clearDay(k);
@@ -2402,6 +2408,7 @@
   });
   document.addEventListener('input', e => {
     const el = e.target;
+    if (el.matches('.tk-table textarea')) grow(el);
     if (el.dataset.task && (el.dataset.field === 'title' || el.dataset.field === 'comment')){ const t = data.tasks.find(x => x.id === el.dataset.task); if (t){ t[el.dataset.field] = el.value; save(); } }
     if (el.id === 'tkSearch'){ taskQuery = el.value; renderKeep(); return; }
     if (el.dataset.runNote){ const v = el.value.trim(); el.dataset.runNote.split(',').forEach(k => { if (v) data.notes[k] = el.value; else delete data.notes[k]; }); save(); }
