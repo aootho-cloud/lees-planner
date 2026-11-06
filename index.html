@@ -394,6 +394,12 @@
   .tk-grp.day-floater th{background:#b7d3ec;color:var(--floater-fg)}
   .tk-grp.day-off th{background:#fbe6a6;color:var(--weekoff-fg)}
   .tk-grp th .link{color:inherit}
+  .tk-tog{border:0;background:none;color:inherit;font:inherit;cursor:pointer;width:26px;height:26px;border-radius:6px;margin-right:4px;display:inline-grid;place-items:center;vertical-align:middle}
+  .tk-tog:hover{background:rgba(0,0,0,.08)}
+  .tk-tog:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .tk-tog svg{width:14px;height:14px;transition:transform .15s}
+  .tk-tog[aria-expanded="false"] svg{transform:rotate(-90deg)}
+  @media (prefers-reduced-motion:reduce){.tk-tog svg{transition:none}}
   .tk-auto b{font-weight:700}
   tr.day-leave .tk-auto b,.tk-auto.day-leave b{color:var(--leave-fg)}
   .tk-auto.day-holiday b{color:var(--holiday-fg)}
@@ -980,6 +986,12 @@
   let view = data.ui.view || 'year';
   let taskView = data.ui.taskView || 'day';
   let taskFilter = new Set(), taskQuery = '';
+  const tkCollapsed = new Set(Array.isArray(data.ui.tkCollapsed) ? data.ui.tkCollapsed : []);
+  // while a search/filter is active every matching day opens automatically; collapsing then only lasts for that search
+  const tkSearchCollapsed = new Set();
+  const tkFiltering = () => !!(taskFilter.size || taskQuery.trim());
+  const tkSet = () => tkFiltering() ? tkSearchCollapsed : tkCollapsed;
+  const saveCollapsed = () => { if (!tkFiltering()){ data.ui.tkCollapsed = [...tkCollapsed]; save(); } };
   let cursor = new Date();
   let focusKey = todayKey();
   const $ = s => document.querySelector(s);
@@ -1817,6 +1829,8 @@
     html += addForm(defDate, true);
     html += `<div class="tk-filters" role="group" aria-label="Filter by status">${TS_ORDER.map(x => `<button type="button" class="chip st-${x}" data-tfilter="${x}" aria-pressed="${taskFilter.has(x)}">${TSTAT[x].emo} ${TSTAT[x].label}</button>`).join('')}
       <label class="sr-only" for="tkSearch">Search tasks</label><input id="tkSearch" type="search" placeholder="Search tasks or comments" value="${esc(taskQuery)}">
+      <button type="button" class="btn" data-tk-all="expand">Expand all</button>
+      <button type="button" class="btn" data-tk-all="collapse">Collapse all</button>
       <button type="button" class="btn" data-print="1">⬇ Export PDF</button></div>`;
     html = printReport(title, shown, st, autos) + html;
 
@@ -1825,8 +1839,9 @@
     let body = '';
     for (const k of keys){
       const rows = shown.filter(t => t.date === k), d = parseKey(k), ds = taskStats(rows);
-      body += `<tr class="tk-grp ${dayRowCls(k)}"><th colspan="6" scope="rowgroup"><button type="button" class="link" data-goto-day="${k}">${DOW_LONG[monIdx(d)].slice(0,3)}, ${d.getDate()} ${MONTHS[d.getMonth()]}</button> ${dayHeadInfo(k)}<span class="meta">${rows.length ? `${rows.length} task${rows.length===1?'':'s'}${ds.mins?` · ${fmtTime(ds.mins)}`:''}` : ''}</span></th></tr>`;
-      body += rowsFor(k);
+      const open = !tkSet().has(k), dayName = `${DOW_LONG[monIdx(d)]}, ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+      body += `<tr class="tk-grp ${dayRowCls(k)}"><th colspan="6" scope="rowgroup"><button type="button" class="tk-tog" id="tg-${k}" data-tk-toggle="${k}" aria-expanded="${open}" aria-label="${open?'Collapse':'Expand'} ${dayName}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><button type="button" class="link" data-goto-day="${k}">${DOW_LONG[monIdx(d)].slice(0,3)}, ${d.getDate()} ${MONTHS[d.getMonth()]}</button> ${dayHeadInfo(k)}<span class="meta">${rows.length ? `${rows.length} task${rows.length===1?'':'s'}${ds.mins?` · ${fmtTime(ds.mins)}`:''}` : ''}</span></th></tr>`;
+      if (open) body += rowsFor(k);
     }
     if (!keys.length) body = `<tr class="tk-empty"><td colspan="6">${all.length ? 'No tasks match the filter.' : 'No tasks logged in this period yet.'}</td></tr>`;
     html += `<div class="tk-wrap"><table class="tk-table tk-tasks">${head}<tbody>${body}</tbody></table></div>`;
@@ -2353,7 +2368,9 @@
     if (b.dataset.view){ if (section === 'tasks'){ taskView = b.dataset.view; if (keyOf(cursor) > maxTaskKey()) cursor = new Date(); } else view = b.dataset.view; render(); return; }
     if (b.dataset.gotoDay){ cursor = parseKey(b.dataset.gotoDay); taskView = 'day'; render(); return; }
     if (b.dataset.gotoTaskMonth !== undefined){ cursor = new Date(cursor.getFullYear(), +b.dataset.gotoTaskMonth, 1); taskView = 'month'; render(); return; }
-    if (b.dataset.tfilter){ const s = b.dataset.tfilter; taskFilter.has(s) ? taskFilter.delete(s) : taskFilter.add(s); renderKeep(); return; }
+    if (b.dataset.tkToggle){ const k = b.dataset.tkToggle, cs = tkSet(); cs.has(k) ? cs.delete(k) : cs.add(k); saveCollapsed(); renderKeep(); return; }
+    if (b.dataset.tkAll){ viewEl.querySelectorAll('[data-tk-toggle]').forEach(x => b.dataset.tkAll === 'collapse' ? tkSet().add(x.dataset.tkToggle) : tkSet().delete(x.dataset.tkToggle)); saveCollapsed(); renderKeep(); toast(b.dataset.tkAll === 'collapse' ? 'All days collapsed' : 'All days expanded'); return; }
+    if (b.dataset.tfilter){ const s = b.dataset.tfilter; taskFilter.has(s) ? taskFilter.delete(s) : taskFilter.add(s); tkSearchCollapsed.clear(); renderKeep(); return; }
     if (b.dataset.delTask) return deleteTask(b.dataset.delTask);
     if (b.dataset.rmLeave){
       const k = b.dataset.rmLeave, what = data.marks[k] === 'wfh' ? 'WFH' : 'leave', sp = splitOf(k), rt = b.dataset.rmType;
@@ -2423,7 +2440,7 @@
     if (el.dataset.field === 'title' && el.tagName === 'TEXTAREA' && /[\r\n]/.test(el.value)){ const p = el.selectionStart; el.value = el.value.replace(/[\r\n]+/g, ' '); el.setSelectionRange(p, p); }
     if (el.matches('.tk-table textarea')) grow(el);
     if (el.dataset.task && (el.dataset.field === 'title' || el.dataset.field === 'comment')){ const t = data.tasks.find(x => x.id === el.dataset.task); if (t){ t[el.dataset.field] = el.value; save(); } }
-    if (el.id === 'tkSearch'){ taskQuery = el.value; renderKeep(); return; }
+    if (el.id === 'tkSearch'){ taskQuery = el.value; tkSearchCollapsed.clear(); renderKeep(); return; }
     if (el.dataset.runNote){ const v = el.value.trim(); el.dataset.runNote.split(',').forEach(k => { if (v) data.notes[k] = el.value; else delete data.notes[k]; }); save(); }
     if (el.dataset.note){ const k = el.dataset.note; if (el.value.trim()) data.notes[k] = el.value; else delete data.notes[k]; save(); }
   });
