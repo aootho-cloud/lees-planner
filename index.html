@@ -421,7 +421,13 @@
   .wkdays button{display:flex;justify-content:space-between;gap:6px;border:0;border-radius:6px;padding:5px 8px;background:#f4f4f4;text-align:left;font-size:12px}
   .wkdays button:hover{filter:brightness(.96)}
   .wkdays button.is-today{box-shadow:inset 0 0 0 2px var(--today)}
-  .wkdays .r{color:inherit;opacity:.85}
+  .wkdays .r{color:inherit}
+  /* Sidebar week chips: fill the whole chip by day type; text colours meet >= 4.5:1 on their fill */
+  .wkdays button.t-leave{background:#9b1c1c;color:#ffe5e5}    /* 6.8:1 */
+  .wkdays button.t-wfh{background:#4a3b80;color:#f0ebff}      /* 8.1:1 */
+  .wkdays button.t-holiday{background:#2f5d22;color:#e6f4df}  /* 6.8:1 */
+  .wkdays button.t-floater{background:#1f4e79;color:#e3f0fb}  /* 7.5:1 */
+  .wkdays button.t-weekoff{background:#6b5100;color:#fff2cc}  /* 6.7:1 */
   .tk-daynote{display:flex;gap:8px;align-items:center;margin:-4px 0 12px;font-size:13px}
   .tk-daynote label{font-weight:600;white-space:nowrap}
   .tk-daynote input{flex:1;border:1px solid #bbb;border-radius:8px;padding:7px 9px}
@@ -865,7 +871,21 @@
   const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const DOW = ['M','T','W','T','F','S','S'];
   const DOW_LONG = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-  const MONTH_COLORS = ['#990000','#990000','#e69138','#45818e','#45818e','#45818e','#45818e','#45818e','#45818e','#a64d79','#38761d','#cc4125'];
+  // One fixed colour per month (same every year); each >= 4.5:1 on white cards and the page background
+  const MONTH_COLORS = [
+    '#1f5fa8', // Jan  blue        6.4:1
+    '#a3195b', // Feb  magenta     7.4:1
+    '#2e7d32', // Mar  green       5.1:1
+    '#00796b', // Apr  teal        5.3:1
+    '#6a3fa0', // May  purple      7.4:1
+    '#6b6a00', // Jun  olive       5.7:1
+    '#3f51b5', // Jul  indigo      6.9:1
+    '#8a5a00', // Aug  amber       5.9:1
+    '#0b6e8a', // Sep  ocean       5.8:1
+    '#bf360c', // Oct  orange      5.6:1
+    '#5d4037', // Nov  brown       9.3:1
+    '#c62828'  // Dec  red         5.6:1
+  ];
   // leave-type chart colours (validated for colour-blind separation) + their light tints
   const KCOL  = ['#d9605a','#1f9fb5','#b07e30','#4a6fc4','#6e9e2e'];
   const KTINT = ['#f6d4d2','#cdebf0','#efe1c9','#d8e1f4','#e0edcd'];
